@@ -42,3 +42,21 @@ This keeps business logic separated from authentication and improves maintainabi
 ## Authentication
 
 The project uses a custom User Manager to centralize user creation and enforce business rules consistently across the application.
+
+## Shared Models
+
+The project introduces an abstract `TenantAwareModel` to centralize store ownership across business entities.
+
+Models that belong to a merchant inherit from this base model to ensure consistency and reduce code duplication.
+
+## Stores
+
+The `stores` application manages merchant businesses.
+
+Its main entity is the `Store` model, which represents a merchant's business and serves as the ownership root for tenant-aware resources.
+
+Current responsibilities include:
+
+- Business information
+- WhatsApp contact details
+- Store configuration
