@@ -38,3 +38,7 @@ stores.apps.StoresConfig
 ```
 
 This keeps business logic separated from authentication and improves maintainability.
+
+## Authentication
+
+The project uses a custom User Manager to centralize user creation and enforce business rules consistently across the application.
