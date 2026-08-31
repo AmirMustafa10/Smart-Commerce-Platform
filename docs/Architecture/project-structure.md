@@ -60,3 +60,15 @@ Current responsibilities include:
 - Business information
 - WhatsApp contact details
 - Store configuration
+
+### Core
+
+The `core` application contains project-wide pages and shared functionality that do not belong to a specific business domain.
+
+Current responsibilities include:
+
+- Landing page
+- Dashboard entry point
+- Shared templates
+- Error pages
+- Common views

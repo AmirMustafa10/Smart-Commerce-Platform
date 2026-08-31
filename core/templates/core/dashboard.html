@@ -1,0 +1,472 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}WhatsFlow – Dashboard{% endblock %}
+
+{% block style %}<link rel="stylesheet" href="{% static 'core/css/home.css' %}">{% endblock style %}
+
+{% block content %}
+<!-- =========================================================
+     AUTHENTICATED HOME / DASHBOARD
+========================================================= -->
+
+<div class="app-shell">
+
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div>
+            <span class="eyebrow">
+                <span class="live-dot"></span>
+                WhatsFlow is running
+            </span>
+
+            <h1 class="dashboard-title">
+                Welcome back{% if user.first_name %}, {{ user.first_name }}{% endif %} 👋
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Here's what's happening with your WhatsApp orders today.
+            </p>
+        </div>
+
+        <div class="dashboard-actions">
+            <button
+                class="icon-btn notification-btn"
+                type="button"
+                aria-label="Notifications"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                title="Notifications"
+            >
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+
+            <a href="#" class="btn btn-wa-green dashboard-add-btn">
+                <i class="fas fa-plus me-2"></i>
+                New Order
+            </a>
+        </div>
+    </header>
+
+    <!-- Quick Stats -->
+    <section class="stats-grid">
+
+        <article class="stat-card reveal">
+            <div class="stat-card-top">
+                <div class="stat-icon stat-icon-green">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+
+                <span class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i> 12.8%
+                </span>
+            </div>
+
+            <span class="stat-label">Total Orders</span>
+
+            <strong class="stat-value counter" data-value="1284">
+                0
+            </strong>
+
+            <span class="stat-period">
+                Compared with last month
+            </span>
+        </article>
+
+        <article class="stat-card reveal">
+            <div class="stat-card-top">
+                <div class="stat-icon stat-icon-blue">
+                    <i class="fas fa-coins"></i>
+                </div>
+
+                <span class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i> 8.4%
+                </span>
+            </div>
+
+            <span class="stat-label">Revenue</span>
+
+            <strong class="stat-value">
+                $<span class="counter" data-value="28460">0</span>
+            </strong>
+
+            <span class="stat-period">
+                This month
+            </span>
+        </article>
+
+        <article class="stat-card reveal">
+            <div class="stat-card-top">
+                <div class="stat-icon stat-icon-purple">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <span class="stat-trend positive">
+                    <i class="fas fa-arrow-up"></i> 5.2%
+                </span>
+            </div>
+
+            <span class="stat-label">Customers</span>
+
+            <strong class="stat-value counter" data-value="843">
+                0
+            </strong>
+
+            <span class="stat-period">
+                Active customers
+            </span>
+        </article>
+
+        <article class="stat-card reveal">
+            <div class="stat-card-top">
+                <div class="stat-icon stat-icon-orange">
+                    <i class="fas fa-robot"></i>
+                </div>
+
+                <span class="stat-trend neutral">
+                    Live
+                </span>
+            </div>
+
+            <span class="stat-label">Automation</span>
+
+            <strong class="stat-value">
+                97.8%
+            </strong>
+
+            <span class="stat-period">
+                Successful replies
+            </span>
+        </article>
+
+    </section>
+
+
+    <!-- Main Dashboard Grid -->
+    <section class="dashboard-main-grid">
+
+        <!-- Orders -->
+        <article class="dashboard-card orders-card reveal">
+
+            <div class="dashboard-card-header">
+                <div>
+                    <h2>Recent Orders</h2>
+                    <p>Your latest WhatsApp orders</p>
+                </div>
+
+                <a href="#" class="view-all-link">
+                    View all
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="orders-table">
+
+                <div class="order-row order-heading">
+                    <span>Customer</span>
+                    <span>Order</span>
+                    <span>Amount</span>
+                    <span>Status</span>
+                </div>
+
+                <div class="order-row">
+                    <div class="customer-cell">
+                        <div class="customer-avatar avatar-1">AM</div>
+                        <div>
+                            <strong>Ahmed Mohamed</strong>
+                            <small>2 min ago</small>
+                        </div>
+                    </div>
+
+                    <span class="order-id">#WF-8291</span>
+
+                    <strong>$124.00</strong>
+
+                    <span class="status-pill status-success">
+                        <span></span> Confirmed
+                    </span>
+                </div>
+
+                <div class="order-row">
+                    <div class="customer-cell">
+                        <div class="customer-avatar avatar-2">SA</div>
+                        <div>
+                            <strong>Sarah Ali</strong>
+                            <small>18 min ago</small>
+                        </div>
+                    </div>
+
+                    <span class="order-id">#WF-8290</span>
+
+                    <strong>$86.50</strong>
+
+                    <span class="status-pill status-warning">
+                        <span></span> Processing
+                    </span>
+                </div>
+
+                <div class="order-row">
+                    <div class="customer-cell">
+                        <div class="customer-avatar avatar-3">OM</div>
+                        <div>
+                            <strong>Omar Hassan</strong>
+                            <small>34 min ago</small>
+                        </div>
+                    </div>
+
+                    <span class="order-id">#WF-8289</span>
+
+                    <strong>$210.00</strong>
+
+                    <span class="status-pill status-success">
+                        <span></span> Confirmed
+                    </span>
+                </div>
+
+                <div class="order-row">
+                    <div class="customer-cell">
+                        <div class="customer-avatar avatar-4">MK</div>
+                        <div>
+                            <strong>Mariam Khaled</strong>
+                            <small>1 hr ago</small>
+                        </div>
+                    </div>
+
+                    <span class="order-id">#WF-8288</span>
+
+                    <strong>$52.00</strong>
+
+                    <span class="status-pill status-danger">
+                        <span></span> Cancelled
+                    </span>
+                </div>
+
+            </div>
+        </article>
+
+
+        <!-- Automation -->
+        <article class="dashboard-card automation-card reveal">
+
+            <div class="dashboard-card-header">
+                <div>
+                    <h2>Automation</h2>
+                    <p>WhatsApp activity</p>
+                </div>
+
+                <span class="automation-status">
+                    <span class="live-dot"></span>
+                    Active
+                </span>
+            </div>
+
+            <div class="automation-score">
+
+                <div class="score-ring">
+                    <div>
+                        <strong>97</strong>
+                        <small>%</small>
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Everything looks good</strong>
+                    <p>
+                        Your automated workflows are
+                        running normally.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="automation-list">
+
+                <div class="automation-item">
+                    <div class="automation-item-icon">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+
+                    <div>
+                        <strong>Auto Replies</strong>
+                        <span>438 messages handled</span>
+                    </div>
+
+                    <span class="automation-live">ON</span>
+                </div>
+
+                <div class="automation-item">
+                    <div class="automation-item-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+
+                    <div>
+                        <strong>Order Detection</strong>
+                        <span>128 orders detected</span>
+                    </div>
+
+                    <span class="automation-live">ON</span>
+                </div>
+
+                <div class="automation-item">
+                    <div class="automation-item-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+
+                    <div>
+                        <strong>Delivery Updates</strong>
+                        <span>64 updates sent</span>
+                    </div>
+
+                    <span class="automation-live">ON</span>
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- Bottom Section -->
+    <section class="dashboard-bottom-grid">
+
+        <!-- Weekly Revenue -->
+        <article class="dashboard-card revenue-card reveal">
+
+            <div class="dashboard-card-header">
+                <div>
+                    <h2>Revenue Overview</h2>
+                    <p>Last 7 days</p>
+                </div>
+
+                <button class="chart-filter" type="button">
+                    This week
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+
+            <div class="fake-chart">
+
+                <div class="chart-y-labels">
+                    <span>$5k</span>
+                    <span>$4k</span>
+                    <span>$3k</span>
+                    <span>$2k</span>
+                    <span>$1k</span>
+                    <span>$0</span>
+                </div>
+
+                <div class="chart-content">
+
+                    <div class="chart-grid-lines">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <div class="chart-bars">
+                        <div class="chart-bar" style="--height:46%" data-day="Mon"></div>
+                        <div class="chart-bar" style="--height:61%" data-day="Tue"></div>
+                        <div class="chart-bar" style="--height:52%" data-day="Wed"></div>
+                        <div class="chart-bar" style="--height:78%" data-day="Thu"></div>
+                        <div class="chart-bar" style="--height:68%" data-day="Fri"></div>
+                        <div class="chart-bar" style="--height:92%" data-day="Sat"></div>
+                        <div class="chart-bar active" style="--height:82%" data-day="Sun"></div>
+                    </div>
+
+                    <div class="chart-days">
+                        <span>Mon</span>
+                        <span>Tue</span>
+                        <span>Wed</span>
+                        <span>Thu</span>
+                        <span>Fri</span>
+                        <span>Sat</span>
+                        <span>Sun</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </article>
+
+
+        <!-- Quick Actions -->
+        <article class="dashboard-card quick-actions-card reveal">
+
+            <div class="dashboard-card-header">
+                <div>
+                    <h2>Quick Actions</h2>
+                    <p>Get things done faster</p>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon green">
+                        <i class="fas fa-plus"></i>
+                    </div>
+
+                    <div>
+                        <strong>Create Order</strong>
+                        <span>Add an order manually</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon blue">
+                        <i class="fas fa-robot"></i>
+                    </div>
+
+                    <div>
+                        <strong>Automation Rules</strong>
+                        <span>Manage your workflows</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon purple">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <div>
+                        <strong>Customers</strong>
+                        <span>View customer database</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon orange">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                    <div>
+                        <strong>Analytics</strong>
+                        <span>Explore your performance</span>
+                    </div>
+
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+
+            </div>
+
+        </article>
+
+    </section>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'core/js/home.js' %}"></script>
+{% endblock script %}
