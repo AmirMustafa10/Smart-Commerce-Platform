@@ -31,7 +31,7 @@ class Store(models.Model):
         db_index=True,
         validators=[
             RegexValidator(
-                regex=r"^\+[1-9]\d{1,14}$",
+                regex=r"^\+[1-9]\d{8,14}$",
                 message=_(
                     "Phone number must be in international format (e.g., +14155552671)."
                 ),
