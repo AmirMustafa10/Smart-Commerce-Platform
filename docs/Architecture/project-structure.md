@@ -4,13 +4,17 @@
 
 ### Accounts
 
-The `accounts` application is responsible for authentication and user-related functionality.
+The `accounts` application manages authentication and merchant identity across the platform.
 
 Current responsibilities include:
 
-- User authentication
-- Merchant accounts
+- Custom User model
+- Custom User Manager
+- Merchant registration
+- User authentication (login/logout)
 - User management
+- Authentication forms
+- Custom Django Admin integration
 
 The application is registered using its AppConfig:
 
@@ -18,8 +22,7 @@ The application is registered using its AppConfig:
 accounts.apps.AccountsConfig
 ```
 
-Using AppConfig ensures better extensibility and allows future initialization logic such as Django signals through the `ready()` method.
-
+Using AppConfig improves project extensibility and provides a centralized place for application initialization, such as registering Django signals through the `ready()` method when needed.
 ### Stores
 
 The `stores` application is responsible for managing merchant stores and store-related business data.

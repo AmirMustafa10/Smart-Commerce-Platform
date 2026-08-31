@@ -22,3 +22,19 @@ Merchant registration involves multiple models and business rules, therefore a s
 ## Future Improvement
 
 As the business logic grows, the registration process can be moved into a dedicated service layer.
+
+## Authentication Views
+
+Authentication is implemented using Django Class-Based Views (CBVs).
+
+Current authentication endpoints include:
+
+- Merchant registration
+- User login
+- User logout
+
+### Why Class-Based Views?
+
+CBVs provide a reusable and extensible architecture by supporting inheritance, mixins, and separation of responsibilities.
+
+This approach aligns with Django's recommended practices for authentication workflows.
