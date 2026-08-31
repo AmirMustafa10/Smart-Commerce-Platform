@@ -47,6 +47,10 @@ class Store(models.Model):
         unique=True,
         help_text=_("Token for Meta API integrations. Generated later."),
     )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Designates whether this store is active. Unselect this instead of deleting.",
+    )
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)
 
@@ -95,7 +99,7 @@ class TenantAwareModel(models.Model):
 
     store = models.ForeignKey(
         "stores.Store",  # string reference to avoid circular imports
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="%(class)s_related",  # unique reverse accessor for each child model
         db_index=True,
         help_text=_("The store (tenant) this record belongs to."),
