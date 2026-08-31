@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from stores.models import Store
 from .models import CustomUser
 
+
 class CustomUserCreationForm(UserCreationForm):
     """
     Form for creating a new CustomUser in the admin.
@@ -63,8 +64,10 @@ class MerchantSignUpForm(forms.Form):
         max_length=20,
         validators=[
             RegexValidator(
-                regex=r"^\+?1?\d{9,15}$",
-                message="Phone number must be entered in the format: '+999999999'.",
+                regex=r"^\+[1-9]\d{8,14}$",
+                message=_(
+                    "Phone number must be in international format (e.g., +14155552671)."
+                ),
             )
         ],
         widget=forms.TextInput(attrs={"placeholder": "+201000000000"}),
@@ -78,6 +81,14 @@ class MerchantSignUpForm(forms.Form):
             if Store.objects.filter(name__iexact=store_name).exists():
                 raise ValidationError(_("A store with this name already exists."))
         return store_name
+
+    def clean_whatsapp_number(self):
+        whatsapp_number = self.cleaned_data.get("whatsapp_number")
+
+        if Store.objects.filter(whatsapp_number=whatsapp_number).exists():
+            raise ValidationError("A store with this WhatsApp number already exists.")
+
+        return whatsapp_number
 
     def clean_email(self):
         """Normalize email and check uniqueness (case‑insensitive)."""
