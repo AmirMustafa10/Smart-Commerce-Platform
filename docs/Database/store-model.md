@@ -28,3 +28,7 @@ Future related models include:
 - Customers
 - Orders
 - Inventory
+
+## Administration
+
+The Store model has a dedicated Django Admin configuration to simplify tenant management and provide better visibility into store data.

@@ -26,3 +26,16 @@ The custom admin extends Django's built-in `UserAdmin` functionality while adapt
 ### Building Admin from ModelAdmin
 
 Rejected because it requires manually recreating existing Django authentication admin features.
+
+## Store Administration
+
+The project provides a customized Django Admin interface for managing tenant stores.
+
+The Store Admin configuration improves management efficiency by providing a structured interface for store operations.
+
+Future improvements may include:
+
+- Store activity tracking
+- Tenant-specific permissions
+- Audit logging
+- Store statistics
