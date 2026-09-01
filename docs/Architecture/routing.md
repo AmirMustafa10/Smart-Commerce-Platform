@@ -1,12 +1,13 @@
 # Application Routing
 
-## Root URL
+## Public Pages
 
-The root URL (`/`) serves as the application's entry point.
+The root URL (`/`) serves the public landing page.
 
-Behavior:
+## Protected Pages
 
-- Anonymous users are presented with the public landing page.
-- Authenticated users are redirected to their dashboard.
+The dashboard is separated into its own route:
 
-This provides a smoother user experience by directing authenticated users to the section where they continue their work.
+`/dashboard/`
+
+This separation keeps public marketing pages independent from authenticated application features.

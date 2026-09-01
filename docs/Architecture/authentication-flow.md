@@ -23,6 +23,22 @@ Merchant registration involves multiple models and business rules, therefore a s
 
 As the business logic grows, the registration process can be moved into a dedicated service layer.
 
+## Authentication Flow
+
+After successful merchant registration, the user is redirected to the dashboard.
+
+Authentication entry points:
+
+- `/accounts/signup/` → Merchant registration
+- `/accounts/login/` → User login
+- `/accounts/logout/` → User logout
+
+Authenticated users access the application workspace through:
+
+- `/dashboard/`
+
+The landing page remains available as the public entry point.
+
 ## Authentication Views
 
 Authentication is implemented using Django Class-Based Views (CBVs).
