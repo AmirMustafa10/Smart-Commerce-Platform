@@ -1,12 +1,17 @@
 from django.views.generic import TemplateView
+from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
+class HomeView(TemplateView):
+    template_name = "core/home.html"
 
-    def get_template_names(self):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("core:dashboard") 
 
-        if self.request.user.is_authenticated:
-            return ["core/dashboard.html"]
+        return super().get(request, *args, **kwargs)
 
-        return ["core/home.html"]
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    template_name = "core/dashboard.html"

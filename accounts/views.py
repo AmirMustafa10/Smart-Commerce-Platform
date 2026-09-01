@@ -20,12 +20,12 @@ class MerchantSignUpView(FormView):
 
     template_name = "accounts/signup.html"
     form_class = MerchantSignUpForm
-    success_url = reverse_lazy("core:home")
+    success_url = reverse_lazy("core:dashboard")
 
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated:
-            return redirect("core:home")
+            return redirect("core:dashboard")
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -65,4 +65,4 @@ class MerchantLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        return reverse_lazy("core:home")
+        return reverse_lazy("core:dashboard")
