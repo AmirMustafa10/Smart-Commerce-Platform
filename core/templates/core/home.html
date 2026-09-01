@@ -1,0 +1,737 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}
+    WhatsFlow – Automate Your WhatsApp Orders
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'core/css/home.css' %}">
+{% endblock style %}
+
+{% block content %}
+<!-- =========================================================
+     PUBLIC HOME / LANDING PAGE
+========================================================= -->
+
+<div class="public-home">
+    <!-- Hero -->
+    <header class="landing-hero">
+
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-6">
+
+                    <div class="hero-badge">
+                        <span class="hero-badge-dot"></span>
+                        Built for businesses selling on WhatsApp
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+
+                    <h1 class="landing-title">
+                        Turn WhatsApp chats
+                        <span>into sales.</span>
+                    </h1>
+
+                    <p class="landing-subtitle">
+                        WhatsFlow turns your WhatsApp conversations into
+                        organized orders, automated replies, and happier
+                        customers — without the chaos.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="{% url 'accounts:signup' %}" class="btn btn-wa-green btn-hero-primary">
+                            Start free — no card required
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+
+                        <a href="#how-it-works" class="btn btn-hero-secondary">
+                            <span class="play-icon">
+                                <i class="fas fa-play"></i>
+                            </span>
+                            See how it works
+                        </a>
+
+                    </div>
+
+                    <div class="hero-trust">
+
+                        <div class="trust-avatars">
+                            <span>AM</span>
+                            <span>SA</span>
+                            <span>MK</span>
+                            <span>+2k</span>
+                        </div>
+
+                        <div>
+                            <div class="stars">
+                                ★★★★★
+                            </div>
+
+                            <p>
+                                Loved by 2,000+ growing businesses
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-lg-6">
+
+                    <!-- Real dashboard-style product preview -->
+                    <div class="hero-product-wrap">
+
+                        <div class="floating-card floating-orders">
+                            <div class="floating-card-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+
+                            <div>
+                                <strong>+24 orders</strong>
+                                <span>Today</span>
+                            </div>
+
+                            <i class="fas fa-arrow-up floating-up"></i>
+                        </div>
+
+
+                        <div class="floating-card floating-message">
+
+                            <div class="message-avatar">
+                                AM
+                            </div>
+
+                            <div>
+                                <strong>New order received</strong>
+                                <span>Ahmed • Just now</span>
+                            </div>
+
+                            <span class="message-check">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                        </div>
+
+
+                        <div class="product-preview" id="productPreview">
+
+                            <div class="preview-topbar">
+
+                                <div class="preview-brand">
+                                    <span>
+                                        <i class="fab fa-whatsapp"></i>
+                                    </span>
+                                    WhatsFlow
+                                </div>
+
+                                <div class="preview-top-actions">
+                                    <i class="fas fa-search"></i>
+                                    <i class="fas fa-bell"></i>
+
+                                    <div class="preview-user">
+                                        JD
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="preview-body">
+
+                                <aside class="preview-sidebar">
+
+                                    <div class="preview-nav active">
+                                        <i class="fas fa-chart-pie"></i>
+                                        <span>Overview</span>
+                                    </div>
+
+                                    <div class="preview-nav">
+                                        <i class="fas fa-shopping-bag"></i>
+                                        <span>Orders</span>
+                                    </div>
+
+                                    <div class="preview-nav">
+                                        <i class="fas fa-users"></i>
+                                        <span>Customers</span>
+                                    </div>
+
+                                    <div class="preview-nav">
+                                        <i class="fas fa-robot"></i>
+                                        <span>Automation</span>
+                                    </div>
+
+                                    <div class="preview-nav">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Analytics</span>
+                                    </div>
+
+                                    <div class="preview-sidebar-bottom">
+                                        <i class="fas fa-cog"></i>
+                                        Settings
+                                    </div>
+
+                                </aside>
+
+
+                                <main class="preview-main">
+
+                                    <div class="preview-heading">
+                                        <div>
+                                            <span>Dashboard</span>
+                                            <strong>Good morning, John 👋</strong>
+                                        </div>
+
+                                        <button>
+                                            <i class="fas fa-plus"></i>
+                                            New order
+                                        </button>
+                                    </div>
+
+
+                                    <div class="preview-stats">
+
+                                        <div class="preview-stat">
+                                            <span>
+                                                Orders
+                                                <i class="fas fa-shopping-bag"></i>
+                                            </span>
+                                            <strong>1,284</strong>
+                                            <small>↑ 12.8%</small>
+                                        </div>
+
+                                        <div class="preview-stat">
+                                            <span>
+                                                Revenue
+                                                <i class="fas fa-dollar-sign"></i>
+                                            </span>
+                                            <strong>$28.4k</strong>
+                                            <small>↑ 8.4%</small>
+                                        </div>
+
+                                        <div class="preview-stat">
+                                            <span>
+                                                Customers
+                                                <i class="fas fa-users"></i>
+                                            </span>
+                                            <strong>843</strong>
+                                            <small>↑ 5.2%</small>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="preview-content-grid">
+
+                                        <div class="preview-chart">
+
+                                            <div class="mini-card-header">
+                                                <div>
+                                                    <strong>Sales overview</strong>
+                                                    <small>Last 7 days</small>
+                                                </div>
+
+                                                <span>+18.2%</span>
+                                            </div>
+
+                                            <div class="mini-chart">
+
+                                                <div class="mini-bars">
+                                                    <i style="height:45%"></i>
+                                                    <i style="height:63%"></i>
+                                                    <i style="height:51%"></i>
+                                                    <i style="height:72%"></i>
+                                                    <i style="height:58%"></i>
+                                                    <i style="height:88%"></i>
+                                                    <i style="height:77%"></i>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="preview-orders">
+
+                                            <div class="mini-card-header">
+                                                <div>
+                                                    <strong>Latest orders</strong>
+                                                    <small>Recently received</small>
+                                                </div>
+
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </div>
+
+                                            <div class="mini-order">
+                                                <span class="mini-avatar">AM</span>
+                                                <div>
+                                                    <strong>Ahmed M.</strong>
+                                                    <small>#WF-8291</small>
+                                                </div>
+                                                <b>$124</b>
+                                            </div>
+
+                                            <div class="mini-order">
+                                                <span class="mini-avatar second">SA</span>
+                                                <div>
+                                                    <strong>Sarah A.</strong>
+                                                    <small>#WF-8290</small>
+                                                </div>
+                                                <b>$86</b>
+                                            </div>
+
+                                            <div class="mini-order">
+                                                <span class="mini-avatar third">OM</span>
+                                                <div>
+                                                    <strong>Omar H.</strong>
+                                                    <small>#WF-8289</small>
+                                                </div>
+                                                <b>$210</b>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </main>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- Logos -->
+    <section class="trusted-section">
+
+        <div class="container">
+
+            <p>
+                DESIGNED FOR MODERN BUSINESSES
+            </p>
+
+            <div class="trusted-items">
+
+                <span>
+                    <i class="fas fa-store"></i>
+                    Retail
+                </span>
+
+                <span>
+                    <i class="fas fa-utensils"></i>
+                    Restaurants
+                </span>
+
+                <span>
+                    <i class="fas fa-tshirt"></i>
+                    Fashion
+                </span>
+
+                <span>
+                    <i class="fas fa-laptop"></i>
+                    Ecommerce
+                </span>
+
+                <span>
+                    <i class="fas fa-briefcase"></i>
+                    Services
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Results -->
+    <section class="results-section" id="results">
+
+        <div class="container">
+
+            <div class="section-heading reveal">
+
+                <span class="section-kicker">
+                    WHY WHATSFLOW
+                </span>
+
+                <h2>
+                    Your WhatsApp should
+                    <span>work for you.</span>
+                </h2>
+
+                <p>
+                    Stop jumping between chats, spreadsheets and notes.
+                    WhatsFlow puts your entire sales operation in one place.
+                </p>
+
+            </div>
+
+
+            <div class="result-grid">
+
+                <article class="result-card reveal">
+                    <div class="result-number">
+                        <span class="counter" data-value="42">0</span><small>%</small>
+                    </div>
+
+                    <h3>Less manual work</h3>
+
+                    <p>
+                        Automate repetitive customer replies and order processing.
+                    </p>
+                </article>
+
+
+                <article class="result-card featured reveal">
+
+                    <span class="result-badge">
+                        MOST POPULAR
+                    </span>
+
+                    <div class="result-number">
+                        <span class="counter" data-value="3">0</span><small>x</small>
+                    </div>
+
+                    <h3>Faster order handling</h3>
+
+                    <p>
+                        Go from a messy conversation to a structured order in seconds.
+                    </p>
+
+                </article>
+
+
+                <article class="result-card reveal">
+
+                    <div class="result-number">
+                        <span class="counter" data-value="97">0</span><small>%</small>
+                    </div>
+
+                    <h3>Customer response rate</h3>
+
+                    <p>
+                        Keep customers engaged with fast and consistent replies.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Features -->
+    <section class="features-modern" id="features">
+
+        <div class="container">
+
+            <div class="section-heading center reveal">
+
+                <span class="section-kicker">
+                    EVERYTHING IN ONE PLACE
+                </span>
+
+                <h2>
+                    From message to delivery,
+                    <span>handled.</span>
+                </h2>
+
+                <p>
+                    Everything your team needs to turn WhatsApp conversations
+                    into a predictable sales process.
+                </p>
+
+            </div>
+
+
+            <div class="features-grid">
+
+                <article class="modern-feature large-feature reveal">
+
+                    <div class="feature-content">
+
+                        <div class="modern-feature-icon green">
+                            <i class="fas fa-robot"></i>
+                        </div>
+
+                        <h3>
+                            Let automation handle
+                            the repetitive work.
+                        </h3>
+
+                        <p>
+                            Create smart workflows that automatically respond
+                            to customer questions, detect orders and update
+                            customers about delivery.
+                        </p>
+
+                        <a href="#" class="feature-link">
+                            Explore automation
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+                    <div class="automation-visual">
+
+                        <div class="workflow-item">
+                            <span class="workflow-icon">
+                                <i class="fas fa-comment"></i>
+                            </span>
+                            <div>
+                                <strong>Customer sends a message</strong>
+                                <small>“I need 2 black shirts”</small>
+                            </div>
+                        </div>
+
+                        <div class="workflow-line"></div>
+
+                        <div class="workflow-item active">
+                            <span class="workflow-icon">
+                                <i class="fas fa-robot"></i>
+                            </span>
+                            <div>
+                                <strong>WhatsFlow detects intent</strong>
+                                <small>Product + quantity recognized</small>
+                            </div>
+                            <i class="fas fa-check workflow-check"></i>
+                        </div>
+
+                        <div class="workflow-line"></div>
+
+                        <div class="workflow-item">
+                            <span class="workflow-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </span>
+                            <div>
+                                <strong>Order created</strong>
+                                <small>#WF-8291 • $124.00</small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="modern-feature reveal">
+
+                    <div class="modern-feature-icon blue">
+                        <i class="fas fa-box"></i>
+                    </div>
+
+                    <h3>
+                        Never lose an order again.
+                    </h3>
+
+                    <p>
+                        Every order gets a clear status from confirmation
+                        to delivery.
+                    </p>
+
+                    <div class="status-demo">
+
+                        <div>
+                            <span>Order #8291</span>
+                            <strong>Confirmed</strong>
+                        </div>
+
+                        <div class="progress-demo">
+                            <span class="done"></span>
+                            <span class="done"></span>
+                            <span class="done"></span>
+                            <span></span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="modern-feature reveal">
+
+                    <div class="modern-feature-icon purple">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                    <h3>
+                        Know what is driving sales.
+                    </h3>
+
+                    <p>
+                        See your best products, busiest hours and
+                        customer behavior.
+                    </p>
+
+                    <div class="analytics-demo">
+
+                        <div class="analytics-bars">
+                            <span style="height:34%"></span>
+                            <span style="height:54%"></span>
+                            <span style="height:42%"></span>
+                            <span style="height:76%"></span>
+                            <span style="height:61%"></span>
+                            <span style="height:90%"></span>
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- How it works -->
+    <section class="how-section" id="how-it-works">
+
+        <div class="container">
+
+            <div class="section-heading center reveal">
+
+                <span class="section-kicker">
+                    SIMPLE BY DESIGN
+                </span>
+
+                <h2>
+                    Start selling smarter
+                    <span>in minutes.</span>
+                </h2>
+
+            </div>
+
+
+            <div class="steps">
+
+                <div class="step reveal">
+
+                    <div class="step-number">01</div>
+
+                    <div class="step-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+
+                    <h3>Connect WhatsApp</h3>
+
+                    <p>
+                        Connect your business WhatsApp account
+                        and bring your conversations into WhatsFlow.
+                    </p>
+
+                </div>
+
+
+                <div class="step-connector"></div>
+
+
+                <div class="step reveal">
+
+                    <div class="step-number">02</div>
+
+                    <div class="step-icon">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+
+                    <h3>Set your workflows</h3>
+
+                    <p>
+                        Define how orders, replies, customers and
+                        notifications should be handled.
+                    </p>
+
+                </div>
+
+
+                <div class="step-connector"></div>
+
+
+                <div class="step reveal">
+
+                    <div class="step-number">03</div>
+
+                    <div class="step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+
+                    <h3>Let it run</h3>
+
+                    <p>
+                        WhatsFlow works in the background while
+                        you focus on growing your business.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+
+        <div class="cta-glow"></div>
+
+        <div class="container">
+
+            <div class="cta-content reveal">
+
+                <span class="section-kicker">
+                    READY WHEN YOU ARE
+                </span>
+
+                <h2>
+                    Your next order could already
+                    be automated.
+                </h2>
+
+                <p>
+                    Start free and see how much time WhatsFlow
+                    can save your team.
+                </p>
+
+                <a href="{% url 'accounts:signup' %}" class="btn btn-light btn-lg cta-button">
+                    Start your free trial
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+
+                <small>
+                    No credit card required · Set up in minutes
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'core/js/home.js' %}"></script>
+{% endblock script %}

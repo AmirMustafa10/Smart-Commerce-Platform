@@ -1,0 +1,80 @@
+:root {
+    --wf-green: #25d366;
+    --wf-green-dark: #159d50;
+
+    --wf-dark: #111827;
+    --wf-text: #172033;
+    --wf-muted: #7b8594;
+
+    --wf-border: #e8edf0;
+    --wf-white: #ffffff;
+
+    --wf-page-bg: #f7f9fb;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+
+    color: var(--wf-text);
+
+    background: var(--wf-page-bg);
+
+    font-family: "Inter", sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+
+.wf-main {
+    flex: 1;
+
+    width: 100%;
+}
+
+
+.btn-wa-green {
+    color: #fff !important;
+
+    background: var(--wf-green);
+
+    border: 0;
+}
+
+
+.btn-wa-green:hover {
+    color: #fff !important;
+
+    background: var(--wf-green-dark);
+}
+
