@@ -23,6 +23,9 @@ accounts.apps.AccountsConfig
 ```
 
 Using AppConfig improves project extensibility and provides a centralized place for application initialization, such as registering Django signals through the `ready()` method when needed.
+
+Testing is organized separately by application layer to keep tests maintainable as the application grows.
+
 ### Stores
 
 The `stores` application is responsible for managing merchant stores and store-related business data.
