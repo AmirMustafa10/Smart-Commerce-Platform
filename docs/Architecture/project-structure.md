@@ -26,6 +26,8 @@ Using AppConfig improves project extensibility and provides a centralized place 
 
 Testing is organized separately by application layer to keep tests maintainable as the application grows.
 
+Current responsibilities also include internal staff account management for store owners.
+
 ### Stores
 
 The `stores` application is responsible for managing merchant stores and store-related business data.

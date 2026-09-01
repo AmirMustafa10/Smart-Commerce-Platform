@@ -6,23 +6,6 @@ The platform uses a dedicated `MerchantSignUpForm` to handle merchant registrati
 
 Unlike normal user creation, merchant registration is a business workflow that creates multiple related entities.
 
-## Flow
-
-1. Validate merchant input.
-2. Create the merchant user account.
-3. Create the associated store.
-4. Establish the relationship between the merchant and the store.
-
-## Why Use a Form Instead of ModelForm?
-
-A regular ModelForm is designed for handling a single model instance.
-
-Merchant registration involves multiple models and business rules, therefore a standard Django Form provides better control over the workflow.
-
-## Future Improvement
-
-As the business logic grows, the registration process can be moved into a dedicated service layer.
-
 ## Authentication Flow
 
 After successful merchant registration, the user is redirected to the dashboard.
@@ -38,6 +21,19 @@ Authenticated users access the application workspace through:
 - `/dashboard/`
 
 The landing page remains available as the public entry point.
+
+Staff accounts are created internally by store owners and do not register through the public merchant registration process.
+
+## Why Use a Form Instead of ModelForm?
+
+A regular ModelForm is designed for handling a single model instance.
+
+Merchant registration involves multiple models and business rules, therefore a standard Django Form provides better control over the workflow.
+
+## Future Improvement
+
+As the business logic grows, the registration process can be moved into a dedicated service layer.
+
 
 ## Authentication Views
 
