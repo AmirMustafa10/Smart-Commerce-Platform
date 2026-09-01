@@ -243,7 +243,7 @@
                                     <li>
 
                                         <a
-                                            href="#"
+                                            href="{% url 'stores:settings' %}"
                                             class="dropdown-item wf-dropdown-item"
                                         >
 
@@ -252,6 +252,25 @@
                                             </span>
 
                                             Settings
+
+                                        </a>
+
+                                    </li>
+
+                                    <!-- Team -->
+
+                                    <li>
+
+                                        <a
+                                            href="{% url 'accounts:shipper_list' %}"
+                                            class="dropdown-item wf-dropdown-item"
+                                        >
+
+                                            <span class="wf-dropdown-icon">
+                                                <i class="fas fa-user-group"></i>
+                                            </span>
+
+                                            Team
 
                                         </a>
 
