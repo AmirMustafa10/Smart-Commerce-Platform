@@ -103,7 +103,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         },
     )
     store = models.ForeignKey(
-        "stores.Store",  # string reference to avoid circular imports
+        "stores.Store",
         on_delete=models.PROTECT,
         related_name="users",
         null=True,

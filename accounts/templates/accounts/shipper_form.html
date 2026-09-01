@@ -1,0 +1,253 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Shipper | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/team.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="shipper-create-page">
+
+    <div class="shipper-create-bg">
+        <div class="team-glow team-glow-one"></div>
+        <div class="team-glow team-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <div class="shipper-create-header">
+
+            <a
+                href="{% url 'accounts:shipper_list' %}"
+                class="team-back-link"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to team
+            </a>
+
+        </div>
+
+
+        <div class="shipper-create-layout">
+
+
+            <!-- =================================================
+                 LEFT INFO
+            ================================================== -->
+
+            <section class="shipper-create-showcase">
+
+                <span class="create-kicker">
+                    TEAM MANAGEMENT
+                </span>
+
+                <h1>
+                    Add someone
+                    <span>to your team.</span>
+                </h1>
+
+                <p>
+                    Give your shipper a dedicated account so they can
+                    handle delivery operations without accessing
+                    your store administration.
+                </p>
+
+
+                <div class="create-benefits">
+
+                    <div>
+
+                        <span>
+                            <i class="fas fa-check"></i>
+                        </span>
+
+                        <div>
+                            <strong>
+                                Dedicated access
+                            </strong>
+
+                            <small>
+                                Each shipper gets their own account.
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            <i class="fas fa-check"></i>
+                        </span>
+
+                        <div>
+                            <strong>
+                                Store protected
+                            </strong>
+
+                            <small>
+                                Shippers are automatically assigned
+                                to your store.
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            <i class="fas fa-check"></i>
+                        </span>
+
+                        <div>
+                            <strong>
+                                No role setup required
+                            </strong>
+
+                            <small>
+                                WhatsFlow automatically creates
+                                the account as a shipper.
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <section class="shipper-form-card">
+
+                <div class="shipper-form-header">
+
+                    <div class="shipper-form-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+
+                    <div>
+
+                        <span>
+                            NEW TEAM MEMBER
+                        </span>
+
+                        <h2>
+                            Add shipper
+                        </h2>
+
+                        <p>
+                            Create login credentials for your new team member.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if form.non_field_errors %}
+
+                    <div class="team-form-error">
+
+                        <i class="fas fa-circle-exclamation"></i>
+
+                        <div>
+                            {{ form.non_field_errors }}
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+
+                <form
+                    method="POST"
+                    id="shipperCreateForm"
+                    class="shipper-create-form"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    <div class="shipper-form-fields">
+
+                        {{ form|crispy }}
+
+                    </div>
+
+
+                    <div class="create-security-note">
+
+                        <i class="fas fa-shield-halved"></i>
+
+                        <span>
+                            The shipper will only receive access
+                            to their assigned role.
+                        </span>
+
+                    </div>
+
+
+                    <div class="shipper-form-footer">
+
+                        <a
+                            href="{% url 'accounts:shipper_list' %}"
+                            class="btn create-cancel-btn"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn create-submit-btn"
+                            id="createShipperSubmit"
+                        >
+
+                            <span class="create-submit-content">
+
+                                <i class="fas fa-user-plus"></i>
+
+                                Create shipper
+
+                            </span>
+
+
+                            <span class="create-submit-loading">
+
+                                <span class="spinner-border spinner-border-sm"></span>
+
+                                Creating...
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'accounts/js/team.js' %}"></script>
+{% endblock %}

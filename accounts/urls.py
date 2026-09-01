@@ -9,4 +9,11 @@ urlpatterns = [
     path("signup/", views.MerchantSignUpView.as_view(), name="signup"),
     path("login/", views.MerchantLoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
+    path("shippers/", views.ShipperListView.as_view(), name="shipper_list"),
+    path("shippers/add/", views.ShipperCreateView.as_view(), name="shipper_create"),
+    path(
+        "shippers/<uuid:pk>/toggle/",
+        views.ShipperToggleStatusView.as_view(),
+        name="shipper_toggle",
+    ),
 ]
