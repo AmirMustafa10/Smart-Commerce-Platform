@@ -1,0 +1,490 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign In | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<main class="auth-page">
+
+    <!-- Background decoration -->
+    <div class="auth-background">
+        <div class="auth-glow auth-glow-one"></div>
+        <div class="auth-glow auth-glow-two"></div>
+        <div class="auth-grid"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <div class="row justify-content-center align-items-center auth-row">
+
+            <div class="col-12 col-xl-10">
+
+                <div class="auth-layout">
+
+                    <!-- =================================================
+                         LEFT SIDE
+                    ================================================== -->
+                    <section class="auth-showcase d-none d-lg-flex">
+
+                        <div class="showcase-content">
+
+                            <a href="{% url 'core:home' %}" class="auth-brand">
+
+                                <span class="auth-brand-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </span>
+
+                                <span>
+                                    Whats<span>Flow</span>
+                                </span>
+
+                            </a>
+
+
+                            <div class="showcase-copy">
+
+                                <span class="showcase-kicker">
+                                    WELCOME BACK
+                                </span>
+
+                                <h1>
+                                    Your sales operation,
+                                    <span>all in one place.</span>
+                                </h1>
+
+                                <p>
+                                    Manage WhatsApp orders, automate replies,
+                                    and keep your customers moving from message
+                                    to checkout.
+                                </p>
+
+                            </div>
+
+
+                            <!-- Mini product preview -->
+                            <div class="login-preview">
+
+                                <div class="preview-header">
+
+                                    <div class="preview-brand">
+                                        <span>
+                                            <i class="fab fa-whatsapp"></i>
+                                        </span>
+
+                                        WhatsFlow
+                                    </div>
+
+                                    <div class="preview-header-actions">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="preview-body">
+
+                                    <div class="preview-sidebar">
+
+                                        <div class="preview-sidebar-item active">
+                                            <i class="fas fa-chart-pie"></i>
+                                        </div>
+
+                                        <div class="preview-sidebar-item">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </div>
+
+                                        <div class="preview-sidebar-item">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+
+                                        <div class="preview-sidebar-item">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="preview-dashboard">
+
+                                        <div class="preview-dashboard-heading">
+
+                                            <div>
+                                                <span>Overview</span>
+                                                <strong>Good morning 👋</strong>
+                                            </div>
+
+                                            <div class="preview-user">
+                                                JD
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="preview-stat-grid">
+
+                                            <div class="preview-stat-box">
+                                                <span>Orders</span>
+                                                <strong>1,284</strong>
+                                                <small>+12.8%</small>
+                                            </div>
+
+                                            <div class="preview-stat-box">
+                                                <span>Revenue</span>
+                                                <strong>$28.4k</strong>
+                                                <small>+8.4%</small>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="preview-activity">
+
+                                            <div class="preview-section-title">
+                                                <strong>Latest activity</strong>
+                                                <span>Live</span>
+                                            </div>
+
+
+                                            <div class="preview-order">
+
+                                                <div class="preview-avatar">
+                                                    AM
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        Ahmed Mohamed
+                                                    </strong>
+
+                                                    <span>
+                                                        New order received
+                                                    </span>
+                                                </div>
+
+                                                <b>
+                                                    $124
+                                                </b>
+
+                                            </div>
+
+
+                                            <div class="preview-order">
+
+                                                <div class="preview-avatar second">
+                                                    SA
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        Sarah Ali
+                                                    </strong>
+
+                                                    <span>
+                                                        Order confirmed
+                                                    </span>
+
+                                                </div>
+
+                                                <b>
+                                                    $86
+                                                </b>
+
+                                            </div>
+
+
+                                            <div class="preview-order">
+
+                                                <div class="preview-avatar third">
+                                                    OM
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        Omar Hassan
+                                                    </strong>
+
+                                                    <span>
+                                                        Delivery update sent
+                                                    </span>
+
+                                                </div>
+
+                                                <b>
+                                                    $210
+                                                </b>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="showcase-trust">
+
+                                <div class="showcase-trust-icons">
+
+                                    <span>
+                                        <i class="fas fa-check"></i>
+                                    </span>
+
+                                    <span>
+                                        <i class="fas fa-shield-alt"></i>
+                                    </span>
+
+                                    <span>
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+
+                                </div>
+
+                                <div>
+                                    <strong>Built for growing teams</strong>
+
+                                    <span>
+                                        Simple, secure and ready to scale.
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         RIGHT SIDE / LOGIN FORM
+                    ================================================== -->
+                    <section class="auth-form-section">
+
+
+                        <div class="auth-form-wrapper">
+
+                            <div class="auth-heading">
+
+                                <div class="auth-icon">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+
+                                <div>
+                                    <span class="auth-kicker">
+                                        SECURE ACCESS
+                                    </span>
+
+                                    <h2>
+                                        Welcome back
+                                    </h2>
+
+                                    <p>
+                                        Sign in to continue managing your business.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Django messages -->
+                            {% if messages %}
+
+                                <div class="auth-messages">
+
+                                    {% for message in messages %}
+
+                                        <div
+                                            class="auth-alert auth-alert-{{ message.tags }}"
+                                            role="alert"
+                                        >
+
+                                            <div class="auth-alert-icon">
+
+                                                {% if message.tags == 'success' %}
+                                                    <i class="fas fa-check"></i>
+
+                                                {% elif message.tags == 'warning' %}
+                                                    <i class="fas fa-exclamation"></i>
+
+                                                {% elif message.tags == 'error' %}
+                                                    <i class="fas fa-times"></i>
+
+                                                {% else %}
+                                                    <i class="fas fa-info"></i>
+                                                {% endif %}
+
+                                            </div>
+
+                                            <div class="auth-alert-content">
+                                                {{ message }}
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                class="auth-alert-close"
+                                                aria-label="Close"
+                                            >
+                                                <i class="fas fa-times"></i>
+                                            </button>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- Login form -->
+                            <form
+                                method="POST"
+                                class="auth-form"
+                                id="loginForm"
+                                novalidate
+                            >
+
+                                {% csrf_token %}
+
+
+                                <div class="form-fields">
+
+                                    {{ form|crispy }}
+
+                                </div>
+
+
+                                <div class="auth-form-options">
+
+                                    <label class="remember-me">
+
+                                        <input
+                                            type="checkbox"
+                                            name="remember_me"
+                                        >
+
+                                        <span class="custom-check">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+
+                                        <span>
+                                            Keep me signed in
+                                        </span>
+
+                                    </label>
+
+
+                                    {% if form.password_reset_url %}
+
+                                        <a
+                                            href="{{ form.password_reset_url }}"
+                                            class="forgot-password"
+                                        >
+                                            Forgot password?
+                                        </a>
+
+                                    {% else %}
+
+                                        <a
+                                            href="#"
+                                            class="forgot-password"
+                                        >
+                                            Forgot password?
+                                        </a>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn auth-submit-btn"
+                                    id="loginSubmit"
+                                >
+
+                                    <span class="submit-content">
+
+                                        <span>
+                                            Sign in to WhatsFlow
+                                        </span>
+
+                                        <i class="fas fa-arrow-right"></i>
+
+                                    </span>
+
+                                    <span class="submit-loading">
+
+                                        <span class="spinner-border spinner-border-sm"></span>
+
+                                        Signing you in...
+
+                                    </span>
+
+                                </button>
+
+                            </form>
+
+
+                            <div class="auth-divider">
+
+                                <span>OR</span>
+
+                            </div>
+
+
+                            <div class="auth-signup">
+
+                                <span>
+                                    Don't have an account?
+                                </span>
+
+                                <a href="{% url 'accounts:signup' %}">
+                                    Create your account
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+
+                            </div>
+
+
+                            <div class="auth-security">
+
+                                <i class="fas fa-shield-halved"></i>
+
+                                <span>
+                                    Your account information is protected
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'accounts/js/login.js' %}"></script>
+{% endblock script %}

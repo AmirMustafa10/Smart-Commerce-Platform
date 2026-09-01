@@ -28,3 +28,4 @@ A global templates directory is configured to host shared templates across appli
 ## Crispy Forms
 
 The project uses Crispy Forms with the Bootstrap 5 template pack to provide consistent form rendering and reduce repetitive HTML.
+Crispy Forms is used throughout the authentication pages to ensure consistent styling and reduce repetitive template code.

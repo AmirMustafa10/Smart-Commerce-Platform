@@ -1,0 +1,447 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Your Account | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/signup.css' %}">
+{% endblock style %}
+
+
+{% block content %}
+
+<main class="signup-page">
+
+    <!-- Background -->
+    <div class="signup-background">
+        <div class="signup-glow signup-glow-one"></div>
+        <div class="signup-glow signup-glow-two"></div>
+        <div class="signup-pattern"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <div class="row justify-content-center">
+
+            <div class="col-12 col-xl-10">
+
+                <div class="signup-layout">
+
+
+                    <!-- =================================================
+                         LEFT / BRAND STORY
+                    ================================================== -->
+
+                    <section class="signup-showcase d-none d-lg-flex">
+
+                        <div class="signup-showcase-content">
+
+                            <a
+                                href="{% url 'core:home' %}"
+                                class="signup-brand"
+                            >
+
+                                <span class="signup-brand-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </span>
+
+                                <span>
+                                    Whats<span>Flow</span>
+                                </span>
+
+                            </a>
+
+
+                            <div class="signup-copy">
+
+                                <span class="signup-kicker">
+                                    START GROWING
+                                </span>
+
+                                <h1>
+                                    Turn conversations
+                                    into <span>customers.</span>
+                                </h1>
+
+                                <p>
+                                    Build a cleaner sales workflow around
+                                    WhatsApp. Capture orders, automate replies,
+                                    and keep every customer conversation organized.
+                                </p>
+
+                            </div>
+
+
+                            <!-- Benefits -->
+
+                            <div class="signup-benefits">
+
+                                <div class="signup-benefit">
+
+                                    <span class="benefit-icon">
+                                        <i class="fas fa-bolt"></i>
+                                    </span>
+
+                                    <div>
+                                        <strong>Automate repetitive work</strong>
+
+                                        <span>
+                                            Let WhatsFlow handle routine replies
+                                            and order updates.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="signup-benefit">
+
+                                    <span class="benefit-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </span>
+
+                                    <div>
+                                        <strong>See your business clearly</strong>
+
+                                        <span>
+                                            Track orders, customers and revenue
+                                            from one dashboard.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="signup-benefit">
+
+                                    <span class="benefit-icon">
+                                        <i class="fas fa-shield-halved"></i>
+                                    </span>
+
+                                    <div>
+                                        <strong>Built for business</strong>
+
+                                        <span>
+                                            A simple, secure workspace designed
+                                            to grow with your team.
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Social proof -->
+
+                            <div class="signup-proof">
+
+                                <div class="proof-avatars">
+
+                                    <span>AM</span>
+                                    <span>SA</span>
+                                    <span>MK</span>
+                                    <span>+2k</span>
+
+                                </div>
+
+                                <div>
+
+                                    <div class="proof-stars">
+                                        ★★★★★
+                                    </div>
+
+                                    <span>
+                                        Trusted by 2,000+ growing businesses
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         RIGHT / SIGNUP FORM
+                    ================================================== -->
+
+                    <section class="signup-form-section">
+
+                        <!-- Mobile brand -->
+
+                        <div class="signup-mobile-brand d-lg-none">
+
+                            <a
+                                href="{% url 'core:home' %}"
+                                class="signup-brand"
+                            >
+
+                                <span class="signup-brand-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </span>
+
+                                <span>
+                                    Whats<span>Flow</span>
+                                </span>
+
+                            </a>
+
+                        </div>
+
+
+                        <div class="signup-form-wrapper">
+
+
+                            <!-- Header -->
+
+                            <div class="signup-heading">
+
+                                <div class="signup-heading-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+
+                                <div>
+
+                                    <span class="signup-form-kicker">
+                                        GET STARTED
+                                    </span>
+
+                                    <h2>
+                                        Create your account
+                                    </h2>
+
+                                    <p>
+                                        Set up your workspace and start
+                                        managing orders smarter.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Django messages -->
+
+                            {% if messages %}
+
+                                <div class="signup-messages">
+
+                                    {% for message in messages %}
+
+                                        <div
+                                            class="signup-alert signup-alert-{{ message.tags }}"
+                                            role="alert"
+                                        >
+
+                                            <span class="signup-alert-icon">
+
+                                                {% if message.tags == 'success' %}
+                                                    <i class="fas fa-check"></i>
+
+                                                {% elif message.tags == 'warning' %}
+                                                    <i class="fas fa-exclamation"></i>
+
+                                                {% elif message.tags == 'error' %}
+                                                    <i class="fas fa-times"></i>
+
+                                                {% else %}
+                                                    <i class="fas fa-info"></i>
+                                                {% endif %}
+
+                                            </span>
+
+                                            <span class="signup-alert-message">
+                                                {{ message }}
+                                            </span>
+
+                                            <button
+                                                type="button"
+                                                class="signup-alert-close"
+                                                aria-label="Close"
+                                            >
+                                                <i class="fas fa-times"></i>
+                                            </button>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+
+
+                            <!-- Progress -->
+
+                            <div class="signup-progress">
+
+                                <div class="signup-progress-header">
+
+                                    <span>
+                                        Account setup
+                                    </span>
+
+                                    <strong id="signupProgressText">
+                                        0%
+                                    </strong>
+
+                                </div>
+
+                                <div class="signup-progress-track">
+
+                                    <span
+                                        id="signupProgressBar"
+                                        style="width: 0%;"
+                                    ></span>
+
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Form -->
+
+                            <form
+                                method="POST"
+                                id="signupForm"
+                                class="signup-form"
+                                novalidate
+                            >
+
+                                {% csrf_token %}
+
+                                <div class="signup-fields">
+
+                                    {{ form|crispy }}
+
+                                </div>
+
+
+                                <!-- Terms -->
+
+                                <div class="signup-terms">
+
+                                    <label class="terms-label">
+
+                                        <input
+                                            type="checkbox"
+                                            id="termsCheckbox"
+                                            required
+                                        >
+
+                                        <span class="terms-checkbox">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+
+                                        <span class="terms-text">
+                                            I agree to the
+                                            <a href="#">
+                                                Terms of Service
+                                            </a>
+                                            and
+                                            <a href="#">
+                                                Privacy Policy
+                                            </a>
+                                        </span>
+
+                                    </label>
+
+                                </div>
+
+
+
+                                <!-- Submit -->
+
+                                <button
+                                    type="submit"
+                                    id="signupSubmit"
+                                    class="btn signup-submit"
+                                    disabled
+                                >
+
+                                    <span class="signup-submit-content">
+
+                                        <span>
+                                            Create my account
+                                        </span>
+
+                                        <i class="fas fa-arrow-right"></i>
+
+                                    </span>
+
+                                    <span class="signup-submit-loading">
+
+                                        <span class="spinner-border spinner-border-sm"></span>
+
+                                        Creating your account...
+
+                                    </span>
+
+                                </button>
+
+                            </form>
+
+
+
+                            <!-- Sign in -->
+
+                            <div class="signup-login">
+
+                                <span>
+                                    Already have an account?
+                                </span>
+
+                                <a href="{% url 'accounts:login' %}">
+                                    Sign in
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+
+                            </div>
+
+
+
+                            <!-- Security -->
+
+                            <div class="signup-security">
+
+                                <span>
+                                    <i class="fas fa-lock"></i>
+                                    Secure signup
+                                </span>
+
+                                <span class="security-dot"></span>
+
+                                <span>
+                                    No credit card required
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'accounts/js/signup.js' %}"></script>
+{% endblock script %}

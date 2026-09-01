@@ -38,3 +38,16 @@ Current authentication endpoints include:
 CBVs provide a reusable and extensible architecture by supporting inheritance, mixins, and separation of responsibilities.
 
 This approach aligns with Django's recommended practices for authentication workflows.
+
+## Authentication Templates
+
+Authentication pages are implemented using custom HTML templates styled with Bootstrap 5.
+
+Django Crispy Forms is used where needed to simplify form rendering, while custom HTML is maintained to provide full control over the user interface and layout.
+
+This approach balances development efficiency with UI flexibility.
+
+Current templates:
+
+- Merchant registration
+- User login
