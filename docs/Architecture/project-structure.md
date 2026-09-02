@@ -47,6 +47,8 @@ Current responsibilities include:
 
 This keeps business logic separated from authentication and improves maintainability.
 
+Testing follows the same layered organization used across the project, separating model, form, and view tests.
+
 ## Authentication
 
 The project uses a custom User Manager to centralize user creation and enforce business rules consistently across the application.
