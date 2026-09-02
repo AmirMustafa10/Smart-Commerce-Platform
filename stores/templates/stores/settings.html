@@ -1,0 +1,782 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Store Settings | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'stores/css/settings.css' %}">
+{% endblock style %}
+
+
+{% block content %}
+
+<main class="settings-page">
+
+    <!-- Background decoration -->
+    <div class="settings-background">
+        <div class="settings-glow settings-glow-one"></div>
+        <div class="settings-glow settings-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="settings-page-header">
+
+            <div>
+
+                <span class="settings-eyebrow">
+                    <i class="fas fa-sliders-h"></i>
+                    STORE MANAGEMENT
+                </span>
+
+                <h1>
+                    Store Settings
+                </h1>
+
+                <p>
+                    Manage your store information and WhatsApp connection.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'core:home' %}"
+                class="settings-back-link"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to dashboard
+            </a>
+
+        </header>
+
+
+        <!-- =====================================================
+             DJANGO MESSAGES
+        ====================================================== -->
+
+        {% if messages %}
+
+            <div class="settings-messages">
+
+                {% for message in messages %}
+
+                    <div
+                        class="settings-alert settings-alert-{{ message.tags }}"
+                        role="alert"
+                    >
+
+                        <span class="settings-alert-icon">
+
+                            {% if message.tags == "success" %}
+                                <i class="fas fa-check"></i>
+
+                            {% elif message.tags == "warning" %}
+                                <i class="fas fa-exclamation"></i>
+
+                            {% elif message.tags == "error" or message.tags == "danger" %}
+                                <i class="fas fa-times"></i>
+
+                            {% else %}
+                                <i class="fas fa-info"></i>
+
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="settings-alert-message">
+                            {{ message }}
+                        </span>
+
+
+                        <button
+                            type="button"
+                            class="settings-alert-close"
+                            aria-label="Close"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+
+        <!-- =====================================================
+             SETTINGS LAYOUT
+        ====================================================== -->
+
+        <div class="settings-layout">
+
+
+            <!-- =================================================
+                 MAIN SETTINGS CARD
+            ================================================== -->
+
+            <section class="settings-card settings-main-card">
+
+                <div class="settings-card-header">
+
+                    <div class="settings-card-icon">
+                        <i class="fas fa-store"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Store information
+                        </h2>
+
+                        <p>
+                            Update the information associated with your store.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     SETTINGS FORM
+                ================================================== -->
+
+                <form
+                    method="POST"
+                    action="{% url 'stores:settings' %}"
+                    class="store-settings-form"
+                    id="storeSettingsForm"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- ================================
+                         BUSINESS DETAILS
+                    ================================= -->
+
+                    <div class="settings-form-section">
+
+                        <div class="settings-section-title">
+
+                            <span class="settings-section-number">
+                                01
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Business details
+                                </strong>
+
+                                <span>
+                                    Basic information about your store
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-fields">
+
+                            {{ form.name|as_crispy_field }}
+
+
+                            <div class="field-with-info">
+
+                                {{ form.whatsapp_number|as_crispy_field }}
+
+                                <div class="field-hint">
+
+                                    <i class="fab fa-whatsapp"></i>
+
+                                    <span>
+                                        Use international E.164 format,
+                                        for example
+                                        <strong>+201012345678</strong>
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="settings-form-divider"></div>
+
+
+
+                    <!-- ================================
+                         META INTEGRATION
+                    ================================= -->
+
+                    <div class="settings-form-section">
+
+                        <div class="settings-section-title">
+
+                            <span class="settings-section-number">
+                                02
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Meta integration
+                                </strong>
+
+                                <span>
+                                    Configure your WhatsApp API connection
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="settings-fields">
+
+                            <div class="field-with-info token-field-wrapper">
+
+                                {{ form.meta_api_token|as_crispy_field }}
+
+
+                                <button
+                                    type="button"
+                                    class="token-toggle"
+                                    id="tokenToggle"
+                                    aria-label="Show API token"
+                                >
+                                    <i class="fas fa-eye"></i>
+                                </button>
+
+
+                                <div class="field-hint field-hint-neutral">
+
+                                    <i class="fas fa-shield-halved"></i>
+
+                                    <span>
+                                        Keep your Meta API credentials private.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ================================
+                         SAVE FOOTER
+                    ================================= -->
+
+                    <div class="settings-form-footer">
+
+                        <div class="save-status">
+
+                            <span class="save-status-icon">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                            <span>
+                                Changes will be applied immediately.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn settings-save-btn"
+                            id="settingsSaveButton"
+                        >
+
+                            <span class="save-button-content">
+
+                                <i class="fas fa-check"></i>
+
+                                Save changes
+
+                            </span>
+
+
+                            <span class="save-button-loading">
+
+                                <span class="spinner-border spinner-border-sm"></span>
+
+                                Saving...
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SIDEBAR
+            ================================================== -->
+
+            <aside class="settings-sidebar">
+
+
+                <!-- =============================================
+                     STORE STATUS
+                ============================================== -->
+
+                <section class="settings-card store-status-card">
+
+                    <div class="sidebar-card-header">
+
+                        <span
+                            class="sidebar-icon
+                            {% if user.store.is_active %}
+                                green
+                            {% else %}
+                                red
+                            {% endif %}"
+                        >
+
+                            {% if user.store.is_active %}
+                                <i class="fas fa-circle-check"></i>
+                            {% else %}
+                                <i class="fas fa-circle-xmark"></i>
+                            {% endif %}
+
+                        </span>
+
+
+                        <div>
+
+                            <strong>
+                                Store status
+                            </strong>
+
+                            <span>
+                                Current workspace state
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    {% if user.store.is_active %}
+
+                        <div class="store-status-main store-status-active">
+
+                            <span class="store-status-dot"></span>
+
+                            <div>
+
+                                <strong>
+                                    Active
+                                </strong>
+
+                                <span>
+                                    Your store is operational
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="store-status-main store-status-inactive">
+
+                            <span class="store-status-dot"></span>
+
+                            <div>
+
+                                <strong>
+                                    Inactive
+                                </strong>
+
+                                <span>
+                                    Your store is currently disabled
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+
+                    <!-- Store summary -->
+
+                    <div class="store-meta">
+
+                        <div class="store-meta-item">
+
+                            <span>
+                                Store
+                            </span>
+
+                            <strong>
+                                {{ user.store.name }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="store-meta-item">
+
+                            <span>
+                                WhatsApp
+                            </span>
+
+                            <strong>
+                                {{ user.store.whatsapp_number }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =============================================
+                     SECURITY
+                ============================================== -->
+
+                <section class="settings-card security-card">
+
+                    <div class="sidebar-card-header">
+
+                        <span class="sidebar-icon blue">
+                            <i class="fas fa-shield-halved"></i>
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Security
+                            </strong>
+
+                            <span>
+                                Your workspace protection
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="security-list">
+
+                        <div class="security-item">
+
+                            <span class="security-check">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                            <span>
+                                Owner-only settings access
+                            </span>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <span class="security-check">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                            <span>
+                                Protected API credentials
+                            </span>
+
+                        </div>
+
+
+                        <div class="security-item">
+
+                            <span class="security-check">
+                                <i class="fas fa-check"></i>
+                            </span>
+
+                            <span>
+                                Secure server-side validation
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =============================================
+                     ACTIVE → DEACTIVATE
+                ============================================== -->
+
+                {% if user.store.is_active %}
+
+                    <section class="settings-card danger-card">
+
+                        <div class="sidebar-card-header">
+
+                            <span class="sidebar-icon red">
+                                <i class="fas fa-triangle-exclamation"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Danger zone
+                                </strong>
+
+                                <span>
+                                    Disable your store
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="danger-description">
+                            Deactivating your store will disable your
+                            workspace and sign you out immediately.
+                        </p>
+
+
+                        <button
+                            type="button"
+                            class="btn deactivate-btn"
+                            id="openDeactivateModal"
+                        >
+
+                            <i class="fas fa-power-off"></i>
+
+                            Deactivate store
+
+                        </button>
+
+                    </section>
+
+
+                <!-- =============================================
+                     INACTIVE → ACTIVATE
+                ============================================== -->
+
+                {% else %}
+
+                    <section class="settings-card activate-card">
+
+                        <div class="sidebar-card-header">
+
+                            <span class="sidebar-icon green">
+                                <i class="fas fa-power-off"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Store inactive
+                                </strong>
+
+                                <span>
+                                    Your store is currently disabled
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="activate-description">
+                            Your store is inactive. Activate it again
+                            to resume your WhatsApp order operations.
+                        </p>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'stores:activate' %}"
+                            id="activateForm"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <button
+                                type="submit"
+                                class="btn activate-btn"
+                                id="activateSubmit"
+                            >
+
+                                <span class="activate-submit-content">
+
+                                    <i class="fas fa-power-off"></i>
+
+                                    Activate store
+
+                                </span>
+
+
+                                <span class="activate-submit-loading">
+
+                                    <span class="spinner-border spinner-border-sm"></span>
+
+                                    Activating...
+
+                                </span>
+
+                            </button>
+
+                        </form>
+
+                    </section>
+
+                {% endif %}
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================================
+     DEACTIVATE CONFIRMATION MODAL
+========================================================= -->
+
+<div
+    class="modal fade"
+    id="deactivateModal"
+    tabindex="-1"
+    aria-labelledby="deactivateModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content deactivate-modal">
+
+            <div class="deactivate-modal-icon">
+                <i class="fas fa-power-off"></i>
+            </div>
+
+
+            <div class="deactivate-modal-body">
+
+                <span class="modal-kicker">
+                    DEACTIVATE STORE
+                </span>
+
+                <h2 id="deactivateModalLabel">
+                    Are you sure?
+                </h2>
+
+                <p>
+                    Deactivating your store will sign you out immediately
+                    and disable your workspace.
+                </p>
+
+
+                <div class="modal-warning">
+
+                    <i class="fas fa-circle-info"></i>
+
+                    <span>
+                        Your store data will remain preserved,
+                        but your account will no longer be active.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="deactivate-modal-actions">
+
+                <button
+                    type="button"
+                    class="btn modal-cancel-btn"
+                    data-bs-dismiss="modal"
+                >
+                    Keep my store
+                </button>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'stores:deactivate' %}"
+                    id="deactivateForm"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn modal-deactivate-btn"
+                        id="deactivateSubmit"
+                    >
+
+                        <span class="deactivate-submit-content">
+                            Deactivate store
+                        </span>
+
+                        <span class="deactivate-submit-loading">
+
+                            <span class="spinner-border spinner-border-sm"></span>
+
+                            Deactivating...
+
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'stores/js/settings.js' %}"></script>
+{% endblock script %}

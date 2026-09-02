@@ -35,20 +35,15 @@ Additional responsibilities include:
 
 ### Stores
 
-The `stores` application is responsible for managing merchant stores and store-related business data.
+The `stores` application manages tenant-related information.
 
-Its responsibilities will include:
+Current responsibilities include:
 
-- Store information
+- Store model
 - Store settings
-- Business configuration
-- Future store-related features
-
-The application is registered using:
-
-```python
-stores.apps.StoresConfig
-```
+- Store activation
+- Store deactivation
+- Tenant configuration
 
 This keeps business logic separated from authentication and improves maintainability.
 
