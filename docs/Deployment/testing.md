@@ -34,20 +34,31 @@ Responsible for testing:
 - Template rendering
 - Redirect logic
 
-## Current Coverage
+# Current Test Coverage
 
-The `accounts` application includes tests for:
+The project follows a layered testing strategy across implemented applications.
 
-- Custom User model
-- User forms
-- Authentication views
+Current coverage includes:
 
-## Stores Application
+## Accounts
 
-The `stores` application includes tests for:
+- Models
+- Forms
+- Views
 
-- Store model behavior
-- Store forms
-- Store management views
+## Stores
 
-The test suite verifies validation, authorization rules, and store management workflows.
+- Models
+- Forms
+- Views
+
+Tests verify:
+
+- Business rules
+- Validation
+- Authentication
+- Authorization
+- View behavior
+- Redirect logic
+- Form processing
+- Model integrity

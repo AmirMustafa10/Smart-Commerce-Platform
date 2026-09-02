@@ -121,7 +121,7 @@ class ShipperCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
     model = CustomUser
     form_class = ShipperCreationForm
     template_name = "accounts/shipper_form.html"
-    success_url = reverse_lazy("accounts:shipper_list")
+    success_url = reverse_lazy("accounts:team_list")
 
     def get_form_kwargs(self):
         """
@@ -159,7 +159,7 @@ class ShipperToggleStatusView(LoginRequiredMixin, OwnerRequiredMixin, View):
                 request, f"Shipper '{shipper.full_name}' has been Deactivated."
             )
 
-        return redirect("accounts:shipper_list")
+        return redirect("accounts:team_list")
 
 
 class MemberProfileView(LoginRequiredMixin, DetailView):
@@ -186,7 +186,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = CustomUser
     form_class = UserProfileUpdateForm
     template_name = "accounts/profile_edit.html"
-    success_url = reverse_lazy("core:home")
+    success_url = reverse_lazy("accounts:my_profile")
 
     def get_object(self, queryset=None):
         return self.request.user
