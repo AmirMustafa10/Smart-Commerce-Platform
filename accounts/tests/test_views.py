@@ -12,7 +12,7 @@ class MerchantSignUpViewTests(TestCase):
 
     def setUp(self):
         self.signup_url = reverse("accounts:signup")
-        self.dashboard_url = reverse("core:home")
+        self.dashboard_url = reverse("core:dashboard")
         self.login_url = reverse("accounts:login")
 
     def test_get_signup_page_returns_200_and_uses_correct_template(self):
@@ -78,7 +78,7 @@ class DashboardViewTests(TestCase):
     """Tests for the dashboard view."""
 
     def setUp(self):
-        self.dashboard_url = reverse("core:home")
+        self.dashboard_url = reverse("core:dashboard")
         self.login_url = reverse("accounts:login")
         # Create a store and user for authenticated test
         self.store = Store.objects.create(

@@ -1,0 +1,358 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="profile-edit-page">
+
+    <div class="profile-background">
+        <div class="profile-glow profile-glow-one"></div>
+        <div class="profile-glow profile-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- Header -->
+        <header class="profile-edit-header">
+
+            <div>
+
+                <a
+                    href="{% url 'accounts:my_profile' %}"
+                    class="profile-back-link"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Back to profile
+                </a>
+
+                <span class="profile-eyebrow">
+                    <i class="fas fa-user-pen"></i>
+                    ACCOUNT SETTINGS
+                </span>
+
+                <h1>
+                    Edit profile
+                </h1>
+
+                <p>
+                    Update your personal information and account password.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- Messages -->
+        {% if messages %}
+
+            <div class="profile-messages">
+
+                {% for message in messages %}
+
+                    <div
+                        class="profile-alert profile-alert-{{ message.tags }}"
+                        role="alert"
+                    >
+
+                        <span class="profile-alert-icon">
+
+                            {% if message.tags == "success" %}
+                                <i class="fas fa-check"></i>
+
+                            {% elif message.tags == "warning" %}
+                                <i class="fas fa-exclamation"></i>
+
+                            {% elif message.tags == "error" or message.tags == "danger" %}
+                                <i class="fas fa-times"></i>
+
+                            {% else %}
+                                <i class="fas fa-info"></i>
+                            {% endif %}
+
+                        </span>
+
+                        <span>
+                            {{ message }}
+                        </span>
+
+                        <button
+                            type="button"
+                            class="profile-alert-close"
+                            aria-label="Close"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="profile-edit-layout">
+
+
+            <!-- =====================================================
+                 PERSONAL INFORMATION
+            ====================================================== -->
+
+            <section class="profile-card profile-edit-card">
+
+                <div class="profile-card-heading large">
+
+                    <span class="profile-heading-icon">
+                        <i class="fas fa-user"></i>
+                    </span>
+
+                    <div>
+                        <h2>Personal information</h2>
+
+                        <p>
+                            Update the details connected to your account.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    class="profile-form"
+                    id="profileForm"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+                    {{ form|crispy }}
+
+
+                    <div class="profile-form-footer">
+
+                        <a
+                            href="{% url 'accounts:my_profile' %}"
+                            class="btn profile-cancel-btn"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="btn profile-save-btn"
+                            id="profileSaveButton"
+                        >
+
+                            <span class="profile-save-content">
+                                <i class="fas fa-check"></i>
+                                Save changes
+                            </span>
+
+                            <span class="profile-save-loading">
+                                <span class="spinner-border spinner-border-sm"></span>
+                                Saving...
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =====================================================
+                 PASSWORD
+            ====================================================== -->
+
+            <section class="profile-card password-card">
+
+                <div class="profile-card-heading">
+
+                    <span class="profile-heading-icon orange">
+                        <i class="fas fa-lock"></i>
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Change password
+                        </h2>
+
+                        <p>
+                            Only complete this section if you want
+                            to change your password.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="password-info">
+
+                    <span class="password-info-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </span>
+
+                    <p>
+                        Use a strong password that you do not reuse
+                        on other websites.
+                    </p>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'accounts:password_change' %}"
+                    class="password-form"
+                    id="passwordForm"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    {% if password_form.non_field_errors %}
+
+                        <div class="profile-form-error">
+
+                            <i class="fas fa-circle-exclamation"></i>
+
+                            <div>
+                                {{ password_form.non_field_errors }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="password-fields">
+
+                        {{ password_form|crispy }}
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn password-submit-btn"
+                        id="passwordSubmitButton"
+                    >
+
+                        <span class="password-submit-content">
+                            <i class="fas fa-key"></i>
+                            Update password
+                        </span>
+
+                        <span class="password-submit-loading">
+                            <span class="spinner-border spinner-border-sm"></span>
+                            Updating...
+                        </span>
+
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- =====================================================
+                 READ-ONLY WORKSPACE
+            ====================================================== -->
+
+            <section class="profile-card profile-workspace-card">
+
+                <div class="profile-card-heading">
+
+                    <span class="profile-heading-icon purple">
+                        <i class="fas fa-store"></i>
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Workspace
+                        </h2>
+
+                        <p>
+                            Information controlled by your store.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="workspace-readonly">
+
+                    <div class="workspace-row">
+
+                        <span>
+                            Store
+                        </span>
+
+                        <strong>
+                            {% if user.store %}
+                                {{ user.store.name }}
+                            {% else %}
+                                No store assigned
+                            {% endif %}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="workspace-row">
+
+                        <span>
+                            Role
+                        </span>
+
+                        <strong>
+                            {{ user.get_role_display|default:user.role }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="workspace-note">
+
+                    <i class="fas fa-lock"></i>
+
+                    Store and role are managed by your workspace
+                    administrator.
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'accounts/js/profile.js' %}"></script>
+{% endblock %}

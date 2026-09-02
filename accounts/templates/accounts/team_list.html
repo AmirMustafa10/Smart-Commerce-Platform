@@ -1,0 +1,599 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Team | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/team.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="team-page">
+
+    <div class="team-page-bg">
+        <div class="team-glow team-glow-one"></div>
+        <div class="team-glow team-glow-two"></div>
+    </div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="team-page-header">
+
+            <div>
+
+                <span class="team-eyebrow">
+                    <i class="fas fa-user-group"></i>
+                    TEAM MANAGEMENT
+                </span>
+
+                <h1>
+                    Your team
+                </h1>
+
+                <p>
+                    Manage the people helping you handle your WhatsApp orders.
+                </p>
+
+            </div>
+
+            {% if user.role == 'OWNER' %}
+            <a
+                href="{% url 'accounts:shipper_create' %}"
+                class="btn team-add-btn"
+            >
+                <i class="fas fa-plus"></i>
+                Add shipper
+            </a>
+            {% endif %}
+        </header>
+
+
+        <!-- =====================================================
+             MESSAGES
+        ====================================================== -->
+
+        {% if messages %}
+
+            <div class="team-messages">
+
+                {% for message in messages %}
+
+                    <div
+                        class="team-alert team-alert-{{ message.tags }}"
+                        role="alert"
+                    >
+
+                        <span class="team-alert-icon">
+                            {% if message.tags == "success" %}
+                                <i class="fas fa-check"></i>
+                            {% elif message.tags == "warning" %}
+                                <i class="fas fa-exclamation"></i>
+                            {% elif message.tags == "error" or message.tags == "danger" %}
+                                <i class="fas fa-times"></i>
+                            {% else %}
+                                <i class="fas fa-info"></i>
+                            {% endif %}
+                        </span>
+
+                        <span class="team-alert-message">
+                            {{ message }}
+                        </span>
+
+                        <button
+                            type="button"
+                            class="team-alert-close"
+                            aria-label="Close"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             TEAM OVERVIEW
+        ====================================================== -->
+
+        <section class="team-overview">
+
+            <article class="team-stat-card">
+
+                <div class="team-stat-icon green">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div>
+                    <span>
+                        Total shippers
+                    </span>
+
+                    <strong>
+                        {{ shippers|length }}
+                    </strong>
+                </div>
+
+                <div class="team-stat-decoration"></div>
+
+            </article>
+
+
+            <article class="team-stat-card">
+
+                <div class="team-stat-icon blue">
+                    <i class="fas fa-user-check"></i>
+                </div>
+
+                <div>
+                    <span>
+                        Available members
+                    </span>
+
+                    <strong id="visibleMembersCount">
+                        {{ shippers|length }}
+                    </strong>
+                </div>
+
+                <div class="team-stat-decoration"></div>
+
+            </article>
+
+
+            {% if user.role == 'OWNER' %}
+            <article class="team-stat-card team-stat-action-card">
+
+                <div class="team-stat-action-content">
+
+                    <div class="team-stat-icon purple">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <span>
+                            Need more help?
+                        </span>
+
+                        <strong>
+                            Add a shipper
+                        </strong>
+                    </div>
+                    
+                </div>
+                
+                <a
+                href="{% url 'accounts:shipper_create' %}"
+                class="team-stat-arrow"
+                aria-label="Add shipper"
+                >
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            
+        </article>
+        {% endif %}
+
+        </section>
+
+        <section class="team-card">
+            <div class="team-card-header">
+                    <div class="card-body text-center">
+                        <div class="avatar-placeholder bg-primary text-white rounded-circle d-inline-flex align-items-center    justify-content-center mb-3"           style="width: 80px; height: 80px; font-size: 2rem;">
+                            {{ owner.full_name|make_list|first|upper }}
+                        </div>
+                        <h3 class="card-title fw-bold">{{ owner.full_name }}</h3>
+                        <span class="badge bg-primary px-3 py-2">Store Owner</span>
+                    </div>
+                    <a
+                        href="{% url 'accounts:member_profile' owner.id %}"
+                        class="team-stat-arrow"
+                        aria-label="Add shipper"
+                    >
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+            </div>
+        </section>
+        <br>
+
+
+        <!-- =====================================================
+             TEAM CARD
+        ====================================================== -->
+
+        <section class="team-card">
+
+            <div class="team-card-header">
+
+                <div>
+
+                    <div class="team-card-title-row">
+
+                        <span class="team-card-icon">
+                            <i class="fas fa-users"></i>
+                        </span>
+
+                        <div>
+
+                            <h2>
+                                Shippers
+                            </h2>
+
+                            <p>
+                                Team members assigned to your store.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="team-toolbar">
+
+                    <!-- Search -->
+                    <div class="team-search">
+
+                        <form method="GET" action="{% url 'accounts:team_list' %}" class="team-search d-flex">
+                            <i class="fas fa-search mt-2 me-2"></i>
+                            <input
+                                type="search"
+                                name="q"
+                                id="shipperSearch"
+                                class="form-control"
+                                placeholder="Search team..."
+                                autocomplete="off"
+                                value="{{ request.GET.q }}"
+                            >
+                            <button type="submit" class="btn btn-sm btn-primary ms-2 d-none">Search</button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if shippers %}
+
+                <!-- =================================================
+                     DESKTOP TABLE
+                ================================================== -->
+
+                <div class="team-table-wrapper">
+
+                    <table class="team-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Member
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Role
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                {% if user.role == 'OWNER' %}
+                                <th>
+                                    Manage Status
+                                </th>
+                                {% endif %}
+
+                                <th>
+                                    view profile
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="shipperTableBody">
+
+                            {% for shipper in shippers %}
+
+                                <tr
+                                    class="shipper-row"
+                                    data-search="{{ shipper.full_name|lower }} {{ shipper.email|lower }}"
+                                >
+
+                                    <td>
+
+                                        <div class="team-member">
+
+                                            <span class="team-avatar">
+                                                {{ shipper.full_name|first|upper }}
+                                            </span>
+
+                                            <div class="team-member-info">
+
+                                                <strong>
+                                                    {{ shipper.full_name }}
+                                                </strong>
+
+                                                <span>
+                                                    Shipper
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+                                        <span class="team-email">
+                                            {{ shipper.email }}
+                                        </span>
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="team-role">
+                                            <i class="fas fa-truck"></i>
+                                            Shipper
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if shipper.is_active %}
+
+                                            <span class="team-status active">
+                                                <span></span>
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="team-status inactive">
+                                                <span></span>
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    {% if user.role == 'OWNER' %}
+                                    <td>
+                                        <form method="POST" action="{% url 'accounts:shipper_toggle' shipper.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            {% if shipper.is_active %}
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" >
+                                                    Deactivate
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    Activate
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    </td>
+                                    {% endif %}
+
+                                    <td>
+                                        <a
+                                            href="{% url 'accounts:member_profile' shipper.id %}"
+                                            class="team-stat-arrow"
+                                            aria-label="Add shipper"
+                                        >
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                     MOBILE CARDS
+                ================================================== -->
+
+                <div
+                    class="team-mobile-list"
+                    id="shipperMobileList"
+                >
+
+                    {% for shipper in shippers %}
+
+                        <article
+                            class="team-member-card shipper-row"
+                            data-search="{{ shipper.full_name|lower }} {{ shipper.email|lower }}"
+                        >
+
+                            <div class="team-member">
+
+                                <span class="team-avatar large">
+                                    {{ shipper.full_name|first|upper }}
+                                </span>
+
+                                <div class="team-member-info">
+
+                                    <strong>
+                                        {{ shipper.full_name }}
+                                    </strong>
+
+                                    <span>
+                                        {{ shipper.email }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="team-mobile-meta">
+
+                                <span class="team-role">
+                                    <i class="fas fa-truck"></i>
+                                    Shipper
+                                </span>
+
+
+                                {% if shipper.is_active %}
+
+                                    <span class="team-status active">
+                                        <span></span>
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="team-status inactive">
+                                        <span></span>
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =================================================
+                     NO SEARCH RESULTS
+                ================================================== -->
+
+                <div
+                    class="team-search-empty d-none"
+                    id="searchEmpty"
+                >
+
+                    <div class="team-empty-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+
+                    <h3>
+                        No team members found
+                    </h3>
+
+                    <p>
+                        Try searching with a different name or email.
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+                <div class="team-empty-state">
+
+                    <div class="team-empty-illustration">
+
+                        <div class="empty-orbit orbit-one"></div>
+                        <div class="empty-orbit orbit-two"></div>
+
+                        <div class="empty-main-icon">
+                            <i class="fas fa-user-group"></i>
+                        </div>
+
+                        <span class="empty-floating-icon one">
+                            <i class="fas fa-truck"></i>
+                        </span>
+
+                        <span class="empty-floating-icon two">
+                            <i class="fas fa-box"></i>
+                        </span>
+
+                    </div>
+
+
+                    <h2>
+                        Build your team
+                    </h2>
+
+                    <p>
+                        Add your first shipper to start assigning
+                        and managing your delivery operations.
+                    </p>
+
+
+                    <a
+                        href="{% url 'accounts:shipper_create' %}"
+                        class="btn team-empty-btn"
+                    >
+                        <i class="fas fa-plus"></i>
+                        Add your first shipper
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =====================================================
+             INFO BANNER
+        ====================================================== -->
+
+        <section class="team-info-banner">
+
+            <div class="team-info-icon">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Keep your team organized
+                </strong>
+
+                <p>
+                    Shippers can focus on delivery operations while
+                    you keep full control of your store.
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'accounts/js/team.js' %}"></script>
+{% endblock %}

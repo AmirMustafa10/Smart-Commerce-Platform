@@ -41,3 +41,13 @@ The `accounts` application includes tests for:
 - Custom User model
 - User forms
 - Authentication views
+
+## Stores Application
+
+The `stores` application includes tests for:
+
+- Store model behavior
+- Store forms
+- Store management views
+
+The test suite verifies validation, authorization rules, and store management workflows.

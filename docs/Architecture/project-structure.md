@@ -26,24 +26,28 @@ Using AppConfig improves project extensibility and provides a centralized place 
 
 Testing is organized separately by application layer to keep tests maintainable as the application grows.
 
+Current responsibilities also include internal staff account management for store owners.
+
+Additional responsibilities include:
+
+- User profile management
+- Password management
+
 ### Stores
 
-The `stores` application is responsible for managing merchant stores and store-related business data.
+The `stores` application manages tenant-related information.
 
-Its responsibilities will include:
+Current responsibilities include:
 
-- Store information
+- Store model
 - Store settings
-- Business configuration
-- Future store-related features
-
-The application is registered using:
-
-```python
-stores.apps.StoresConfig
-```
+- Store activation
+- Store deactivation
+- Tenant configuration
 
 This keeps business logic separated from authentication and improves maintainability.
+
+Testing follows the same layered organization used across the project, separating model, form, and view tests.
 
 ## Authentication
 

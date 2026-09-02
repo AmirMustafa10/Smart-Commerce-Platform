@@ -1,10 +1,12 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from stores.models import Store
-from .models import CustomUser
+
+CustomUser = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -107,3 +109,61 @@ class MerchantSignUpForm(forms.Form):
         if password and confirm_password and password != confirm_password:
             raise ValidationError({"confirm_password": _("Passwords do not match.")})
         return cleaned_data
+
+
+class ShipperCreationForm(forms.ModelForm):
+    """
+    Form for creating a new shipper account.
+    Exposes only full_name, email, and password.
+    Store and role are set automatically in the view.
+    """
+
+    password = forms.CharField(
+        label=_("Password"),
+        widget=forms.PasswordInput,
+        strip=False,
+        help_text=_("Enter a strong password for the shipper."),
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ["full_name", "email"]
+
+    def clean_email(self):
+        """Normalize email and ensure uniqueness."""
+        email = self.cleaned_data.get("email")
+        if email:
+            email = email.strip().lower()
+            # Check if already exists
+            if CustomUser.objects.filter(email__iexact=email).exists():
+                raise forms.ValidationError(_("A user with this email already exists."))
+        return email
+
+    def save(self, commit=True):
+        """
+        Override save to set the password using the manager's create_user logic.
+        We do not save the instance directly because the password is not a model field.
+        """
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+
+class UserProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ["full_name", "email"]
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email").strip().lower()
+        if (
+            CustomUser.objects.exclude(pk=self.instance.pk)
+            .filter(email__iexact=email)
+            .exists()
+        ):
+            raise forms.ValidationError(
+                _("This email is already in use by another account.")
+            )
+        return email

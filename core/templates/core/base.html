@@ -223,7 +223,7 @@
                                     <li>
 
                                         <a
-                                            href="#"
+                                            href="{% url 'accounts:my_profile' %}"
                                             class="dropdown-item wf-dropdown-item"
                                         >
 
@@ -237,13 +237,13 @@
 
                                     </li>
 
-
+                                    {% if user.role == 'OWNER' %}
                                     <!-- Settings -->
 
                                     <li>
 
                                         <a
-                                            href="#"
+                                            href="{% url 'stores:settings' %}"
                                             class="dropdown-item wf-dropdown-item"
                                         >
 
@@ -252,6 +252,26 @@
                                             </span>
 
                                             Settings
+
+                                        </a>
+
+                                    </li>
+                                    {% endif %}
+
+                                    <!-- Team -->
+
+                                    <li>
+
+                                        <a
+                                            href="{% url 'accounts:team_list' %}"
+                                            class="dropdown-item wf-dropdown-item"
+                                        >
+
+                                            <span class="wf-dropdown-icon">
+                                                <i class="fas fa-user-group"></i>
+                                            </span>
+
+                                            Team
 
                                         </a>
 

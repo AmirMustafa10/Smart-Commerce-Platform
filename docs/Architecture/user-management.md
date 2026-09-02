@@ -39,3 +39,48 @@ Future improvements may include:
 - Tenant-specific permissions
 - Audit logging
 - Store statistics
+
+## Staff Account Management
+
+Store owners can create and manage staff accounts through a dedicated creation form.
+
+Currently, the system supports shipper accounts.
+
+Store owners are responsible for:
+
+- Creating shipper accounts
+- Activating accounts
+- Deactivating accounts
+
+This approach keeps staff management under the control of the tenant while preserving account history.
+
+Account activation is preferred over deletion to preserve historical data and maintain referential integrity across the system.
+
+## Role-Based Dashboard
+
+The application provides role-specific workspaces.
+
+Currently:
+
+- Store owners have access to the owner dashboard.
+- Staff and administrative dashboards will be introduced separately.
+
+This separation keeps each interface focused on the responsibilities of its corresponding role.
+
+## Team Management
+
+Team management functionality is available only to store owners.
+
+This includes viewing and managing staff accounts while preventing access from non-owner users.
+
+## Profile Management
+
+Authenticated users can manage their personal account information through dedicated profile views.
+
+Current functionality includes:
+
+- View profile information
+- Update profile details
+- Change account password
+
+Password updates are implemented by extending Django's built-in password change view, allowing customization while preserving Django's secure authentication workflow.
