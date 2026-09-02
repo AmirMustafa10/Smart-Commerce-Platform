@@ -2,15 +2,15 @@ from django.contrib.auth import login
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.db.models import Q
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.db import transaction
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, DetailView, UpdateView
 from django.utils.translation import gettext_lazy as _
 from stores.models import Store
 from django.contrib.auth import get_user_model
-from .forms import MerchantSignUpForm, ShipperCreationForm
+from .forms import MerchantSignUpForm, ShipperCreationForm, UserProfileUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
@@ -77,13 +77,13 @@ class MerchantLoginView(LoginView):
         return reverse_lazy("core:dashboard")
 
 
-class ShipperListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
+class TeamListView(LoginRequiredMixin, ListView):
     """
     List all shippers belonging to the current owner's store with search functionality.
     """
 
     model = CustomUser
-    template_name = "accounts/shipper_list.html"
+    template_name = "accounts/team_list.html"
     context_object_name = "shippers"
 
     def get_queryset(self):
@@ -104,6 +104,13 @@ class ShipperListView(LoginRequiredMixin, OwnerRequiredMixin, ListView):
             )
 
         return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["owner"] = CustomUser.objects.filter(
+            store=self.request.user.store, role=CustomUser.Role.OWNER
+        ).first()
+        return context
 
 
 class ShipperCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
@@ -153,3 +160,49 @@ class ShipperToggleStatusView(LoginRequiredMixin, OwnerRequiredMixin, View):
             )
 
         return redirect("accounts:shipper_list")
+
+
+class MemberProfileView(LoginRequiredMixin, DetailView):
+    model = CustomUser
+    template_name = "accounts/member_profile.html"
+    context_object_name = "member"
+
+    def get_object(self, queryset=None):
+        if "pk" in self.kwargs:
+            return get_object_or_404(
+                CustomUser,
+                pk=self.kwargs["pk"],
+                store=self.request.user.store,
+            )
+
+        return self.request.user
+
+
+class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    View for any logged-in user to update their own profile.
+    """
+
+    model = CustomUser
+    form_class = UserProfileUpdateForm
+    template_name = "accounts/profile_edit.html"
+    success_url = reverse_lazy("core:home")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Your profile has been updated successfully."))
+        return super().form_valid(form)
+
+class CustomPasswordChangeView(PasswordChangeView):
+    """
+    Secure view for changing the password.
+    Uses Django's built-in form and logic for maximum security.
+    """
+    template_name = "accounts/password_change.html"
+    success_url = reverse_lazy('accounts:my_profile') 
+
+    def form_valid(self, form):
+        messages.success(self.request, _("Your password has been successfully updated!"))
+        return super().form_valid(form)

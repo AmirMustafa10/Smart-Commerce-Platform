@@ -149,3 +149,21 @@ class ShipperCreationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class UserProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ["full_name", "email"]
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email").strip().lower()
+        if (
+            CustomUser.objects.exclude(pk=self.instance.pk)
+            .filter(email__iexact=email)
+            .exists()
+        ):
+            raise forms.ValidationError(
+                _("This email is already in use by another account.")
+            )
+        return email
