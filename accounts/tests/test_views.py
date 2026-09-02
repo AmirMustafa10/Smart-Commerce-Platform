@@ -74,32 +74,211 @@ class MerchantSignUpViewTests(TestCase):
         )
 
 
-class DashboardViewTests(TestCase):
-    """Tests for the dashboard view."""
+class AccountsViewsTest(TestCase):
+    """Comprehensive tests for account-related views."""
 
-    def setUp(self):
-        self.dashboard_url = reverse("core:dashboard")
-        self.login_url = reverse("accounts:login")
-        # Create a store and user for authenticated test
-        self.store = Store.objects.create(
-            name="Test Store", whatsapp_number="+1234567890"
+    @classmethod
+    def setUpTestData(cls):
+        # Create stores
+        cls.store_a = Store.objects.create(
+            name="Store A",
+            whatsapp_number="+1111111111",
         )
-        self.user = CustomUser.objects.create_user(
-            email="user@example.com",
+        cls.store_b = Store.objects.create(
+            name="Store B",
+            whatsapp_number="+2222222222",
+        )
+
+        # Create users for Store A
+        cls.owner_a = CustomUser.objects.create_user(
+            email="owner_a@example.com",
             password="password123",
-            full_name="Test User",
-            store=self.store,
+            full_name="Owner A",
+            store=cls.store_a,
             role=CustomUser.Role.OWNER,
-        ) # pyright: ignore[reportCallIssue]
+        )  # pyright: ignore[reportCallIssue]
+        cls.shipper_a = CustomUser.objects.create_user(
+            email="shipper_a@example.com",
+            password="password123",
+            full_name="Shipper A",
+            store=cls.store_a,
+            role=CustomUser.Role.SHIPPER,
+        )  # pyright: ignore[reportCallIssue]
 
-    def test_unauthenticated_user_redirected_to_login(self):
-        """An unauthenticated request to dashboard redirects to login."""
-        response = self.client.get(self.dashboard_url)
-        self.assertRedirects(response, f"{self.login_url}?next={self.dashboard_url}")
+        # Create users for Store B
+        cls.owner_b = CustomUser.objects.create_user(
+            email="owner_b@example.com",
+            password="password123",
+            full_name="Owner B",
+            store=cls.store_b,
+            role=CustomUser.Role.OWNER,
+        )  # pyright: ignore[reportCallIssue]
+        cls.shipper_b = CustomUser.objects.create_user(
+            email="shipper_b@example.com",
+            password="password123",
+            full_name="Shipper B",
+            store=cls.store_b,
+            role=CustomUser.Role.SHIPPER,
+        )  # pyright: ignore[reportCallIssue]
 
-    def test_authenticated_user_gets_200(self):
-        """An authenticated user receives a 200 status on dashboard."""
-        self.client.login(email="user@example.com", password="password123")
-        response = self.client.get(self.dashboard_url)
+        # URL names (adjust if different in your project)
+        cls.team_list_url = reverse("accounts:team_list")
+        cls.shipper_create_url = reverse("accounts:shipper_create")
+        # For toggle: assume URL pattern includes pk
+        cls.toggle_url = lambda pk: reverse(
+            "accounts:shipper_toggle", kwargs={"pk": pk}
+        )
+        # SmartProfile URLs: one without pk, one with pk
+        cls.my_profile_url = reverse("accounts:my_profile")
+        cls.member_profile_url = lambda pk: reverse(
+            "accounts:member_profile", kwargs={"pk": pk}
+        )
+        cls.profile_update_url = reverse("accounts:profile_edit")
+        cls.password_change_url = reverse("accounts:password_change")
+
+    def login(self, user):
+        """Helper to login as a given user."""
+        self.client.login(email=user.email, password="password123")
+
+    # ------------------------------------------------------------------
+    # TeamListView Tests
+    # ------------------------------------------------------------------
+    def test_team_list_unauthenticated_redirect(self):
+        response = self.client.get(self.team_list_url)
+        self.assertRedirects(
+            response,
+            f"{reverse('accounts:login')}?next={self.team_list_url}",
+            status_code=302,
+        )
+
+    def test_team_list_owner_a_sees_only_own_shippers(self):
+        self.login(self.owner_a)
+        response = self.client.get(self.team_list_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "core/dashboard.html")
+        self.assertContains(response, "Shipper A")
+        self.assertNotContains(response, "Shipper B")
+
+    def test_team_list_context_contains_owner(self):
+        self.login(self.owner_a)
+        response = self.client.get(self.team_list_url)
+        self.assertEqual(response.context["owner"], self.owner_a)
+
+    def test_team_list_shipper_can_access(self):
+        self.login(self.shipper_a)
+        response = self.client.get(self.team_list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Shipper A")
+        self.assertNotContains(response, "Shipper B")
+
+    # ------------------------------------------------------------------
+    # ShipperCreateView Tests
+    # ------------------------------------------------------------------
+    def test_shipper_create_shipper_forbidden(self):
+        self.login(self.shipper_a)
+        response = self.client.get(self.shipper_create_url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_shipper_create_owner_post_creates_user(self):
+        self.login(self.owner_a)
+        data = {
+            "full_name": "New Shipper",
+            "email": "new_shipper@example.com",
+            "password": "newpassword123",
+        }
+        response = self.client.post(self.shipper_create_url, data)
+        self.assertRedirects(response, self.team_list_url, status_code=302)
+
+        # Verify user was created
+        new_user = CustomUser.objects.get(email="new_shipper@example.com")
+        self.assertEqual(new_user.full_name, "New Shipper")
+        self.assertEqual(new_user.store, self.store_a)
+        self.assertEqual(new_user.role, CustomUser.Role.SHIPPER)
+        self.assertTrue(new_user.check_password("newpassword123"))
+
+    # ------------------------------------------------------------------
+    # ShipperToggleStatusView Tests
+    # ------------------------------------------------------------------
+    def test_toggle_get_not_allowed(self):
+        self.login(self.owner_a)
+        response = self.client.get(self.toggle_url(self.shipper_a.pk))
+        self.assertEqual(response.status_code, 405)  # Method Not Allowed
+
+    def test_toggle_shipper_forbidden(self):
+        self.login(self.shipper_a)
+        response = self.client.post(self.toggle_url(self.shipper_a.pk))
+        self.assertEqual(response.status_code, 403)
+
+    def test_toggle_owner_toggles_own_shipper(self):
+        self.login(self.owner_a)
+        # Initial state
+        self.assertTrue(self.shipper_a.is_active)
+        response = self.client.post(self.toggle_url(self.shipper_a.pk))
+        self.assertEqual(response.status_code, 302)  # redirect after toggle
+        self.shipper_a.refresh_from_db()
+        self.assertFalse(self.shipper_a.is_active)
+
+        # Toggle again
+        response = self.client.post(self.toggle_url(self.shipper_a.pk))
+        self.shipper_a.refresh_from_db()
+        self.assertTrue(self.shipper_a.is_active)
+
+    def test_toggle_isolation_owner_a_cannot_toggle_other_store_shipper(self):
+        self.login(self.owner_a)
+        response = self.client.post(self.toggle_url(self.shipper_b.pk))
+        self.assertEqual(
+            response.status_code, 404
+        )  # Not Found due to filtered queryset
+
+    # ------------------------------------------------------------------
+    # SmartProfileView Tests
+    # ------------------------------------------------------------------
+    def test_profile_without_pk_returns_current_user(self):
+        self.login(self.shipper_a)
+        response = self.client.get(self.my_profile_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["object"], self.shipper_a)
+
+    def test_profile_with_pk_owner_views_shipper(self):
+        self.login(self.owner_a)
+        response = self.client.get(self.member_profile_url(self.shipper_a.pk))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["object"], self.shipper_a)
+
+    def test_profile_isolation_owner_a_cannot_view_other_store_shipper(self):
+        self.login(self.owner_a)
+        response = self.client.get(self.member_profile_url(self.shipper_b.pk))
+        self.assertEqual(response.status_code, 404)
+
+    # ------------------------------------------------------------------
+    # UserProfileUpdateView Tests
+    # ------------------------------------------------------------------
+    def test_profile_update_updates_current_user(self):
+        self.login(self.owner_a)
+        data = {
+            "full_name": "Updated Owner A",
+            "email": "updated_owner_a@example.com",
+        }
+        response = self.client.post(self.profile_update_url, data)
+        self.assertRedirects(response, self.my_profile_url, status_code=302)
+        self.owner_a.refresh_from_db()
+        self.assertEqual(self.owner_a.full_name, "Updated Owner A")
+        self.assertEqual(self.owner_a.email, "updated_owner_a@example.com")
+
+    # ------------------------------------------------------------------
+    # CustomPasswordChangeView Tests
+    # ------------------------------------------------------------------
+    def test_password_change_success(self):
+        self.login(self.owner_a)
+        data = {
+            "old_password": "password123",
+            "new_password1": "newSecurePass456",
+            "new_password2": "newSecurePass456",
+        }
+        response = self.client.post(self.password_change_url, data)
+        self.assertEqual(response.status_code, 302)  # redirect after success
+
+        # Verify new password works
+        self.owner_a.refresh_from_db()
+        self.assertTrue(self.owner_a.check_password("newSecurePass456"))
+        # Also verify old password fails
+        self.assertFalse(self.owner_a.check_password("password123"))
