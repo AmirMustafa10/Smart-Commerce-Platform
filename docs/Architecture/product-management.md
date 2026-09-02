@@ -45,3 +45,11 @@ Uploaded images are validated using:
 - Pillow image verification
 
 These validations help ensure that uploaded files are valid image assets before storage.
+
+## Django Admin
+
+The Product model is managed through a customized Django Admin interface.
+
+Related product images are managed using Django Inline Models, allowing administrators to create and edit product images directly from the product administration page.
+
+This improves usability and reduces the number of administrative actions required to maintain product data.
