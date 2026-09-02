@@ -82,3 +82,17 @@ Current responsibilities include:
 - Shared templates
 - Error pages
 - Common views
+
+### Products
+
+The `products` application is responsible for product catalog management.
+
+It is introduced as a dedicated business domain to isolate product-related functionality from authentication and store management.
+
+The application is registered using:
+
+```python
+products.apps.ProductsConfig
+```
+
+Using AppConfig provides a centralized initialization point and supports future extensibility.

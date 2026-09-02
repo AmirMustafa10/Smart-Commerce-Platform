@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "stores.apps.StoresConfig",
     "core.apps.CoreConfig",
+    "products.apps.ProductsConfig",
     "crispy_forms",
     "crispy_bootstrap5",
 ]
