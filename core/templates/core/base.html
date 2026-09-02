@@ -223,7 +223,7 @@
                                     <li>
 
                                         <a
-                                            href="#"
+                                            href="{% url 'accounts:my_profile' %}"
                                             class="dropdown-item wf-dropdown-item"
                                         >
 
@@ -237,7 +237,7 @@
 
                                     </li>
 
-
+                                    {% if user.role == 'OWNER' %}
                                     <!-- Settings -->
 
                                     <li>
@@ -256,13 +256,14 @@
                                         </a>
 
                                     </li>
+                                    {% endif %}
 
                                     <!-- Team -->
 
                                     <li>
 
                                         <a
-                                            href="{% url 'accounts:shipper_list' %}"
+                                            href="{% url 'accounts:team_list' %}"
                                             class="dropdown-item wf-dropdown-item"
                                         >
 

@@ -1,0 +1,299 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Profile | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'accounts/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="profile-page">
+
+    <div class="profile-background">
+        <div class="profile-glow profile-glow-one"></div>
+        <div class="profile-glow profile-glow-two"></div>
+    </div>
+
+    <div class="container position-relative">
+
+        <header class="profile-page-header">
+
+            <div>
+                <span class="profile-eyebrow">
+                    <i class="fas fa-user"></i>
+                    ACCOUNT
+                </span>
+
+                <h1>Profile</h1>
+
+                <p>
+                    View account information and workspace details.
+                </p>
+            </div>
+
+            {% if request.user == member %}
+                <a
+                    href="{% url 'accounts:profile_edit' %}"
+                    class="btn profile-edit-btn"
+                >
+                    <i class="fas fa-pen"></i>
+                    Edit profile
+                </a>
+            {% endif %}
+
+        </header>
+
+
+        <div class="profile-layout">
+
+            <!-- Main profile card -->
+            <section class="profile-card profile-main-card">
+
+                <div class="profile-cover"></div>
+                <br><br>
+
+                <div class="profile-main-content">
+
+                    <div class="profile-identity">
+
+                        <div class="profile-avatar">
+                            {{ member.full_name|default:member.email|first|upper }}
+                        </div>
+
+                        <div class="profile-identity-text">
+
+                            <h2>
+                                {{ member.full_name|default:"Unnamed user" }}
+                            </h2>
+
+                            <span>
+                                {{ member.email }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-account-badge">
+                        {% if member.is_active %}
+                            <span class="profile-active-dot"></span>
+                            Active account
+                        {% else %}
+                            <span class="profile-inactive-dot"></span>
+                            Inactive account
+                        {% endif %}
+                    </div>
+
+
+                    <div class="profile-divider"></div>
+
+
+                    <!-- Information -->
+                    <div class="profile-info-grid">
+
+                        <div class="profile-info-item">
+
+                            <span class="profile-info-label">
+                                Full name
+                            </span>
+
+                            <div class="profile-info-value">
+                                <span class="profile-info-icon green">
+                                    <i class="fas fa-user"></i>
+                                </span>
+
+                                <strong>
+                                    {{ member.full_name|default:"Not provided" }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-info-item">
+
+                            <span class="profile-info-label">
+                                Email address
+                            </span>
+
+                            <div class="profile-info-value">
+                                <span class="profile-info-icon blue">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+
+                                <strong>
+                                    {{ member.email }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-info-item">
+
+                            <span class="profile-info-label">
+                                Store
+                            </span>
+
+                            <div class="profile-info-value">
+                                <span class="profile-info-icon purple">
+                                    <i class="fas fa-store"></i>
+                                </span>
+
+                                <strong>
+                                    {% if member.store %}
+                                        {{ member.store.name }}
+                                    {% else %}
+                                        No store assigned
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="profile-info-item">
+
+                            <span class="profile-info-label">
+                                Role
+                            </span>
+
+                            <div class="profile-info-value">
+                                <span class="profile-info-icon orange">
+                                    <i class="fas fa-user-shield"></i>
+                                </span>
+
+                                <strong>
+                                    {{ member.get_role_display|default:member.role }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Sidebar -->
+            <aside class="profile-sidebar">
+
+                <section class="profile-card profile-summary-card">
+
+                    <div class="profile-card-heading">
+
+                        <span class="profile-heading-icon">
+                            <i class="fas fa-id-card"></i>
+                        </span>
+
+                        <div>
+                            <h3>Account overview</h3>
+                            <p>Your WhatsFlow identity</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-summary-list">
+
+                        <div class="profile-summary-item">
+                            <span>Account type</span>
+
+                            <strong>
+                                {% if member.role == "OWNER" %}
+                                    Store owner
+                                {% elif member.role == "SHIPPER" %}
+                                    Shipper
+                                {% else %}
+                                    {{ member.get_role_display|default:member.role }}
+                                {% endif %}
+                            </strong>
+                        </div>
+
+
+                        <div class="profile-summary-item">
+                            <span>Store</span>
+
+                            <strong>
+                                {% if member.store %}
+                                    {{ member.store.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+
+                        <div class="profile-summary-item">
+                            <span>Status</span>
+
+                            {% if member.is_active %}
+                                <span class="profile-status active">
+                                    <span></span>
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="profile-status inactive">
+                                    <span></span>
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {% if request.user == member %}
+
+                    <section class="profile-card profile-action-card">
+
+                        <div class="profile-card-heading">
+
+                            <span class="profile-heading-icon green">
+                                <i class="fas fa-pen-to-square"></i>
+                            </span>
+
+                            <div>
+                                <h3>Manage your profile</h3>
+
+                                <p>
+                                    Keep your account information up to date.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'accounts:profile_edit' %}"
+                            class="profile-sidebar-action"
+                        >
+                            Edit profile
+
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+
+                    </section>
+
+                {% endif %}
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'accounts/js/profile.js' %}"></script>
+{% endblock %}
