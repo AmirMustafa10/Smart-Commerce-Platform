@@ -104,6 +104,12 @@ class TenantAwareModel(models.Model):
         db_index=True,
         help_text=_("The store (tenant) this record belongs to."),
     )
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+    is_deleted = models.BooleanField(
+        default=False,
+        help_text="whether this %(class) is deleted. Unselect this instead of deleting.",
+    )
 
     class Meta:
         abstract = True
