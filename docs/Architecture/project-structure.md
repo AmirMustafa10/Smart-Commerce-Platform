@@ -28,6 +28,11 @@ Testing is organized separately by application layer to keep tests maintainable 
 
 Current responsibilities also include internal staff account management for store owners.
 
+Additional responsibilities include:
+
+- User profile management
+- Password management
+
 ### Stores
 
 The `stores` application is responsible for managing merchant stores and store-related business data.

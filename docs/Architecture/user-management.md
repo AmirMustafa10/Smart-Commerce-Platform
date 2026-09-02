@@ -72,3 +72,15 @@ This separation keeps each interface focused on the responsibilities of its corr
 Team management functionality is available only to store owners.
 
 This includes viewing and managing staff accounts while preventing access from non-owner users.
+
+## Profile Management
+
+Authenticated users can manage their personal account information through dedicated profile views.
+
+Current functionality includes:
+
+- View profile information
+- Update profile details
+- Change account password
+
+Password updates are implemented by extending Django's built-in password change view, allowing customization while preserving Django's secure authentication workflow.
