@@ -1,6 +1,6 @@
 import uuid
 from decimal import Decimal
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
@@ -55,6 +55,11 @@ class Category(TenantAwareModel):
         indexes = [
             models.Index(fields=["store", "sort_order"]),
             models.Index(fields=["store", "name"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["store", "name"], name="unique_category_name_per_store"
+            )
         ]
 
     def __str__(self):
@@ -128,25 +133,32 @@ class Product(TenantAwareModel):
         default=False,
         help_text=_("If True, show 'Out of Stock' in UI."),
     )
-    sort_order = models.IntegerField(
-        _("sort order"), default=0, help_text=_("Display order within category.")
+    stock_quantity = models.PositiveIntegerField(
+        _("stock quantity"),
+        default=0,
+        help_text=_("Number of items currently available in stock."),
     )
 
     class Meta:
+        ordering = ["-created_at"]
         verbose_name = _("product")
         verbose_name_plural = _("products")
-        ordering = ["sort_order", "name"]
+        ordering = ["stock_quantity", "name"]
         indexes = [
             models.Index(fields=["store", "category"]),
             models.Index(fields=["store", "is_active"]),
-            models.Index(fields=["store", "sort_order"]),
+            models.Index(fields=["store", "stock_quantity"]),
         ]
         constraints = [
             models.UniqueConstraint(
                 fields=["store", "sku"],
                 name="unique_sku_per_store",
                 condition=~models.Q(sku=None),  # enforce only when sku is not null
-            )
+            ),
+            models.UniqueConstraint(
+                fields=["store", "category", "name"],
+                name="unique_product_name_per_category_in_store",
+            ),
         ]
 
     def __str__(self):
@@ -205,6 +217,14 @@ class Product(TenantAwareModel):
                     {"category": _("Selected category does not belong to this store.")}
                 )
 
+    def save(self, *args, **kwargs):
+        if self.stock_quantity <= 0:
+            self.is_out_of_stock = True
+        else:
+            self.is_out_of_stock = False
+
+        super().save(*args, **kwargs)
+
 
 class ProductImage(TenantAwareModel):
     """Image associated with a product."""
@@ -228,6 +248,7 @@ class ProductImage(TenantAwareModel):
             validate_image_size,
             FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "webp"]),
         ],
+        max_length=255,
         help_text=_("Product image file (max 2MB, formats: JPG, JPEG, PNG, WEBP)."),
     )
     is_primary = models.BooleanField(
@@ -248,18 +269,34 @@ class ProductImage(TenantAwareModel):
     def __str__(self):
         return f"Image for {self.product} ({self.id})"
 
+    from django.core.exceptions import ObjectDoesNotExist, ValidationError
+
     def clean(self):
         """Validate tenant isolation and ensure primary image integrity."""
+
+        try:
+            if (
+                self.product and self.product.store_id and not self.store_id
+            ):  # التعديل هنا
+                self.store_id = self.product.store_id
+        except ObjectDoesNotExist:
+            pass
+
         super().clean()
 
-        # Tenant isolation: product.store must equal image.store
-        if self.product_id and self.store_id:
-            if self.product.store_id != self.store_id:
-                raise ValidationError(
-                    {"product": _("Selected product does not belong to this store.")}
-                )
+        try:
+            if self.product and self.store_id:
+                if self.product.store_id != self.store_id:
+                    raise ValidationError(
+                        {
+                            "product": _(
+                                "Selected product does not belong to this store."
+                            )
+                        }
+                    )
+        except ObjectDoesNotExist:
+            pass
 
-        # If is_primary is True, ensure no other primary exists for the same product
         if self.is_primary and self.product_id:
             existing_primary = (
                 ProductImage.objects.filter(product_id=self.product_id, is_primary=True)
