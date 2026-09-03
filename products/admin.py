@@ -43,7 +43,14 @@ class ProductAdmin(admin.ModelAdmin):
         (_("Pricing"), {"fields": ("cost_price", "price", "discount_price")}),
         (
             _("Status"),
-            {"fields": ("is_active", "is_out_of_stock", "is_deleted", "sort_order")},
+            {
+                "fields": (
+                    "is_active",
+                    "is_out_of_stock",
+                    "is_deleted",
+                    "stock_quantity",
+                )
+            },
         ),
         (_("Timestamps"), {"fields": ("created_at", "updated_at")}),
     )
