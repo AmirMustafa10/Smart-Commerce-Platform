@@ -58,7 +58,11 @@ class Category(TenantAwareModel):
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=["store", "name"], name="unique_category_name_per_store"
+                fields=["store", "name"],
+                condition=models.Q(
+                    is_deleted=False
+                ),
+                name="unique_active_category_name_per_store",
             )
         ]
 
@@ -72,6 +76,18 @@ class Category(TenantAwareModel):
             self.name = self.name.strip()
             if not self.name:
                 raise ValidationError({"name": _("Name cannot be blank.")})
+
+        if self.name and self.store:
+            qs = Category.objects.filter(
+                store=self.store,
+                name__iexact=self.name,
+                is_deleted=False,
+            ).exclude(pk=self.pk)
+
+            if qs.exists():
+                raise ValidationError(
+                    _("A category with this name already exists in your store.")
+                )
 
 
 class Product(TenantAwareModel):
