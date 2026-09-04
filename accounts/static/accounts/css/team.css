@@ -2,6 +2,30 @@
    WHATSFLOW TEAM MANAGEMENT
 ========================================================= */
 
+:root {
+    --wf-green: #25d366;
+    --wf-green-dark: #1fbd5d;
+    --wf-green-soft: #eaf9ef;
+
+    --wf-dark: #111827;
+    --wf-text: #293241;
+    --wf-muted: #8993a0;
+
+    --wf-border: #e7ecef;
+    --wf-bg: #f7f9fb;
+
+    --wf-blue: #3b82f6;
+    --wf-purple: #8058df;
+    --wf-orange: #d3880a;
+
+    --wf-danger: #ef5350;
+}
+
+
+/* =========================================================
+   BASE TEAM PAGES
+========================================================= */
+
 .team-page,
 .shipper-create-page {
     position: relative;
@@ -18,6 +42,11 @@
             #f5f8f7 100%
         );
 }
+
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
 
 .team-page-bg,
 .shipper-create-bg {
@@ -54,7 +83,7 @@
 
 
 /* =========================================================
-   HEADER
+   PAGE HEADER
 ========================================================= */
 
 .team-page-header {
@@ -110,9 +139,15 @@
     font-size: .76rem;
 }
 
+
+/* =========================================================
+   PRIMARY BUTTONS
+========================================================= */
+
 .team-add-btn,
 .team-toolbar-add,
-.team-empty-btn {
+.team-empty-btn,
+.create-submit-btn {
     color: #fff !important;
 
     background:
@@ -152,7 +187,8 @@
 
 .team-add-btn:hover,
 .team-toolbar-add:hover,
-.team-empty-btn:hover {
+.team-empty-btn:hover,
+.create-submit-btn:hover {
     color: #fff;
 
     transform: translateY(-2px);
@@ -161,9 +197,16 @@
         0 15px 30px rgba(37,211,102,.23);
 }
 
+.team-add-btn:active,
+.team-toolbar-add:active,
+.team-empty-btn:active,
+.create-submit-btn:active {
+    transform: translateY(0);
+}
+
 
 /* =========================================================
-   MESSAGES
+   ALERTS
 ========================================================= */
 
 .team-messages {
@@ -186,6 +229,10 @@
     border-radius: 10px;
 
     font-size: .66rem;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
 }
 
 .team-alert-icon {
@@ -224,6 +271,10 @@
     opacity: .5;
 }
 
+.team-alert-close:hover {
+    opacity: 1;
+}
+
 .team-alert-success {
     color: #187a46;
 
@@ -258,6 +309,10 @@
     border-color: #f4e7c1;
 }
 
+.team-alert-warning .team-alert-icon {
+    background: #ffecbd;
+}
+
 .team-alert-info {
     color: #2e70af;
 
@@ -266,9 +321,13 @@
     border-color: #dbeafe;
 }
 
+.team-alert-info .team-alert-icon {
+    background: #dbeafe;
+}
+
 
 /* =========================================================
-   OVERVIEW
+   TEAM OVERVIEW
 ========================================================= */
 
 .team-overview {
@@ -428,7 +487,7 @@
 
 
 /* =========================================================
-   TEAM CARD
+   TEAM TABLE CARD
 ========================================================= */
 
 .team-card {
@@ -538,7 +597,11 @@
 
     min-height: 37px;
 
-    padding: 8px 10px 8px 30px;
+    padding:
+        8px
+        10px
+        8px
+        30px;
 
     color: #344054;
 
@@ -714,7 +777,7 @@
 
 
 /* =========================================================
-   ROLE
+   ROLE BADGE
 ========================================================= */
 
 .team-role {
@@ -785,7 +848,7 @@
 
 
 /* =========================================================
-   MOBILE LIST
+   MOBILE MEMBER LIST
 ========================================================= */
 
 .team-mobile-list {
@@ -877,7 +940,7 @@
 
 
 /* =========================================================
-   EMPTY STATE
+   EMPTY TEAM STATE
 ========================================================= */
 
 .team-empty-state {
@@ -1021,7 +1084,7 @@
 
 
 /* =========================================================
-   INFO
+   INFO BANNER
 ========================================================= */
 
 .team-info-banner {
@@ -1088,12 +1151,8 @@
 
 
 /* =========================================================
-   CREATE PAGE
+   ADD TEAM MEMBER PAGE
 ========================================================= */
-
-.shipper-create-page {
-    min-height: calc(100vh - 140px);
-}
 
 .shipper-create-header {
     position: relative;
@@ -1113,11 +1172,22 @@
     font-size: .63rem;
 
     font-weight: 750;
+
+    transition:
+        color .2s ease,
+        transform .2s ease;
 }
 
 .team-back-link:hover {
     color: #229c58;
+
+    transform: translateX(-2px);
 }
+
+
+/* =========================================================
+   CREATE LAYOUT
+========================================================= */
 
 .shipper-create-layout {
     position: relative;
@@ -1131,7 +1201,7 @@
 
     gap: 17px;
 
-    max-width: 1060px;
+    max-width: 1080px;
 
     margin: 0 auto;
 }
@@ -1142,7 +1212,10 @@
 ========================================================= */
 
 .shipper-create-showcase {
-    min-height: 590px;
+    position: relative;
+    overflow: hidden;
+
+    min-height: 670px;
 
     padding: 38px;
 
@@ -1151,7 +1224,7 @@
     background:
         radial-gradient(
             circle at 85% 15%,
-            rgba(37,211,102,.16),
+            rgba(37,211,102,.17),
             transparent 31%
         ),
         linear-gradient(
@@ -1167,16 +1240,55 @@
         0 25px 60px rgba(17,24,39,.12);
 }
 
+.shipper-create-showcase::before {
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+    height: 420px;
+
+    right: -240px;
+    bottom: -240px;
+
+    border: 1px solid rgba(37,211,102,.07);
+
+    border-radius: 50%;
+}
+
+.shipper-create-showcase::after {
+    content: "";
+
+    position: absolute;
+
+    width: 650px;
+    height: 650px;
+
+    right: -370px;
+    bottom: -390px;
+
+    border: 1px solid rgba(37,211,102,.035);
+
+    border-radius: 50%;
+}
+
+.shipper-create-showcase > * {
+    position: relative;
+    z-index: 2;
+}
+
 .shipper-create-showcase h1 {
-    max-width: 400px;
+    max-width: 430px;
 
     margin: 0;
 
-    font-size: clamp(2.3rem, 4vw, 3.5rem);
+    color: #f0f5f2;
 
-    line-height: 1;
+    font-size: clamp(2.35rem, 4vw, 3.7rem);
 
-    letter-spacing: -.055em;
+    line-height: .99;
+
+    letter-spacing: -.058em;
 
     font-weight: 850;
 }
@@ -1186,7 +1298,7 @@
 }
 
 .shipper-create-showcase > p {
-    max-width: 420px;
+    max-width: 430px;
 
     margin: 20px 0 0;
 
@@ -1197,13 +1309,18 @@
     line-height: 1.8;
 }
 
+
+/* =========================================================
+   CREATE BENEFITS
+========================================================= */
+
 .create-benefits {
     display: flex;
     flex-direction: column;
 
-    gap: 12px;
+    gap: 11px;
 
-    margin-top: 40px;
+    margin-top: 35px;
 }
 
 .create-benefits > div {
@@ -1214,16 +1331,29 @@
 
     padding: 10px;
 
-    border: 1px solid rgba(255,255,255,.055);
-
     background: rgba(255,255,255,.025);
 
+    border: 1px solid rgba(255,255,255,.055);
+
     border-radius: 10px;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.create-benefits > div:hover {
+    transform: translateX(3px);
+
+    background: rgba(255,255,255,.04);
+
+    border-color: rgba(37,211,102,.10);
 }
 
 .create-benefits > div > span {
-    width: 25px;
-    height: 25px;
+    width: 26px;
+    height: 26px;
 
     display: grid;
     place-items: center;
@@ -1257,7 +1387,161 @@
 
     font-size: .54rem;
 
-    line-height: 1.5;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   TEAM VISUAL
+========================================================= */
+
+.team-create-visual {
+    margin-top: 32px;
+
+    padding: 14px;
+
+    background: rgba(255,255,255,.035);
+
+    border: 1px solid rgba(255,255,255,.06);
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 15px 30px rgba(0,0,0,.08);
+}
+
+.team-create-visual-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 12px;
+
+    color: #a9b6b0;
+
+    font-size: .55rem;
+
+    font-weight: 700;
+}
+
+.team-create-live {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #62da91;
+
+    font-size: .5rem;
+}
+
+.team-create-live > span {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #25d366;
+
+    box-shadow:
+        0 0 0 4px rgba(37,211,102,.08);
+}
+
+.team-visual-members {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+}
+
+.team-visual-member {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    min-width: 0;
+}
+
+.team-visual-avatar {
+    width: 28px;
+    height: 28px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    color: #63d992;
+
+    background: rgba(37,211,102,.10);
+
+    border-radius: 8px;
+
+    font-size: .5rem;
+
+    font-weight: 850;
+}
+
+.team-visual-avatar.owner {
+    color: #fff;
+
+    background: #25d366;
+}
+
+.team-visual-avatar.blue {
+    color: #8bb8ee;
+
+    background: rgba(59,130,246,.11);
+}
+
+.team-visual-member div {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.team-visual-member strong {
+    overflow: hidden;
+
+    color: #dce5e1;
+
+    font-size: .53rem;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.team-visual-member small {
+    margin-top: 2px;
+
+    color: #6f7d77;
+
+    font-size: .46rem;
+}
+
+.team-visual-add {
+    width: 29px;
+    height: 29px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    color: #6bdc98;
+
+    background: rgba(37,211,102,.07);
+
+    border: 1px dashed rgba(37,211,102,.25);
+
+    border-radius: 8px;
+
+    font-size: 8px;
 }
 
 
@@ -1270,7 +1554,7 @@
 
     padding: 29px 30px;
 
-    background: rgba(255,255,255,.95);
+    background: rgba(255,255,255,.97);
 
     border: 1px solid #e5ebee;
 
@@ -1286,7 +1570,7 @@
 
     gap: 11px;
 
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 .shipper-form-icon {
@@ -1329,7 +1613,7 @@
 
     color: #1c2635;
 
-    font-size: 1.45rem;
+    font-size: 1.42rem;
 
     letter-spacing: -.04em;
 
@@ -1346,11 +1630,79 @@
 
 
 /* =========================================================
-   FORM
+   FORM SECTIONS
+========================================================= */
+
+.team-form-section {
+    padding: 21px 0;
+}
+
+.team-form-section:first-child {
+    padding-top: 0;
+}
+
+.team-form-section:last-of-type {
+    padding-bottom: 10px;
+}
+
+.team-form-section-heading {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 9px;
+
+    margin-bottom: 17px;
+}
+
+.team-form-section-heading > span {
+    min-width: 18px;
+
+    color: #a7afb8;
+
+    font-size: .55rem;
+
+    font-weight: 850;
+
+    letter-spacing: .04em;
+}
+
+.team-form-section-heading > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-form-section-heading strong {
+    color: #344054;
+
+    font-size: .67rem;
+
+    font-weight: 850;
+}
+
+.team-form-section-heading small {
+    margin-top: 3px;
+
+    color: #9ca5b0;
+
+    font-size: .54rem;
+}
+
+.team-form-divider {
+    height: 1px;
+
+    background: #edf0f2;
+}
+
+
+/* =========================================================
+   FORM FIELDS
 ========================================================= */
 
 .shipper-create-form .mb-3 {
-    margin-bottom: 16px !important;
+    margin-bottom: 15px !important;
+
+    transition:
+        transform .2s ease;
 }
 
 .shipper-create-form .form-label {
@@ -1363,10 +1715,12 @@
     font-weight: 800;
 }
 
-.shipper-create-form .form-control {
+.shipper-create-form .form-control,
+.shipper-create-form .form-select {
     min-height: 46px;
 
-    padding: 10px 12px;
+    padding:
+        10px 12px;
 
     color: #1f2937;
 
@@ -1382,10 +1736,19 @@
 
     transition:
         border-color .2s ease,
-        box-shadow .2s ease;
+        box-shadow .2s ease,
+        background .2s ease;
 }
 
-.shipper-create-form .form-control:focus {
+.shipper-create-form .form-control:hover,
+.shipper-create-form .form-select:hover {
+    border-color: #ccd5da;
+}
+
+.shipper-create-form .form-control:focus,
+.shipper-create-form .form-select:focus {
+    background: #fff;
+
     border-color: rgba(37,211,102,.62);
 
     box-shadow:
@@ -1435,6 +1798,293 @@
     border-radius: 10px;
 
     font-size: .61rem;
+
+    line-height: 1.5;
+}
+
+.team-form-error > i {
+    margin-top: 2px;
+}
+
+
+/* =========================================================
+   ROLE SELECTOR
+========================================================= */
+
+.team-role-selector {
+    display: grid;
+
+    gap: 9px;
+}
+
+
+/* Role card */
+
+.team-role-card {
+    position: relative;
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px;
+
+    text-align: left;
+
+    color: inherit;
+
+    background: #fff;
+
+    border: 1px solid #e4e9ec;
+
+    border-radius: 11px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    transition:
+        border-color .22s ease,
+        background .22s ease,
+        box-shadow .22s ease,
+        transform .22s ease;
+}
+
+.team-role-card:hover {
+    transform: translateY(-1px);
+
+    border-color: #cfe3d7;
+
+    background: #fbfdfc;
+}
+
+.team-role-card:focus-visible {
+    border-color: rgba(37,211,102,.65);
+
+    box-shadow:
+        0 0 0 4px rgba(37,211,102,.09);
+}
+
+.team-role-card.active {
+    border-color: rgba(37,211,102,.55);
+
+    background:
+        linear-gradient(
+            135deg,
+            #fbfffc,
+            #f4fbf6
+        );
+
+    box-shadow:
+        0 7px 20px rgba(37,211,102,.07);
+}
+
+
+/* Role icon */
+
+.role-card-icon {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    border-radius: 10px;
+
+    font-size: 11px;
+}
+
+.role-card-icon.green {
+    color: #219d57;
+
+    background: #eaf9ef;
+}
+
+.role-card-icon.purple {
+    color: #8058df;
+
+    background: #f0ebff;
+}
+
+.role-card-icon.blue {
+    color: #3b82f6;
+
+    background: #ebf3ff;
+}
+
+.role-card-icon.orange {
+    color: #d3880a;
+
+    background: #fff3df;
+}
+
+
+/* Role content */
+
+.role-card-content {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+.role-card-content strong {
+    color: #303b4a;
+
+    font-size: .64rem;
+
+    font-weight: 850;
+}
+
+.role-card-content small {
+    max-width: 310px;
+
+    margin-top: 3px;
+
+    color: #929da8;
+
+    font-size: .54rem;
+
+    line-height: 1.55;
+}
+
+
+/* Custom radio */
+
+.role-card-radio {
+    width: 20px;
+    height: 20px;
+
+    display: grid;
+    place-items: center;
+
+    flex: 0 0 auto;
+
+    border: 1.5px solid #d7dfe4;
+
+    border-radius: 50%;
+
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.role-card-radio span {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    transform: scale(0);
+
+    transition:
+        transform .2s ease,
+        background .2s ease;
+}
+
+.team-role-card.active .role-card-radio {
+    border-color: #25d366;
+
+    box-shadow:
+        inset 0 0 0 3px #fff;
+}
+
+.team-role-card.active .role-card-radio span {
+    background: #25d366;
+
+    transform: scale(1);
+}
+
+
+/* Role help */
+
+.team-role-help {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 6px;
+
+    margin-top: 8px;
+
+    color: #98a2ad;
+
+    font-size: .54rem;
+
+    line-height: 1.55;
+}
+
+.team-role-help i {
+    margin-top: 2px;
+
+    color: #7292af;
+
+    font-size: .58rem;
+}
+
+
+/* =========================================================
+   PASSWORD FIELD
+========================================================= */
+
+.team-password-field {
+    position: relative;
+}
+
+.team-password-field .form-control {
+    padding-right: 43px;
+}
+
+.password-toggle {
+    position: absolute;
+
+    right: 8px;
+    top: 29px;
+
+    width: 30px;
+    height: 30px;
+
+    display: grid;
+
+    place-items: center;
+
+    padding: 0;
+
+    color: #98a2b3;
+
+    background: transparent;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    transition:
+        color .2s ease,
+        background .2s ease;
+}
+
+.password-toggle:hover {
+    color: #4b5563;
+
+    background: #f4f6f7;
+}
+
+.password-toggle:focus-visible {
+    outline: 0;
+
+    box-shadow:
+        0 0 0 3px rgba(37,211,102,.10);
 }
 
 
@@ -1448,7 +2098,7 @@
 
     gap: 7px;
 
-    margin: 8px 0 20px;
+    margin: 9px 0 19px;
 
     padding: 10px;
 
@@ -1473,7 +2123,7 @@
 
 
 /* =========================================================
-   CREATE FOOTER
+   FORM FOOTER
 ========================================================= */
 
 .shipper-form-footer {
@@ -1504,12 +2154,19 @@
     font-size: .64rem;
 
     font-weight: 800;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
 }
 
 .create-cancel-btn:hover {
     color: #344054;
 
     background: #f7f8f9;
+
+    border-color: #d7dfe4;
 }
 
 .create-submit-btn {
@@ -1519,27 +2176,13 @@
     align-items: center;
     justify-content: center;
 
+    gap: 0;
+
     padding: 0 15px;
-
-    color: #fff !important;
-
-    background:
-        linear-gradient(
-            135deg,
-            #2bd66d,
-            #1fbd5d
-        );
-
-    border: 0;
 
     border-radius: 9px;
 
     font-size: .63rem;
-
-    font-weight: 800;
-
-    box-shadow:
-        0 9px 20px rgba(37,211,102,.16);
 }
 
 .create-submit-content {
@@ -1547,6 +2190,10 @@
     align-items: center;
 
     gap: 7px;
+}
+
+.create-submit-content i {
+    font-size: .6rem;
 }
 
 .create-submit-loading {
@@ -1567,26 +2214,23 @@
 
 
 /* =========================================================
-   ANIMATIONS
+   RESPONSIVE
 ========================================================= */
 
-@keyframes emptyFloat {
+@media (max-width: 1199px) {
 
-    0%,
-    100% {
-        transform: translateY(0);
+    .shipper-create-layout {
+        grid-template-columns:
+            minmax(0, .95fr)
+            minmax(390px, .95fr);
     }
 
-    50% {
-        transform: translateY(-5px);
+    .shipper-create-showcase {
+        padding: 32px;
     }
 
 }
 
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
 @media (max-width: 991px) {
 
@@ -1598,8 +2242,11 @@
         grid-column: 1 / -1;
     }
 
+
     .shipper-create-layout {
         grid-template-columns: 1fr;
+
+        max-width: 680px;
     }
 
     .shipper-create-showcase {
@@ -1607,11 +2254,7 @@
     }
 
     .shipper-form-card {
-        max-width: 650px;
-
         width: 100%;
-
-        margin: 0 auto;
     }
 
 }
@@ -1624,6 +2267,7 @@
         padding: 30px 0 60px;
     }
 
+
     .team-page-header {
         align-items: flex-start;
 
@@ -1634,6 +2278,7 @@
         width: 100%;
     }
 
+
     .team-overview {
         grid-template-columns: 1fr;
     }
@@ -1642,11 +2287,15 @@
         grid-column: auto;
     }
 
+
     .team-card-header {
         align-items: flex-start;
 
         flex-direction: column;
+
+        gap: 15px;
     }
+
 
     .team-toolbar {
         width: 100%;
@@ -1660,9 +2309,11 @@
         width: 100%;
     }
 
+
     .team-toolbar-add {
         flex: 0 0 auto;
     }
+
 
     .team-table-wrapper {
         display: none;
@@ -1672,9 +2323,11 @@
         display: block;
     }
 
+
     .team-info-banner {
         align-items: flex-start;
     }
+
 
     .shipper-create-showcase {
         padding: 29px 24px;
@@ -1682,6 +2335,50 @@
 
     .shipper-form-card {
         padding: 25px 20px;
+    }
+
+
+    .team-create-visual {
+        margin-top: 28px;
+    }
+
+
+    .team-visual-members {
+        flex-wrap: wrap;
+    }
+
+    .team-visual-member {
+        flex: 1 1 45%;
+    }
+
+    .team-visual-add {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .team-role-card {
+        padding: 11px;
+    }
+
+    .role-card-icon {
+        width: 35px;
+        height: 35px;
+    }
+
+    .role-card-content small {
+        max-width: 240px;
+    }
+
+    .team-role-help {
+        font-size: .52rem;
+    }
+
+    .shipper-create-showcase h1 {
+        font-size: 2.55rem;
     }
 
 }
@@ -1703,6 +2400,7 @@
 
     .team-toolbar {
         flex-direction: column;
+
         align-items: stretch;
     }
 
@@ -1710,9 +2408,25 @@
         width: 100%;
     }
 
-    .shipper-create-showcase h1 {
-        font-size: 2.45rem;
+
+    .shipper-create-showcase {
+        padding: 26px 20px;
     }
+
+    .shipper-create-showcase h1 {
+        font-size: 2.35rem;
+    }
+
+
+    .shipper-form-card {
+        padding: 23px 17px;
+    }
+
+
+    .shipper-form-header h2 {
+        font-size: 1.3rem;
+    }
+
 
     .shipper-form-footer {
         flex-direction: column-reverse;
@@ -1722,6 +2436,218 @@
 
     .create-cancel-btn,
     .create-submit-btn {
+        width: 100%;
+    }
+
+
+    .team-role-card {
+        align-items: flex-start;
+    }
+
+    .role-card-radio {
+        margin-top: 8px;
+    }
+
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes emptyFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+}
+
+/* =========================================================
+   TEAM MEMBER ACTIONS
+========================================================= */
+
+.team-member-action {
+    min-height: 31px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 9px;
+
+    border-radius: 8px;
+
+    font-size: .53rem;
+
+    font-weight: 800;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+}
+
+.team-member-action:hover {
+    transform: translateY(-1px);
+}
+
+.team-member-action.danger {
+    color: #c64b4b;
+
+    background: #fff7f7;
+
+    border: 1px solid #f2d7d7;
+}
+
+.team-member-action.danger:hover {
+    color: #b43d3d;
+
+    background: #fff0f0;
+
+    border-color: #edc4c4;
+}
+
+.team-member-action.success {
+    color: #248d50;
+
+    background: #f0fbf4;
+
+    border: 1px solid #d9efdf;
+}
+
+.team-member-action.success:hover {
+    color: #1d7d46;
+
+    background: #e6f8ec;
+
+    border-color: #c9e8d2;
+}
+
+
+/* =========================================================
+   MOBILE ACTIONS
+========================================================= */
+
+.team-mobile-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding-top: 11px;
+
+    margin-top: 11px;
+
+    border-top: 1px solid #f0f2f4;
+}
+
+.team-mobile-actions form {
+    flex: 1;
+}
+
+.team-mobile-actions .team-member-action {
+    width: 100%;
+}
+
+.team-mobile-profile {
+    min-height: 31px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 10px;
+
+    color: #667384;
+
+    background: #f6f8f9;
+
+    border: 1px solid #e5eaed;
+
+    border-radius: 8px;
+
+    font-size: .53rem;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    transition:
+        color .2s ease,
+        background .2s ease,
+        transform .2s ease;
+}
+
+.team-mobile-profile:hover {
+    color: #238f51;
+
+    background: #eef9f2;
+
+    transform: translateX(2px);
+}
+
+
+/* =========================================================
+   GENERIC ROLE SUPPORT
+========================================================= */
+
+.team-role i {
+    width: 12px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   SEARCH FORM
+========================================================= */
+
+.team-search-form {
+    position: relative;
+}
+
+.team-search-form input {
+    display: block;
+}
+
+
+/* =========================================================
+   RESPONSIVE MEMBER ACTIONS
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .team-mobile-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .team-mobile-actions form,
+    .team-mobile-profile {
         width: 100%;
     }
 

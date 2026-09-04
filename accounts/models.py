@@ -86,6 +86,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     class Role(models.TextChoices):
         OWNER = "OWNER", _("Store Owner")
         SHIPPER = "SHIPPER", _("Shipper")
+        MANAGER = "MANAGER", _("Manager")
 
     id = models.UUIDField(
         primary_key=True,

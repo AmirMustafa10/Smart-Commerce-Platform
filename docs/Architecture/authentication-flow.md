@@ -63,3 +63,15 @@ Current templates:
 
 - Merchant registration
 - User login
+
+## User Roles
+
+The system currently defines three user roles:
+
+- Owner
+- Manager
+- Shipper
+
+Each role is granted access only to the functionality required for its responsibilities.
+
+This role-based approach keeps authorization simple while supporting future expansion.
