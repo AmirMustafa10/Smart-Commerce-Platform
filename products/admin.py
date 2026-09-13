@@ -5,7 +5,7 @@ from .models import Category, Product, ProductImage
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "store", "is_active", "sort_order", "created_at")
+    list_display = ("name", "store", "is_active", "is_deleted", "created_at")
     list_filter = ("store", "is_active", "is_deleted")
     search_fields = ("name", "store__name")
     ordering = ("store", "sort_order")
@@ -28,6 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
         "sku",
         "price",
         "is_active",
+        "is_deleted",
         "is_out_of_stock",
     )
     list_filter = ("store", "category", "is_active", "is_out_of_stock", "is_deleted")
