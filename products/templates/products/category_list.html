@@ -1,0 +1,616 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Categories | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'products/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="category-page">
+
+    <!-- Background -->
+    <div class="category-bg-glow category-bg-glow-1"></div>
+    <div class="category-bg-glow category-bg-glow-2"></div>
+
+    <div class="container position-relative">
+
+        <!-- Alerts -->
+        {% if messages %}
+            <div class="category-alerts">
+
+                {% for message in messages %}
+
+                    <div class="category-alert">
+
+                        <div class="category-alert-icon">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <div class="category-alert-content">
+                            {{ message }}
+                        </div>
+
+                        <button
+                            type="button"
+                            class="category-alert-close"
+                            aria-label="Close"
+                        >
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+
+        <!-- Header -->
+        <div class="category-page-header">
+
+            <div>
+
+                <span class="category-eyebrow">
+                    <i class="fa-solid fa-layer-group"></i>
+                    PRODUCT CATALOG
+                </span>
+
+                <h1 class="category-page-title">
+                    Categories
+                </h1>
+
+                <p class="category-page-subtitle">
+                    Organize your products into clear categories
+                    and keep your catalog easy to manage.
+                </p>
+
+            </div>
+
+
+            <div class="category-header-actions">
+
+                <a
+                    href="{% url 'products:category_create' %}"
+                    class="category-btn category-btn-primary"
+                >
+                    <i class="fa-solid fa-plus"></i>
+
+                    <span class="category-btn-content">
+                        Add Category
+                    </span>
+
+                    <span class="category-btn-loading">
+                        <span class="spinner-border spinner-border-sm"></span>
+                    </span>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stats -->
+        <div class="category-stats-grid">
+
+            <div class="category-stat-card">
+
+                <div class="category-stat-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+
+                <div>
+                    <span>Total Categories</span>
+
+                    <strong>
+                        {{ categories|length }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="category-stat-card">
+
+                <div class="category-stat-icon active">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+
+                <div>
+                    <span>Active</span>
+
+                    <strong>
+                        {{ active_categories_count }}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="category-stat-card">
+
+                <div class="category-stat-icon inactive">
+                    <i class="fa-solid fa-circle-pause"></i>
+                </div>
+
+                <div>
+                    <span>Inactive</span>
+
+                    <strong>
+                        {{ inactive_categories_count }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- List Card -->
+        <section class="category-list-card">
+
+            <!-- Toolbar -->
+            <div class="category-list-toolbar">
+
+                <div>
+                    <h2>
+                        All Categories
+                    </h2>
+
+                    <p>
+                        Manage and organize your product categories.
+                    </p>
+                </div>
+
+
+                <div class="category-search-wrapper">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="search"
+                        id="categorySearch"
+                        class="category-search-input"
+                        placeholder="Search categories..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            {% if categories %}
+
+                <!-- Desktop Table -->
+                <div class="category-table-wrapper">
+
+                    <table class="category-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Category
+                                </th>
+
+                                <th>
+                                    Description
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th class="text-end">
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for category in categories %}
+
+                                <tr
+                                    class="category-row"
+                                    data-search="
+                                        {{ category.name }}
+                                        {{ category.description|default:'' }}
+                                    "
+                                >
+
+                                    <td>
+
+                                        <div class="category-table-category">
+
+                                            <div class="category-table-icon">
+                                                <i class="fa-solid fa-layer-group"></i>
+                                            </div>
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ category.name }}
+                                                </strong>
+
+                                                <small>
+                                                    Product Category
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if category.description %}
+
+                                            <span class="category-description">
+                                                {{ category.description|truncatechars:90 }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="category-description category-description-empty">
+                                                No description
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        {% if category.is_active %}
+
+                                            <span class="category-status-badge active">
+                                                <span></span>
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="category-status-badge inactive">
+                                                <span></span>
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <div class="category-actions">
+
+                                            <a
+                                                href="{% url 'products:category_update' category.pk %}"
+                                                class="category-action-btn edit"
+                                                title="Edit category"
+                                            >
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+
+
+                                            <button
+                                                type="button"
+                                                class="category-action-btn delete delete-category-btn"
+                                                title="Delete category"
+                                                data-category-name="{{ category.name }}"
+                                                data-delete-url="{% url 'products:category_delete' category.pk %}"
+                                            >
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Mobile Cards -->
+                <div class="category-mobile-list">
+
+                    {% for category in categories %}
+
+                        <article
+                            class="category-mobile-card category-row"
+                            data-search="
+                                {{ category.name }}
+                                {{ category.description|default:'' }}
+                            "
+                        >
+
+                            <div class="category-mobile-top">
+
+                                <div class="category-table-category">
+
+                                    <div class="category-table-icon">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ category.name }}
+                                        </strong>
+
+                                        <small>
+                                            Product Category
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if category.is_active %}
+
+                                    <span class="category-status-badge active">
+                                        <span></span>
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="category-status-badge inactive">
+                                        <span></span>
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="category-mobile-description">
+
+                                {% if category.description %}
+                                    {{ category.description }}
+                                {% else %}
+                                    <span class="category-description-empty">
+                                        No description
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="category-mobile-footer">
+
+                                <a
+                                    href="{% url 'products:category_update' category.pk %}"
+                                    class="category-mobile-edit"
+                                >
+                                    <i class="fa-solid fa-pen"></i>
+                                    Edit
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="category-mobile-delete delete-category-btn"
+                                    data-category-name="{{ category.name }}"
+                                    data-delete-url="{% url 'products:category_delete' category.pk %}"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Search Empty -->
+                <div
+                    id="categorySearchEmpty"
+                    class="category-search-empty"
+                >
+
+                    <div class="category-empty-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+
+                    <h3>
+                        No categories found
+                    </h3>
+
+                    <p>
+                        Try searching with a different keyword.
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+                <!-- Empty State -->
+                <div class="category-empty-state">
+
+                    <div class="category-empty-illustration">
+
+                        <div class="empty-floating-icon empty-floating-icon-1">
+                            <i class="fa-solid fa-tag"></i>
+                        </div>
+
+                        <div class="empty-floating-icon empty-floating-icon-2">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+
+                        <div class="empty-floating-icon empty-floating-icon-3">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+
+                        <div class="category-empty-circle">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+
+                    </div>
+
+
+                    <span class="category-empty-eyebrow">
+                        YOUR CATALOG
+                    </span>
+
+                    <h2>
+                        No categories yet
+                    </h2>
+
+                    <p>
+                        Create your first category to start
+                        organizing your product catalog.
+                    </p>
+
+
+                    <a
+                        href="{% url 'products:category_create' %}"
+                        class="category-btn category-btn-primary"
+                    >
+
+                        <i class="fa-solid fa-plus"></i>
+
+                        <span class="category-btn-content">
+                            Create First Category
+                        </span>
+
+                        <span class="category-btn-loading">
+                            <span class="spinner-border spinner-border-sm"></span>
+                        </span>
+
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- Delete Modal -->
+<div
+    id="categoryDeleteModal"
+    class="category-delete-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="category-delete-overlay"
+        data-close-delete-modal
+    ></div>
+
+
+    <div class="category-delete-dialog">
+
+        <button
+            type="button"
+            class="category-delete-close"
+            data-close-delete-modal
+            aria-label="Close"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+
+        <div class="category-delete-icon">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+
+
+        <span class="category-delete-eyebrow">
+            DELETE CATEGORY
+        </span>
+
+
+        <h2>
+            Delete
+            <strong id="deleteCategoryName"></strong>?
+        </h2>
+
+
+        <p>
+            This category will be permanently removed.
+            Make sure it is no longer needed before continuing.
+        </p>
+
+
+        <form
+            method="post"
+            id="categoryDeleteForm"
+        >
+
+            {% csrf_token %}
+
+            <div class="category-delete-actions">
+
+                <button
+                    type="button"
+                    class="category-btn category-btn-light"
+                    data-close-delete-modal
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="confirmDeleteBtn"
+                    class="category-btn category-btn-danger"
+                >
+
+                    <span class="delete-btn-content">
+                        <i class="fa-solid fa-trash"></i>
+                        Delete Category
+                    </span>
+
+                    <span class="delete-btn-loading">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Deleting...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'products/js/category.js' %}"></script>
+{% endblock %}
