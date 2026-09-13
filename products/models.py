@@ -4,8 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
-
-from stores.models import TenantAwareModel
+from core.models import TenantAwareModel
 
 
 def validate_image_size(image):
