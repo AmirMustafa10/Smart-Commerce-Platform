@@ -1,0 +1,908 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Products | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'products/css/product.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="product-page">
+
+    <div class="product-page-bg">
+        <div class="product-glow product-glow-one"></div>
+        <div class="product-glow product-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             PAGE HEADER
+        ====================================================== -->
+
+        <header class="product-page-header">
+
+            <div>
+
+                <span class="product-eyebrow">
+                    <i class="fas fa-box-open"></i>
+                    PRODUCT CATALOG
+                </span>
+
+                <h1>
+                    Products
+                </h1>
+
+                <p>
+                    Manage your products, pricing, inventory and availability
+                    from one place.
+                </p>
+
+            </div>
+
+
+            <a
+                href="{% url 'products:product_create' %}"
+                class="btn product-add-btn"
+            >
+                <i class="fas fa-plus"></i>
+                Add product
+            </a>
+
+        </header>
+
+
+        <!-- =====================================================
+             MESSAGES
+        ====================================================== -->
+
+        {% if messages %}
+
+            <div class="product-messages">
+
+                {% for message in messages %}
+
+                    <div
+                        class="product-alert product-alert-{{ message.tags }}"
+                        role="alert"
+                    >
+
+                        <span class="product-alert-icon">
+
+                            {% if message.tags == "success" %}
+                                <i class="fas fa-check"></i>
+
+                            {% elif message.tags == "warning" %}
+                                <i class="fas fa-exclamation"></i>
+
+                            {% elif message.tags == "error" or message.tags == "danger" %}
+                                <i class="fas fa-times"></i>
+
+                            {% else %}
+                                <i class="fas fa-info"></i>
+                            {% endif %}
+
+                        </span>
+
+
+                        <span class="product-alert-message">
+                            {{ message }}
+                        </span>
+
+
+                        <button
+                            type="button"
+                            class="product-alert-close"
+                            aria-label="Close"
+                        >
+                            <i class="fas fa-times"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             OVERVIEW
+        ====================================================== -->
+
+        <section class="product-overview">
+
+            <article class="product-stat-card">
+
+                <div class="product-stat-icon green">
+                    <i class="fas fa-boxes-stacked"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Total products
+                    </span>
+
+                    <strong>
+                        {{ total_products_count }}
+                    </strong>
+
+                </div>
+
+                <div class="product-stat-decoration"></div>
+
+            </article>
+
+
+            <article class="product-stat-card">
+
+                <div class="product-stat-icon blue">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Active products
+                    </span>
+
+                    <strong>
+                        {{ active_products_count|default:"0" }}
+                    </strong>
+
+                </div>
+
+                <div class="product-stat-decoration"></div>
+
+            </article>
+
+
+            <article class="product-stat-card">
+
+                <div class="product-stat-icon orange">
+                    <i class="fas fa-warehouse"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Products in stock
+                    </span>
+
+                    <strong>
+                        {{ in_stock_products_count|default:"0" }}
+                    </strong>
+
+                </div>
+
+                <div class="product-stat-decoration"></div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             PRODUCT CARD
+        ====================================================== -->
+
+        <section class="product-card">
+
+            <div class="product-card-header">
+
+                <div class="product-card-title-row">
+
+                    <span class="product-card-icon">
+                        <i class="fas fa-box"></i>
+                    </span>
+
+                    <div>
+
+                        <h2>
+                            Products
+                        </h2>
+
+                        <p>
+                            Products available in your store.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="product-toolbar">
+
+                    <form
+                        method="GET"
+                        action="{% url 'products:product_list' %}"
+                        class="product-search-form"
+                    >
+
+                        <div class="product-search">
+
+                            <i class="fas fa-search"></i>
+
+                            <input
+                                type="search"
+                                name="q"
+                                id="productSearch"
+                                class="form-control"
+                                placeholder="Search products..."
+                                autocomplete="off"
+                                value="{{ request.GET.q }}"
+                            >
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="d-none"
+                        >
+                            Search
+                        </button>
+
+                    </form>
+
+
+                    <a
+                        href="{% url 'products:product_create' %}"
+                        class="btn product-toolbar-add"
+                    >
+                        <i class="fas fa-plus"></i>
+                        Add
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            {% if products %}
+
+                <!-- =================================================
+                     DESKTOP TABLE
+                ================================================== -->
+
+                <div class="product-table-wrapper">
+
+                    <table class="product-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Product
+                                </th>
+
+                                <th>
+                                    Category
+                                </th>
+
+                                <th>
+                                    SKU
+                                </th>
+
+                                <th>
+                                    Price
+                                </th>
+
+                                <th>
+                                    Stock
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th class="product-actions-head">
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="productTableBody">
+
+                            {% for product in products %}
+
+                                <tr
+                                    class="product-row"
+                                    data-search="
+                                        {{ product.name|default:''|lower }}
+                                        {{ product.sku|default:''|lower }}
+                                        {{ product.category.name|default:''|lower }}
+                                    "
+                                >
+
+                                    <!-- Product -->
+
+                                    <td>
+
+                                        <div class="product-member">
+
+                                            <span class="product-avatar">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+
+                                            <div class="product-member-info">
+
+                                                <strong>
+                                                    {{ product.name }}
+                                                </strong>
+
+                                                <span>
+
+                                                    {% if product.description %}
+                                                        {{ product.description|truncatechars:50 }}
+                                                    {% else %}
+                                                        No description
+                                                    {% endif %}
+
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- Category -->
+
+                                    <td>
+
+                                        {% if product.category %}
+
+                                            <span class="product-category">
+
+                                                <i class="fas fa-tag"></i>
+
+                                                {{ product.category.name }}
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="product-muted">
+                                                Uncategorized
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- SKU -->
+
+                                    <td>
+
+                                        {% if product.sku %}
+
+                                            <span class="product-sku">
+                                                {{ product.sku }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="product-muted">
+                                                —
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Price -->
+
+                                    <td>
+
+                                        <div class="product-price">
+
+                                            {% if product.discount_price %}
+
+                                                <strong>
+                                                    {{ product.discount_price }}
+                                                </strong>
+
+                                                <small>
+                                                    {{ product.price }}
+                                                </small>
+
+                                            {% else %}
+
+                                                <strong>
+                                                    {{ product.price|default:"0.00" }}
+                                                </strong>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- Stock -->
+
+                                    <td>
+
+                                        <div class="product-stock">
+
+                                            <strong>
+                                                {{ product.stock_quantity|default:"0" }}
+                                            </strong>
+
+
+                                            {% if product.stock_quantity <= 0 %}
+
+                                                <span class="stock-badge out">
+                                                    Out
+                                                </span>
+
+                                            {% elif product.stock_quantity <= 5 %}
+
+                                                <span class="stock-badge low">
+                                                    Low
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="stock-badge good">
+                                                    Good
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- Status -->
+
+                                    <td>
+
+                                        {% if product.is_active %}
+
+                                            <span class="product-status active">
+                                                <span></span>
+                                                Active
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="product-status inactive">
+                                                <span></span>
+                                                Inactive
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- Actions -->
+
+                                    <td>
+
+                                        <div class="product-actions">
+
+                                            <a
+                                                href="{% url 'products:product_update' product.pk %}"
+                                                class="product-action edit"
+                                                title="Edit product"
+                                            >
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+
+
+                                            <button
+                                                type="button"
+                                                class="product-action delete delete-product-btn"
+                                                title="Delete product"
+                                                data-product-name="{{ product.name }}"
+                                                data-delete-url="{% url 'products:product_delete' product.pk %}"
+                                            >
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                     MOBILE
+                ================================================== -->
+
+                <div
+                    class="product-mobile-list"
+                    id="productMobileList"
+                >
+
+                    {% for product in products %}
+
+                        <article
+                            class="product-mobile-card product-row"
+                            data-search="
+                                {{ product.name|default:''|lower }}
+                                {{ product.sku|default:''|lower }}
+                                {{ product.category.name|default:''|lower }}
+                            "
+                        >
+
+                            <div class="product-mobile-top">
+
+                                <div class="product-member">
+
+                                    <span class="product-avatar">
+                                        <i class="fas fa-box"></i>
+                                    </span>
+
+                                    <div class="product-member-info">
+
+                                        <strong>
+                                            {{ product.name }}
+                                        </strong>
+
+                                        <span>
+
+                                            {% if product.sku %}
+                                                SKU: {{ product.sku }}
+                                            {% else %}
+                                                No SKU
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if product.is_active %}
+
+                                    <span class="product-status active">
+                                        <span></span>
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="product-status inactive">
+                                        <span></span>
+                                        Inactive
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="product-mobile-meta">
+
+                                <div>
+
+                                    <span>
+                                        Category
+                                    </span>
+
+                                    <strong>
+
+                                        {% if product.category %}
+                                            {{ product.category.name }}
+                                        {% else %}
+                                            Uncategorized
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Price
+                                    </span>
+
+                                    <strong>
+
+                                        {% if product.discount_price %}
+                                            {{ product.discount_price }}
+                                        {% else %}
+                                            {{ product.price|default:"0.00" }}
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Stock
+                                    </span>
+
+                                    <strong>
+                                        {{ product.stock_quantity|default:"0" }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <p class="product-mobile-description">
+
+                                {% if product.description %}
+                                    {{ product.description }}
+                                {% else %}
+                                    No description added.
+                                {% endif %}
+
+                            </p>
+
+
+                            <div class="product-mobile-actions">
+
+                                <a
+                                    href="{% url 'products:product_update' product.pk %}"
+                                    class="product-mobile-edit"
+                                >
+                                    <i class="fas fa-pen"></i>
+                                    Edit
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="product-mobile-delete delete-product-btn"
+                                    data-product-name="{{ product.name }}"
+                                    data-delete-url="{% url 'products:product_delete' product.pk %}"
+                                >
+                                    <i class="fas fa-trash"></i>
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Search empty -->
+
+                <div
+                    class="product-search-empty"
+                    id="productSearchEmpty"
+                >
+
+                    <span>
+                        <i class="fas fa-search"></i>
+                    </span>
+
+                    <h3>
+                        No products found
+                    </h3>
+
+                    <p>
+                        Try another product name, SKU or category.
+                    </p>
+
+                </div>
+
+
+            {% else %}
+
+                <!-- =================================================
+                     EMPTY STATE
+                ================================================== -->
+
+                <div class="product-empty-state">
+
+                    <div class="product-empty-illustration">
+
+                        <div class="product-empty-ring ring-one"></div>
+                        <div class="product-empty-ring ring-two"></div>
+
+                        <div class="product-empty-main-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+
+                        <span class="product-empty-floating one">
+                            <i class="fas fa-tag"></i>
+                        </span>
+
+                        <span class="product-empty-floating two">
+                            <i class="fas fa-barcode"></i>
+                        </span>
+
+                    </div>
+
+
+                    <span class="product-empty-kicker">
+                        GET STARTED
+                    </span>
+
+
+                    <h2>
+                        Build your product catalog
+                    </h2>
+
+
+                    <p>
+                        Add your first product with a category,
+                        pricing and stock information.
+                    </p>
+
+
+                    <a
+                        href="{% url 'products:product_create' %}"
+                        class="btn product-empty-btn"
+                    >
+                        <i class="fas fa-plus"></i>
+                        Add product
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =====================================================
+             INFO
+        ====================================================== -->
+
+        <div class="product-info-banner">
+
+            <span>
+                <i class="fas fa-lightbulb"></i>
+            </span>
+
+            <div>
+
+                <strong>
+                    Keep your catalog accurate
+                </strong>
+
+                <p>
+                    Update pricing and stock regularly to keep
+                    your order workflow running smoothly.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =============================================================
+     DELETE MODAL
+============================================================== -->
+
+<div
+    class="product-delete-modal"
+    id="productDeleteModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="product-delete-overlay"
+        data-close-product-modal
+    ></div>
+
+
+    <div class="product-delete-dialog">
+
+        <button
+            type="button"
+            class="product-delete-close"
+            data-close-product-modal
+            aria-label="Close"
+        >
+            <i class="fas fa-times"></i>
+        </button>
+
+
+        <span class="product-delete-icon">
+            <i class="fas fa-trash-alt"></i>
+        </span>
+
+
+        <span class="product-delete-kicker">
+            DELETE PRODUCT
+        </span>
+
+
+        <h2>
+            Delete
+            <strong id="deleteProductName"></strong>?
+        </h2>
+
+
+        <p>
+            This action cannot be undone. The product will be
+            permanently removed from your catalog.
+        </p>
+
+
+        <form
+            method="post"
+            id="productDeleteForm"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="product-delete-actions">
+
+                <button
+                    type="button"
+                    class="product-delete-cancel"
+                    data-close-product-modal
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="product-delete-confirm"
+                    id="confirmProductDeleteBtn"
+                >
+
+                    <span class="delete-confirm-content">
+                        <i class="fas fa-trash"></i>
+                        Delete product
+                    </span>
+
+                    <span class="delete-confirm-loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Deleting...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'products/js/product.js' %}"></script>
+{% endblock %}

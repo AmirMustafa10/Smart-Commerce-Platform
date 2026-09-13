@@ -267,15 +267,43 @@
                                             class="dropdown-item wf-dropdown-item"
                                         >
 
-                                            <span class="wf-dropdown-icon">
-                                                <i class="fas fa-user-group"></i>
-                                            </span>
+                                        <span class="wf-dropdown-icon">
+                                            <i class="fas fa-user-group"></i>
+                                        </span>
 
-                                            Team
+                                        Team
 
                                         </a>
 
                                     </li>
+
+                                    {% if request.user.role == "OWNER" or request.user.role == "MANAGER" %}
+                                        <li>
+                                            <a
+                                                href="{% url 'products:category_list' %}"
+                                                class="dropdown-item wf-dropdown-item"
+                                            >
+
+                                            <span class="wf-dropdown-icon">
+                                                <i class="fas fa-tags"></i>
+                                            </span>
+                                            Categories
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a
+                                                href="{% url 'products:product_list' %}"
+                                                class="dropdown-item wf-dropdown-item"
+                                            >
+
+                                            <span class="wf-dropdown-icon">
+                                                <i class="fas fa-box"></i>
+                                            </span>
+                                            Products
+                                            </a>
+                                        </li>
+                                    {% endif %}
 
 
                                     <!-- Help -->

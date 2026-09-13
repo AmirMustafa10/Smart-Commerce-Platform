@@ -11,8 +11,11 @@ class HomeView(TemplateView):
     template_name = "core/home.html"
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.role == CustomUser.Role.OWNER:
-            return redirect("core:dashboard") 
+        if (
+            request.user.is_authenticated
+            and getattr(request.user, "role", None) == CustomUser.Role.OWNER
+        ):
+            return redirect("core:dashboard")
 
         return super().get(request, *args, **kwargs)
 

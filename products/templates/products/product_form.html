@@ -1,0 +1,993 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if object %}
+        Edit Product | WhatsFlow
+    {% else %}
+        Add Product | WhatsFlow
+    {% endif %}
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'products/css/product.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="product-page product-form-page">
+
+    <div class="product-page-bg">
+        <div class="product-glow product-glow-one"></div>
+        <div class="product-glow product-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             TOPBAR
+        ====================================================== -->
+
+        <div class="product-form-topbar">
+
+            <a
+                href="{% url 'products:product_list' %}"
+                class="product-back-link"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to products
+            </a>
+
+
+            <span class="product-form-top-label">
+                PRODUCT CATALOG
+            </span>
+
+        </div>
+
+
+        <!-- =====================================================
+             INTRO
+        ====================================================== -->
+
+        <header class="product-form-intro">
+
+            <span class="product-eyebrow">
+
+                <i class="fas fa-box-open"></i>
+
+                {% if object %}
+                    EDIT PRODUCT
+                {% else %}
+                    NEW PRODUCT
+                {% endif %}
+
+            </span>
+
+
+            <h1>
+
+                {% if object %}
+                    Edit product
+                {% else %}
+                    Add product
+                {% endif %}
+
+            </h1>
+
+
+            <p>
+
+                {% if object %}
+                    Update the product details, pricing and inventory
+                    your team needs.
+                {% else %}
+                    Add the product details, pricing and inventory
+                    your team needs.
+                {% endif %}
+
+            </p>
+
+        </header>
+
+
+        <!-- =====================================================
+             FORM LAYOUT
+        ====================================================== -->
+
+        <div class="product-form-layout">
+
+
+            <!-- =================================================
+                 SHOWCASE
+            ================================================== -->
+
+            <section class="product-create-showcase">
+
+                <div class="product-showcase-content">
+
+                    <span class="product-showcase-kicker">
+
+                        {% if object %}
+                            MANAGE YOUR CATALOG
+                        {% else %}
+                            BUILD YOUR CATALOG
+                        {% endif %}
+
+                    </span>
+
+
+                    <h2>
+
+                        {% if object %}
+
+                            Keep your product
+                            <span>up to date.</span>
+
+                        {% else %}
+
+                            Add products
+                            <span>with confidence.</span>
+
+                        {% endif %}
+
+                    </h2>
+
+
+                    <p>
+
+                        {% if object %}
+
+                            Keep your catalog accurate with clear
+                            pricing, stock and category information.
+
+                        {% else %}
+
+                            Keep your catalog organized with clear
+                            pricing, stock and category information.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <div class="product-create-benefits">
+
+                        <div>
+
+                            <span>
+                                <i class="fas fa-tag"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Organized catalog
+                                </strong>
+
+                                <small>
+                                    Assign every product to a category.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                <i class="fas fa-money-bill-wave"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Flexible pricing
+                                </strong>
+
+                                <small>
+                                    Add regular and discounted prices.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Inventory control
+                                </strong>
+
+                                <small>
+                                    Keep stock quantities accurate.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIVE PREVIEW
+                    ================================================== -->
+
+                    <div class="product-create-preview">
+
+                        <div class="product-create-preview-header">
+
+                            <span>
+                                LIVE PREVIEW
+                            </span>
+
+                            <small>
+
+                                <i class="fas fa-circle"></i>
+                                {% if object and not object.is_active %}
+                                    Inactive
+                                {% else %}
+                                    Active
+                                {% endif %}
+
+                            </small>
+
+                        </div>
+
+
+                        <div class="product-create-preview-product">
+
+                            <span class="preview-product-icon">
+                                <i class="fas fa-box"></i>
+                            </span>
+
+
+                            <div>
+
+                                <strong id="productPreviewName">
+
+                                    {% if object %}
+                                        {{ object.name }}
+                                    {% else %}
+                                        New product
+                                    {% endif %}
+
+                                </strong>
+
+
+                                <small id="productPreviewCategory">
+
+                                    {% if object and object.category %}
+                                        {{ object.category.name }}
+                                    {% else %}
+                                        Uncategorized
+                                    {% endif %}
+
+                                </small>
+
+                            </div>
+
+
+                            <div class="preview-product-price">
+
+                                <strong id="productPreviewPrice">
+
+                                    {% if object and object.price %}
+                                        {{ object.price }}
+                                    {% else %}
+                                        0.00
+                                    {% endif %}
+
+                                </strong>
+
+
+                                <small id="productPreviewOldPrice">
+
+                                    {% if object and object.discount_price %}
+                                        {% if object.price != object.discount_price %}
+                                            {{ object.price }}
+                                        {% else %}
+                                            —
+                                        {% endif %}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-preview-meta">
+
+                            <span id="productPreviewSku">
+
+                                {% if object and object.sku %}
+                                    SKU: {{ object.sku }}
+                                {% else %}
+                                    SKU: —
+                                {% endif %}
+
+                            </span>
+
+
+                            <span id="productPreviewStock">
+
+                                {% if object %}
+                                    Stock: {{ object.stock_quantity }}
+                                {% else %}
+                                    Stock: 0
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 FORM CARD
+            ================================================== -->
+
+            <section class="product-form-card">
+
+
+                <div class="product-form-card-header">
+
+                    <span class="product-form-card-icon">
+                        <i class="fas fa-box"></i>
+                    </span>
+
+
+                    <div>
+
+                        <span>
+                            PRODUCT DETAILS
+                        </span>
+
+
+                        <h2>
+
+                            {% if object %}
+                                Edit product
+                            {% else %}
+                                Create product
+                            {% endif %}
+
+                        </h2>
+
+
+                        <p>
+
+                            {% if object %}
+                                Update the information below.
+                            {% else %}
+                                Fill in the information below.
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FORM
+                ================================================== -->
+
+                <form
+                    method="post"
+                    id="productForm"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- =================================================
+                         NON FIELD ERRORS
+                    ================================================== -->
+
+                    {% if form.non_field_errors %}
+
+                        <div class="product-form-error">
+
+                            <i class="fas fa-circle-exclamation"></i>
+
+                            <div>
+                                {{ form.non_field_errors }}
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         BASIC INFORMATION
+                    ================================================== -->
+
+                    <section class="product-form-section">
+
+                        <div class="product-section-heading">
+
+                            <span>
+                                01
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Basic information
+                                </strong>
+
+                                <small>
+                                    Give your product a clear identity.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-form-grid">
+
+
+                            <!-- Name -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.name.id_for_label }}"
+                                >
+
+                                    Product name
+                                    <b>*</b>
+
+                                </label>
+
+
+                                {{ form.name }}
+
+
+                                {% if form.name.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.name.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Category -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.category.id_for_label }}"
+                                >
+
+                                    Category
+                                    <b>*</b>
+
+                                </label>
+
+
+                                {{ form.category }}
+
+
+                                {% if form.category.errors %}
+
+                                    <small
+                                        class="product-field-error"
+                                        style="display:block; margin-top:5px;"
+                                    >
+                                        {{ form.category.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+
+                                {% if not categories %}
+
+                                    <small
+                                        class="text-warning"
+                                        style="display:block; margin-top:5px;"
+                                    >
+                                        No categories available.
+
+                                        <a
+                                            href="{% url 'products:category_create' %}"
+                                        >
+                                            Create one first
+                                        </a>
+
+                                    </small>
+
+                                {% else %}
+
+                                    <small
+                                        class="text-muted"
+                                        style="display:block; margin-top:5px;"
+                                    >
+                                        Can't find the category?
+
+                                        <a
+                                            href="{% url 'products:category_create' %}"
+                                        >
+                                            Add new
+                                        </a>
+
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- SKU -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.sku.id_for_label }}"
+                                >
+
+                                    SKU
+
+                                    <span>
+                                        Optional
+                                    </span>
+
+                                </label>
+
+
+                                {{ form.sku }}
+
+
+                                {% if form.sku.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.sku.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Description -->
+
+                        <div class="product-field">
+
+                            <label
+                                for="{{ form.description.id_for_label }}"
+                            >
+
+                                Description
+
+                                <span>
+                                    Optional
+                                </span>
+
+                            </label>
+
+
+                            {{ form.description }}
+
+
+                            {% if form.description.errors %}
+
+                                <small class="product-field-error">
+                                    {{ form.description.errors.0 }}
+                                </small>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         PRICING
+                    ================================================== -->
+
+                    <section class="product-form-section">
+
+                        <div class="product-section-heading">
+
+                            <span>
+                                02
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Pricing
+                                </strong>
+
+                                <small>
+                                    Set selling and cost prices.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-form-grid product-price-grid">
+
+
+                            <!-- Price -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.price.id_for_label }}"
+                                >
+
+                                    Price
+                                    <b>*</b>
+
+                                </label>
+
+
+                                <div class="product-money-field">
+
+                                    <span>$</span>
+
+                                    {{ form.price }}
+
+                                </div>
+
+
+                                {% if form.price.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.price.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Discount -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.discount_price.id_for_label }}"
+                                >
+
+                                    Discount price
+
+                                    <span>
+                                        Optional
+                                    </span>
+
+                                </label>
+
+
+                                <div class="product-money-field">
+
+                                    <span>$</span>
+
+                                    {{ form.discount_price }}
+
+                                </div>
+
+
+                                {% if form.discount_price.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.discount_price.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- Cost -->
+
+                            <div class="product-field">
+
+                                <label
+                                    for="{{ form.cost_price.id_for_label }}"
+                                >
+
+                                    Cost price
+
+                                    <span>
+                                        Optional
+                                    </span>
+
+                                </label>
+
+
+                                <div class="product-money-field">
+
+                                    <span>$</span>
+
+                                    {{ form.cost_price }}
+
+                                </div>
+
+
+                                {% if form.cost_price.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.cost_price.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-form-hint">
+
+                            <i class="fas fa-lightbulb"></i>
+
+                            <span>
+                                Keep the discount price below the regular
+                                selling price.
+                            </span>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         INVENTORY
+                    ================================================== -->
+
+                    <section class="product-form-section">
+
+                        <div class="product-section-heading">
+
+                            <span>
+                                03
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Inventory
+                                </strong>
+
+                                <small>
+                                    Set the available stock quantity.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-stock-form-card">
+
+                            <span class="product-stock-form-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+
+
+                            <div class="product-stock-form-content">
+
+                                <label
+                                    for="{{ form.stock_quantity.id_for_label }}"
+                                >
+
+                                    Stock quantity
+                                    <b>*</b>
+
+                                </label>
+
+
+                                {{ form.stock_quantity }}
+
+
+                                {% if form.stock_quantity.errors %}
+
+                                    <small class="product-field-error">
+                                        {{ form.stock_quantity.errors.0 }}
+                                    </small>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="product-stock-counter">
+
+                                <span>
+                                    CURRENT
+                                </span>
+
+                                <strong id="stockCounter">
+
+                                    {% if object %}
+                                        {{ object.stock_quantity }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         STATUS
+                    ================================================== -->
+
+                    <section class="product-form-section">
+
+                        <div class="product-section-heading">
+
+                            <span>
+                                04
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Availability
+                                </strong>
+
+                                <small>
+                                    Choose whether this product is active.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="product-active-box">
+
+                            <div>
+
+                                <span class="product-active-icon">
+                                    <i class="fas fa-toggle-on"></i>
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        Product status
+                                    </strong>
+
+                                    <small>
+                                        Active products can be used in your
+                                        store.
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+
+                            <label class="product-switch">
+
+                                {{ form.is_active }}
+
+                                <span></span>
+
+                            </label>
+
+                        </div>
+
+
+                        {% if form.is_active.errors %}
+
+                            <small class="product-field-error">
+                                {{ form.is_active.errors.0 }}
+                            </small>
+
+                        {% endif %}
+
+                    </section>
+
+
+                    <!-- =================================================
+                         FOOTER
+                    ================================================== -->
+
+                    <div class="product-form-footer">
+
+                        <a
+                            href="{% url 'products:product_list' %}"
+                            class="product-form-cancel"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="product-form-submit"
+                            id="productSubmitBtn"
+                        >
+
+                            <span class="product-submit-content">
+
+                                {% if object %}
+
+                                    <i class="fas fa-check"></i>
+                                    Save changes
+
+                                {% else %}
+
+                                    <i class="fas fa-plus"></i>
+                                    Create product
+
+                                {% endif %}
+
+                            </span>
+
+
+                            <span class="product-submit-loading">
+
+                                <i class="fas fa-spinner fa-spin"></i>
+
+                                {% if object %}
+                                    Saving...
+                                {% else %}
+                                    Creating...
+                                {% endif %}
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'products/js/product.js' %}"></script>
+{% endblock %}

@@ -111,11 +111,10 @@ class MerchantSignUpForm(forms.Form):
         return cleaned_data
 
 
-class ShipperCreationForm(forms.ModelForm):
+class TeamMemberCreationForm(forms.ModelForm):
     """
-    Form for creating a new shipper account.
-    Exposes only full_name, email, and password.
-    Store and role are set automatically in the view.
+    Form for creating a new team member (Manager or Shipper).
+    Store is set automatically in the view.
     """
 
     password = forms.CharField(
@@ -125,9 +124,18 @@ class ShipperCreationForm(forms.ModelForm):
         help_text=_("Enter a strong password for the shipper."),
     )
 
+    role = forms.ChoiceField(
+        label=_("Role"),
+        choices=[
+            (CustomUser.Role.MANAGER, _("Manager")),
+            (CustomUser.Role.SHIPPER, _("Shipper")),
+        ],
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
     class Meta:
         model = CustomUser
-        fields = ["full_name", "email"]
+        fields = ["full_name", "email", "role"]
 
     def clean_email(self):
         """Normalize email and ensure uniqueness."""

@@ -1,0 +1,559 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+        {{page_title}} Category | WhatsFlow
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'products/css/category.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="category-page category-form-page">
+
+    <div class="category-bg-glow category-bg-glow-1"></div>
+    <div class="category-bg-glow category-bg-glow-2"></div>
+
+    <div class="container position-relative">
+
+        <!-- Header -->
+        <div class="category-page-header">
+
+            <div>
+
+                <a
+                    href="{% url 'products:category_list' %}"
+                    class="category-btn category-btn-light"
+                    style="display:inline-flex; min-height:38px; margin-bottom:22px;"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to Categories
+                </a>
+
+                <span class="category-eyebrow">
+                    <i class="fa-solid fa-layer-group"></i>
+
+                    {% if object %}
+                        CATEGORY MANAGEMENT
+                    {% else %}
+                        NEW CATEGORY
+                    {% endif %}
+
+                </span>
+
+                <h1 class="category-page-title">
+
+                        {{page_title}} Category
+                </h1>
+
+                <p class="category-page-subtitle">
+
+                    {% if object %}
+                        Update this category's information and status.
+                    {% else %}
+                        Create a new category to organize your products.
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        {% if form.non_field_errors %}
+
+            <div class="category-alerts">
+
+                <div class="category-alert">
+
+                    <div class="category-alert-icon">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+
+                    <div class="category-alert-content">
+                        {{ form.non_field_errors }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Form Layout -->
+        {% if object %}
+
+            <div class="category-edit-layout">
+
+        {% else %}
+
+            <div class="category-form-layout">
+
+        {% endif %}
+
+
+            {% if object %}
+
+                <!-- Edit Summary -->
+                <aside class="category-edit-summary">
+
+                    <div class="category-summary-icon">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+
+                    <span class="category-summary-label">
+                        CURRENT CATEGORY
+                    </span>
+
+                    <h2 id="categorySummaryName">
+                        {{ form.instance.name|default:"Category" }}
+                    </h2>
+
+                    <p id="categorySummaryDescription">
+
+                        {% if form.instance.description %}
+                            {{ form.instance.description }}
+                        {% else %}
+                            No description has been added to this category yet.
+                        {% endif %}
+
+                    </p>
+
+
+                    <div class="category-summary-status">
+
+                        {% if form.instance.is_active %}
+
+                            <span class="category-status-badge active">
+                                <span></span>
+                                Active
+                            </span>
+
+                            <small>
+                                This category is available for products.
+                            </small>
+
+                        {% else %}
+
+                            <span class="category-status-badge inactive">
+                                <span></span>
+                                Inactive
+                            </span>
+
+                            <small>
+                                This category is currently disabled.
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="category-summary-divider"></div>
+
+
+                    <div class="category-summary-meta">
+
+                        <div>
+                            <span>Category ID</span>
+                            <strong>#{{ form.instance.pk }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Type</span>
+                            <strong>Product Category</strong>
+                        </div>
+
+                    </div>
+
+                </aside>
+
+            {% else %}
+
+                <!-- Create Showcase -->
+                <aside class="category-showcase">
+
+                    <div class="category-showcase-content">
+
+                        <span class="category-showcase-badge">
+                            <i class="fa-solid fa-layer-group"></i>
+                            SMART CATALOG
+                        </span>
+
+
+                        <h2>
+                            Build a cleaner
+                            <span>product catalog.</span>
+                        </h2>
+
+
+                        <p>
+                            Create simple, meaningful categories
+                            that make your products easier to manage
+                            across your WhatsApp order flow.
+                        </p>
+
+
+                        <div class="category-benefits">
+
+                            <div class="category-benefit">
+
+                                <div class="category-benefit-icon">
+                                    <i class="fa-solid fa-boxes-stacked"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Organize products
+                                    </strong>
+
+                                    <span>
+                                        Keep related products together.
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="category-benefit">
+
+                                <div class="category-benefit-icon">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Faster management
+                                    </strong>
+
+                                    <span>
+                                        Find and manage products faster.
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="category-benefit">
+
+                                <div class="category-benefit-icon">
+                                    <i class="fa-solid fa-chart-simple"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Cleaner catalog
+                                    </strong>
+
+                                    <span>
+                                        Give your store a structured look.
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Preview -->
+                    <div class="category-preview-card">
+
+                        <div class="category-preview-top">
+
+                            <span class="category-preview-label">
+                                LIVE PREVIEW
+                            </span>
+
+                            <span class="category-preview-status">
+                                <span></span>
+                                Active
+                            </span>
+
+                        </div>
+
+
+                        <div class="category-preview-main">
+
+                            <div class="category-preview-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+
+                            <div>
+
+                                <strong id="categoryPreviewName">
+                                    New category
+                                </strong>
+
+                                <span id="categoryPreviewDescription">
+                                    Category description
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Decorations -->
+                    <div class="showcase-circle showcase-circle-1"></div>
+                    <div class="showcase-circle showcase-circle-2"></div>
+                    <div class="showcase-circle showcase-circle-3"></div>
+
+                </aside>
+
+            {% endif %}
+
+
+            <!-- Form Card -->
+            <section class="category-form-card">
+
+                <div class="category-form-header">
+
+                    <div class="category-form-number">
+                            01
+                    </div>
+
+                    <div>
+
+                        <span class="category-form-eyebrow">
+                            CATEGORY DETAILS
+                        </span>
+
+                        <h2>
+                            {% if object %}
+                                Update category
+                            {% else %}
+                                Category information
+                            {% endif %}
+                        </h2>
+
+                        <p>
+                            Add the details you want to show for this category.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="post"
+                    id="categoryForm"
+                    novalidate
+                >
+
+                    {% csrf_token %}
+
+
+                    {% if form.non_field_errors %}
+
+                        <div class="category-form-errors">
+                            {{ form.non_field_errors }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Name -->
+                    <div class="category-field-group">
+
+                        <label
+                            for="{{ form.name.id_for_label }}"
+                            class="category-field-label"
+                        >
+                            Category Name
+
+                            <span>*</span>
+                        </label>
+
+
+                        <div class="category-input-wrapper">
+
+                            <span class="category-input-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </span>
+
+                            {{ form.name }}
+
+                        </div>
+
+
+                        {% if form.name.errors %}
+
+                            <div class="category-field-error">
+
+                                <i class="fa-solid fa-circle-exclamation"></i>
+
+                                <span>
+                                    {{ form.name.errors|striptags }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Description -->
+                    <div class="category-field-group">
+
+                        <label
+                            for="{{ form.description.id_for_label }}"
+                            class="category-field-label"
+                        >
+                            Description
+
+                            <span class="optional">
+                                Optional
+                            </span>
+                        </label>
+
+
+                        <div class="category-input-wrapper">
+
+                            <span class="category-input-icon category-textarea-icon">
+                                <i class="fa-solid fa-align-left"></i>
+                            </span>
+
+                            {{ form.description }}
+
+                        </div>
+
+
+                        {% if form.description.errors %}
+
+                            <div class="category-field-error">
+
+                                <i class="fa-solid fa-circle-exclamation"></i>
+
+                                <span>
+                                    {{ form.description.errors|striptags }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Status -->
+                    <div class="category-status-section">
+
+                        <div class="category-status-copy">
+
+                            <div class="category-status-icon">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Active category
+                                </strong>
+
+                                <span>
+                                    Active categories can be used for products.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <label class="category-switch">
+
+                            {{ form.is_active }}
+
+                            <span class="category-switch-slider"></span>
+
+                        </label>
+
+                    </div>
+
+
+                    {% if form.is_active.errors %}
+
+                        <div class="category-field-error mb-3">
+
+                            <i class="fa-solid fa-circle-exclamation"></i>
+
+                            <span>
+                                {{ form.is_active.errors|striptags }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Footer -->
+                    <div class="category-form-footer">
+
+                        <a
+                            href="{% url 'products:category_list' %}"
+                            class="category-btn category-btn-light"
+                        >
+                            Cancel
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            id="categorySubmitBtn"
+                            class="category-btn category-btn-primary"
+                        >
+
+                            <span class="category-btn-content">
+
+                                {% if object %}
+
+                                    <i class="fa-solid fa-check"></i>
+                                    {{btn_text}}
+
+                                {% else %}
+
+                                    <i class="fa-solid fa-plus"></i>
+                                    {{btn_text}}
+
+                                {% endif %}
+
+                            </span>
+
+
+                            <span class="category-btn-loading">
+
+                                <span class="spinner-border spinner-border-sm"></span>
+
+                                Saving...
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'products/js/category.js' %}"></script>
+{% endblock %}

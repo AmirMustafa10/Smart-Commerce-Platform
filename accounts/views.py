@@ -10,7 +10,7 @@ from django.views.generic import FormView, DetailView, UpdateView
 from django.utils.translation import gettext_lazy as _
 from stores.models import Store
 from django.contrib.auth import get_user_model
-from .forms import MerchantSignUpForm, ShipperCreationForm, UserProfileUpdateForm
+from .forms import MerchantSignUpForm, TeamMemberCreationForm, UserProfileUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
@@ -74,26 +74,27 @@ class MerchantLoginView(LoginView):
     redirect_authenticated_user = True
 
     def get_success_url(self):
-        return reverse_lazy("core:dashboard")
+        return reverse_lazy("core:home")
 
 
 class TeamListView(LoginRequiredMixin, ListView):
     """
-    List all shippers belonging to the current owner's store with search functionality.
+    List all team member belonging to the current owner's store with search functionality.
     """
 
     model = CustomUser
     template_name = "accounts/team_list.html"
-    context_object_name = "shippers"
+    context_object_name = "team_members"
 
     def get_queryset(self):
         """
-        Strictly filter to shippers of the current user's store,
+        Strictly filter to team member of the current user's store,
         and apply search filtering if a query is provided.
         """
+
         qs = CustomUser.objects.filter(
             store=self.request.user.store,
-            role=CustomUser.Role.SHIPPER,
+            role__in=[CustomUser.Role.SHIPPER, CustomUser.Role.MANAGER],
         )
 
         search_query = self.request.GET.get("q", "").strip()
@@ -113,50 +114,58 @@ class TeamListView(LoginRequiredMixin, ListView):
         return context
 
 
-class ShipperCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
+class TeamMemberCreateView(LoginRequiredMixin, OwnerRequiredMixin, CreateView):
     """
-    Create a new shipper under the current owner's store.
+    Create a new team member (Manager or Shipper) under the current owner's store.
     """
 
     model = CustomUser
-    form_class = ShipperCreationForm
-    template_name = "accounts/shipper_form.html"
+    form_class = TeamMemberCreationForm
+    template_name = "accounts/create_team_member.html"
     success_url = reverse_lazy("accounts:team_list")
 
     def get_form_kwargs(self):
         """
-        assign the store and role automatically.
+        Assign the store automatically. Role is now chosen in the form.
         """
         kwargs = super().get_form_kwargs()
-        kwargs["instance"] = CustomUser(
-            store=self.request.user.store, role=CustomUser.Role.SHIPPER
-        )
+        kwargs["instance"] = CustomUser(store=self.request.user.store)
         return kwargs
 
     def form_valid(self, form):
-        messages.success(self.request, _("Shipper added successfully."))
+        messages.success(
+            self.request, _(f"Team member added successfully.")
+        )
         return super().form_valid(form)
 
 
-class ShipperToggleStatusView(LoginRequiredMixin, OwnerRequiredMixin, View):
+class TeamMemberToggleStatusView(LoginRequiredMixin, OwnerRequiredMixin, View):
     """
-    Toggle the is_active status of a shipper.
+    Toggle the is_active status of a team member (Manager or Shipper).
     Only accessible via POST to prevent accidental changes.
     """
 
     def post(self, request, pk, *args, **kwargs):
-        shipper = get_object_or_404(
-            CustomUser, pk=pk, store=request.user.store, role=CustomUser.Role.SHIPPER
+        member = get_object_or_404(
+            CustomUser,
+            pk=pk,
+            store=request.user.store,
+            role__in=[CustomUser.Role.SHIPPER, CustomUser.Role.MANAGER],
         )
 
-        shipper.is_active = not shipper.is_active
-        shipper.save()
+        member.is_active = not member.is_active
+        member.save()
 
-        if shipper.is_active:
-            messages.success(request, f"Shipper '{shipper.full_name}' is now Active.")
+        if member.is_active:
+            messages.success(
+                request,
+                _("Member '%(name)s' is now Active.") % {"name": member.full_name},
+            )
         else:
             messages.warning(
-                request, f"Shipper '{shipper.full_name}' has been Deactivated."
+                request,
+                _("Member '%(name)s' has been Deactivated.")
+                % {"name": member.full_name},
             )
 
         return redirect("accounts:team_list")
@@ -195,14 +204,18 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
         messages.success(self.request, _("Your profile has been updated successfully."))
         return super().form_valid(form)
 
+
 class CustomPasswordChangeView(PasswordChangeView):
     """
     Secure view for changing the password.
     Uses Django's built-in form and logic for maximum security.
     """
+
     template_name = "accounts/password_change.html"
-    success_url = reverse_lazy('accounts:my_profile') 
+    success_url = reverse_lazy("accounts:my_profile")
 
     def form_valid(self, form):
-        messages.success(self.request, _("Your password has been successfully updated!"))
+        messages.success(
+            self.request, _("Your password has been successfully updated!")
+        )
         return super().form_valid(form)

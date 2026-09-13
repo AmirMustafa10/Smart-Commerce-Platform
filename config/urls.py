@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("accounts.urls")),
     path("", include("stores.urls")),
     path("", include("core.urls")),
+    path("", include("products.urls")),
 ]

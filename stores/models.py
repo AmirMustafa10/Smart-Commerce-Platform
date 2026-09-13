@@ -89,35 +89,3 @@ class Store(models.Model):
         """Enforce full validation before every save."""
         self.full_clean()
         super().save(*args, **kwargs)
-
-
-class TenantAwareModel(models.Model):
-    """
-    Abstract base model that enforces tenant isolation.
-    All concrete business models (Product, Order, etc.) must inherit from this.
-    """
-
-    store = models.ForeignKey(
-        "stores.Store",  # string reference to avoid circular imports
-        on_delete=models.PROTECT,
-        related_name="%(class)s_related",  # unique reverse accessor for each child model
-        db_index=True,
-        help_text=_("The store (tenant) this record belongs to."),
-    )
-
-    class Meta:
-        abstract = True
-
-    def clean(self):
-        """
-        Ensure every tenant-aware model instance is always associated with a store.
-        This is a critical security control to prevent accidental cross-tenant data leakage.
-        """
-        super().clean()
-        if self.store_id is None:
-            raise ValidationError({"store": _("A store (tenant) must be assigned.")})
-
-    def save(self, *args, **kwargs):
-        """Validate tenant association before saving."""
-        self.full_clean()
-        super().save(*args, **kwargs)

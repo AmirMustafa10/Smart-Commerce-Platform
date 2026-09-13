@@ -10,11 +10,11 @@ urlpatterns = [
     path("login/", views.MerchantLoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("team/", views.TeamListView.as_view(), name="team_list"),
-    path("shippers/add/", views.ShipperCreateView.as_view(), name="shipper_create"),
+    path("team/add/", views.TeamMemberCreateView.as_view(), name="team_member_create"),
     path(
-        "shippers/<uuid:pk>/toggle/",
-        views.ShipperToggleStatusView.as_view(),
-        name="shipper_toggle",
+        "team-member/<uuid:pk>/toggle/",
+        views.TeamMemberToggleStatusView.as_view(),
+        name="team_member_toggle",
     ),
     path(
         "team/<uuid:pk>/",
