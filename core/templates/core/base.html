@@ -593,6 +593,7 @@
 
                 <div class="wf-footer-links">
 
+                    {% if request.resolver_match.url_name == 'home' %}
                     <!-- Product -->
                     <div class="wf-footer-column">
 
@@ -617,6 +618,7 @@
                         </a>
 
                     </div>
+                    {% endif %}
 
 
                     <!-- Account -->
