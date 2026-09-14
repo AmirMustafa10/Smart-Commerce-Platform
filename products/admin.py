@@ -46,8 +46,8 @@ class ProductAdmin(admin.ModelAdmin):
         "sku",
         "price",
         "is_active",
-        "is_deleted",
         "is_out_of_stock",
+        "stock_quantity",
     )
     list_filter = ("store", "category", "is_active", OutOfStockFilter, "is_deleted")
     search_fields = ("name", "sku", "store__name", "category__name")
