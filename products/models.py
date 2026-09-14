@@ -58,9 +58,7 @@ class Category(TenantAwareModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["store", "name"],
-                condition=models.Q(
-                    is_deleted=False
-                ),
+                condition=models.Q(is_deleted=False),
                 name="unique_active_category_name_per_store",
             )
         ]
@@ -226,14 +224,6 @@ class Product(TenantAwareModel):
                 raise ValidationError(
                     {"category": _("Selected category does not belong to this store.")}
                 )
-
-    def save(self, *args, **kwargs):
-        if self.stock_quantity <= 0:
-            self.is_out_of_stock = True
-        else:
-            self.is_out_of_stock = False
-
-        super().save(*args, **kwargs)
 
     @property
     def final_price(self):

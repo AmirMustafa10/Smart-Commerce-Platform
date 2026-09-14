@@ -65,7 +65,6 @@ class ProductAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "is_active",
-                    "is_out_of_stock",
                     "is_deleted",
                     "stock_quantity",
                 )
