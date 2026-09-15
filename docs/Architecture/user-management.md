@@ -1,86 +1,154 @@
 # User Management
 
-## Custom User Admin
+## Purpose
 
-The project uses a customized Django Admin interface for the custom user model.
+This document describes how users are managed throughout the Smart Commerce Platform.
 
-The default Django User Admin was replaced because it relies on the default username-based authentication model.
+It explains the user lifecycle, ownership model, internal staff management, and profile management while keeping authentication and authorization documented separately.
 
-## Implementation
+---
 
-The custom admin extends Django's built-in `UserAdmin` functionality while adapting:
+## Scope
 
-- Display fields
-- Add user form configuration
-- Change user form configuration
-- Search and filtering options
+This document covers:
 
-## Benefits
+- Merchant accounts
+- Internal staff management
+- User lifecycle
+- Profile management
+- Password management
 
-- Maintains Django's built-in permission management.
-- Supports custom authentication fields.
-- Provides a better administration experience for merchants.
+This document does **not** cover:
 
-## Alternative Considered
+- Authentication workflow
+- Authorization rules
+- Django Admin configuration
+- Database implementation
 
-### Building Admin from ModelAdmin
+---
 
-Rejected because it requires manually recreating existing Django authentication admin features.
+## Overview
 
-## Store Administration
+The platform distinguishes between business owners and internal staff members.
 
-The project provides a customized Django Admin interface for managing tenant stores.
+Merchants register publicly to create their business within the platform, while internal users are created and managed exclusively by the store owner.
 
-The Store Admin configuration improves management efficiency by providing a structured interface for store operations.
+This approach preserves tenant ownership and prevents unauthorized account creation.
 
-Future improvements may include:
+---
 
-- Store activity tracking
-- Tenant-specific permissions
-- Audit logging
-- Store statistics
+# User Types
 
-## Staff Account Management
+The platform currently supports multiple user types.
 
-Store owners can create and manage staff accounts through a dedicated creation form.
+### Merchant
 
-Currently, the system supports shipper accounts.
+The merchant is the owner of the business and the primary administrator of the store.
 
-Store owners are responsible for:
+The merchant is responsible for managing the business, creating internal users, and maintaining store configuration.
 
-- Creating shipper accounts
+---
+
+### Manager
+
+Managers are internal staff members created by the store owner.
+
+They are intended to assist with day-to-day business operations while remaining under the ownership of the merchant.
+
+---
+
+### Shipper
+
+Shippers are internal users responsible for delivery-related operations.
+
+Like all staff members, shipper accounts are created and managed by the store owner.
+
+---
+
+# User Lifecycle
+
+The platform separates external registration from internal account creation.
+
+Current lifecycle:
+
+1. Merchant registers.
+2. Store is created.
+3. Merchant accesses the dashboard.
+4. Merchant creates internal staff accounts.
+5. Staff accounts may be activated or deactivated when necessary.
+
+This workflow ensures that every internal account belongs to an existing business.
+
+---
+
+# Team Management
+
+Store owners manage internal team members through dedicated management pages.
+
+Current capabilities include:
+
+- Creating staff accounts
+- Viewing team members
 - Activating accounts
 - Deactivating accounts
 
-This approach keeps staff management under the control of the tenant while preserving account history.
+Instead of deleting accounts, activation status is used to preserve historical relationships and business records.
 
-Account activation is preferred over deletion to preserve historical data and maintain referential integrity across the system.
+---
 
-## Role-Based Dashboard
+# Profile Management
 
-The application provides role-specific workspaces.
+Authenticated users can manage their own account information.
 
-Currently:
+Current capabilities include:
 
-- Store owners have access to the owner dashboard.
-- Staff and administrative dashboards will be introduced separately.
+- Viewing profile information
+- Updating personal details
+- Changing account passwords
 
-This separation keeps each interface focused on the responsibilities of its corresponding role.
+Each user manages their own profile, preventing unauthorized modifications by other users.
 
-## Team Management
+---
 
-Team management functionality is available only to store owners.
+# Password Management
 
-This includes viewing and managing staff accounts while preventing access from non-owner users.
+Password updates extend Django's built-in password management workflow.
 
-## Profile Management
+This approach allows interface customization while preserving Django's proven authentication and security mechanisms.
 
-Authenticated users can manage their personal account information through dedicated profile views.
+---
 
-Current functionality includes:
+# Design Principles
 
-- View profile information
-- Update profile details
-- Change account password
+The user management system follows these architectural principles:
 
-Password updates are implemented by extending Django's built-in password change view, allowing customization while preserving Django's secure authentication workflow.
+- Clear ownership hierarchy
+- Tenant isolation
+- Separation between public registration and internal user creation
+- Data preservation through account activation
+- Self-service profile management
+
+---
+
+# Future Evolution
+
+Future enhancements may include:
+
+- Invitation by email
+- Role-based permission groups
+- Audit logs
+- Employee activity history
+- User avatars
+- Multi-factor authentication
+- Employee onboarding workflow
+
+---
+
+# Related Documentation
+
+- `Architecture/authentication-flow.md`
+- `Architecture/authorization.md`
+- `Architecture/store-management.md`
+- `Architecture/application-routing.md`
+- `ADR/ADR-001-custom-user-manager.md`
+- `ADR/ADR-003-custom-user-model.md`

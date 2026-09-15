@@ -1,77 +1,131 @@
-# Merchant Registration Flow
+# Authentication Flow
+
+## Purpose
+
+This document describes the authentication workflow of the Smart Commerce Platform.
+
+It explains how users enter the platform, authenticate, and access protected resources while keeping authentication independent from authorization and business logic.
+
+---
+
+## Scope
+
+This document covers:
+
+* Merchant registration
+* User login
+* User logout
+* Dashboard access
+* Internal user creation workflow
+
+This document does **not** cover:
+
+* User roles and permissions
+* Database models
+* Form implementation
+* Authentication backend implementation
+
+---
 
 ## Overview
 
-The platform uses a dedicated `MerchantSignUpForm` to handle merchant registration.
+The platform provides a dedicated authentication workflow designed for merchant-based businesses.
 
-Unlike normal user creation, merchant registration is a business workflow that creates multiple related entities.
+Unlike traditional applications where users simply create an account, merchant registration represents a business onboarding process that prepares the merchant to start using the platform immediately.
 
-## Authentication Flow
+Once authenticated, users are redirected to the appropriate application entry point where they can access features according to their assigned permissions.
 
-After successful merchant registration, the user is redirected to the dashboard.
+---
 
-Authentication entry points:
+# Authentication Entry Points
 
-- `/accounts/signup/` → Merchant registration
-- `/accounts/login/` → User login
-- `/accounts/logout/` → User logout
+The platform currently exposes the following authentication endpoints.
 
-Authenticated users access the application workspace through:
+| Route         | Purpose                    |
+| ------------- | -------------------------- |
+| `/signup/`    | Merchant registration      |
+| `/login/`     | User authentication        |
+| `/logout/`    | User logout                |
+| `/dashboard/` | Main application workspace |
 
-- `/dashboard/`
+The landing page remains publicly accessible without authentication.
 
-The landing page remains available as the public entry point.
+---
 
-Staff accounts are created internally by store owners and do not register through the public merchant registration process.
+# Merchant Registration Flow
 
-## Why Use a Form Instead of ModelForm?
+Merchant registration is designed as a business onboarding process rather than a simple user creation form.
 
-A regular ModelForm is designed for handling a single model instance.
+During registration, the platform creates the required business entities needed for the merchant to begin using the system.
 
-Merchant registration involves multiple models and business rules, therefore a standard Django Form provides better control over the workflow.
+After successful registration, the merchant is automatically redirected to the dashboard.
 
-## Future Improvement
+---
 
-As the business logic grows, the registration process can be moved into a dedicated service layer.
+# Login Flow
 
+Registered users authenticate using their credentials through the login page.
 
-## Authentication Views
+After successful authentication, users are redirected to the dashboard, which serves as the primary entry point to the application.
 
-Authentication is implemented using Django Class-Based Views (CBVs).
+Unauthenticated users attempting to access protected resources are redirected to the login page.
 
-Current authentication endpoints include:
+---
 
-- Merchant registration
-- User login
-- User logout
+# Logout Flow
 
-### Why Class-Based Views?
+Authenticated users can terminate their session at any time.
 
-CBVs provide a reusable and extensible architecture by supporting inheritance, mixins, and separation of responsibilities.
+After logout, users are redirected to the public landing page, ensuring a clear separation between authenticated and public experiences.
 
-This approach aligns with Django's recommended practices for authentication workflows.
+---
 
-## Authentication Templates
+# Internal User Management
 
-Authentication pages are implemented using custom HTML templates styled with Bootstrap 5.
+Internal team members are **not** created through the public registration process.
 
-Django Crispy Forms is used where needed to simplify form rendering, while custom HTML is maintained to provide full control over the user interface and layout.
+Instead, store owners create staff accounts from within the application.
 
-This approach balances development efficiency with UI flexibility.
+Current internal users include:
 
-Current templates:
+* Managers
+* Shippers
 
-- Merchant registration
-- User login
+This approach ensures that only verified merchants can manage internal team members.
 
-## User Roles
+---
 
-The system currently defines three user roles:
+# Authentication Principles
 
-- Owner
-- Manager
-- Shipper
+The authentication workflow follows these principles:
 
-Each role is granted access only to the functionality required for its responsibilities.
+* Authentication is separated from authorization.
+* Only merchants register through the public registration process.
+* Internal users are managed exclusively by store owners.
+* Public pages remain accessible without authentication.
+* Protected resources always require authentication.
 
-This role-based approach keeps authorization simple while supporting future expansion.
+---
+
+# Future Evolution
+
+Future improvements may include:
+
+* Email verification
+* Password reset via email
+* Two-factor authentication (2FA)
+* Multi-factor authentication (MFA)
+* Social authentication providers
+* Device/session management
+
+---
+
+# Related Documentation
+
+* `Architecture/application-routing.md`
+* `Architecture/authorization.md`
+* `Architecture/user-management.md`
+* `Architecture/user-forms.md`
+* `Development/testing.md`
+* `ADR/ADR-001-custom-user-manager.md`
+* `ADR/ADR-003-custom-user-model.md`

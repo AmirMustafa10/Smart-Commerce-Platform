@@ -1,55 +1,149 @@
 # Product Management
 
+## Purpose
+
+This document describes how products are organized and managed within the Smart Commerce Platform.
+
+It focuses on the business structure of the product catalog, the responsibilities of the product domain, and the architectural principles behind its design.
+
+---
+
+## Scope
+
+This document covers:
+
+- Product organization
+- Category management
+- Product pricing
+- Product images
+- Product validation
+- Product administration
+
+This document does **not** cover:
+
+- Database schema
+- Django model implementation
+- API endpoints
+- Inventory movement logic
+
+---
+
 ## Overview
 
-The `products` application manages the product catalog for each tenant.
+The Products application is responsible for managing each merchant's product catalog.
 
-## Product Categories
+Every store maintains an independent collection of categories, products, pricing, and product images while preserving complete tenant isolation across the platform.
 
-Categories are implemented as a dedicated model.
+The application is designed to remain extensible as additional inventory and commerce features are introduced.
 
-Each category belongs to a single store.
+---
 
-## Tenant Isolation
+# Product Organization
 
-A product can only be associated with categories belonging to the same store.
+Products are organized into categories.
 
-This rule prevents cross-tenant relationships and preserves data integrity.
+Each category belongs to a single store, and products may only reference categories owned by the same store.
 
-## Pricing
+This design prevents cross-tenant relationships and preserves data isolation between merchants.
 
-Products maintain multiple pricing values:
+---
 
-- Cost price
-- Selling price
-- Discount price
+# Pricing Strategy
 
-This separation supports reporting, profitability analysis, and promotional pricing.
+Each product maintains multiple pricing values to support different business needs.
 
-## SKU
+| Field          | Purpose                   |
+| -------------- | ------------------------- |
+| Cost Price     | Internal purchasing cost  |
+| Selling Price  | Customer selling price    |
+| Discount Price | Promotional selling price |
 
-Each product includes a Stock Keeping Unit (SKU) to simplify inventory management and product identification.
+Separating these values enables future profitability reporting, analytics, and pricing strategies without changing the underlying product structure.
 
-## Product Images
+---
 
-Products support multiple images through a dedicated image model rather than storing images directly on the product.
+# Product Identification
 
-This design improves scalability and keeps the product model lightweight.
+Each product is identified by a Stock Keeping Unit (SKU).
 
-## Image Validation
+The SKU provides a stable business identifier that simplifies inventory management and supports future integrations such as barcode systems, warehouse management, and external sales channels.
 
-Uploaded images are validated using:
+---
 
+# Product Images
+
+Products support multiple images rather than a single image.
+
+This design allows merchants to present products more effectively while keeping image management independent from the product entity itself.
+
+Uploaded images are validated before storage to ensure only valid image files are accepted.
+
+---
+
+# Validation Strategy
+
+Product validation follows a layered approach to improve data quality and system reliability.
+
+Current validation includes:
+
+- Category ownership validation
 - File extension validation
-- File size validation
-- Pillow image verification
+- Image size validation
+- Image integrity verification using Pillow
 
-These validations help ensure that uploaded files are valid image assets before storage.
+These validation layers help prevent invalid relationships and reduce the risk of storing unsupported or malicious files.
 
-## Django Admin
+---
 
-The Product model is managed through a customized Django Admin interface.
+# Current Capabilities
 
-Related product images are managed using Django Inline Models, allowing administrators to create and edit product images directly from the product administration page.
+The current product module supports:
 
-This improves usability and reduces the number of administrative actions required to maintain product data.
+- Creating products
+- Updating products
+- Deleting products
+- Managing product categories
+- Uploading multiple product images
+- Product image validation
+- Product pricing management
+- Django Admin management
+
+---
+
+# Design Principles
+
+The product domain follows these architectural principles:
+
+- Tenant isolation
+- Separation of concerns
+- Domain-driven organization
+- Clean validation boundaries
+- Extensibility
+- Scalability
+
+The application is designed so that future inventory features can be introduced without requiring significant changes to the existing product structure.
+
+---
+
+# Future Evolution
+
+Future enhancements may include:
+
+- Product variants
+- Barcode generation
+- Stock movement history
+- Bulk product import/export
+- AI-assisted product categorization
+- AI-powered product recommendations
+- WhatsApp product synchronization
+- Inventory forecasting
+
+---
+
+# Related Documentation
+
+- `Architecture/project-structure.md`
+- `Architecture/application-routing.md`
+- `Database/product-model.md`
+- `Database/tenant-isolation.md`
+- `ADR/ADR-003-product-images.md`

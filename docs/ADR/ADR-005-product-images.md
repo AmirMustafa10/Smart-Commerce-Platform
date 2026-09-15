@@ -1,4 +1,4 @@
-# Store Product Images in a Separate Model
+# ADR-005: Store Product Images in a Separate Model
 
 ## Status
 
@@ -8,9 +8,11 @@ Accepted
 
 ## Context
 
-Products in the system can have multiple images to support different customer views, product galleries, and future integrations with external sales channels.
+Products in the platform may require multiple images to support different customer views, product galleries, and future integrations with external sales channels.
 
-A design decision was required to determine how product images should be stored.
+A design decision was required to determine whether images should be stored directly inside the Product model or represented as a separate entity.
+
+The chosen design should support scalability, clean database structure, and future image-related features.
 
 ---
 
@@ -18,7 +20,17 @@ A design decision was required to determine how product images should be stored.
 
 Product images are stored in a dedicated `ProductImage` model with a one-to-many relationship to the `Product` model.
 
-Each image references exactly one product, while a product may have any number of associated images.
+Each image belongs to exactly one product, while a product can have multiple associated images.
+
+Relationship:
+
+```text id="pimg71"
+Product
+
+   |
+
+   └── ProductImage
+```
 
 Image uploads are validated before storage using:
 
@@ -26,6 +38,8 @@ Image uploads are validated before storage using:
 - File size validation
 - Django `ImageField`
 - Pillow image verification
+
+Product images are managed through Django Admin using `ProductImageInline`, allowing image management directly from the Product administration page.
 
 ---
 
@@ -40,13 +54,13 @@ image = models.ImageField(...)
 #### Advantages
 
 - Very simple implementation.
-- Suitable for products that require only one image.
+- Suitable for products requiring only one image.
 
 #### Disadvantages
 
-- Does not support image galleries.
-- Requires schema changes if multiple images become necessary.
-- Poor scalability.
+- Does not support product galleries.
+- Requires schema changes when multiple images become necessary.
+- Limits future expansion.
 
 **Decision:** Rejected.
 
@@ -58,19 +72,18 @@ image = models.ImageField(...)
 image1
 image2
 image3
-...
 ```
 
 #### Advantages
 
-- Easy to understand initially.
+- Easy initial implementation.
 
 #### Disadvantages
 
-- Artificial limit on the number of images.
-- Database schema must change whenever additional images are required.
+- Creates an artificial image limit.
+- Requires database changes when more images are needed.
 - Produces repetitive code.
-- Violates clean database design principles.
+- Does not follow scalable database design.
 
 **Decision:** Rejected.
 
@@ -81,10 +94,10 @@ image3
 #### Advantages
 
 - Supports unlimited images.
-- Keeps the Product model clean.
-- Scales naturally as the application grows.
+- Keeps Product model focused on product data.
+- Provides better database normalization.
 - Simplifies image management.
-- Makes future features easier, including:
+- Supports future features such as:
   - Primary image selection
   - Image ordering
   - Image captions
@@ -94,7 +107,7 @@ image3
 #### Disadvantages
 
 - Requires an additional database table.
-- Requires joins when retrieving product images.
+- May require additional joins when retrieving images.
 
 **Decision:** Accepted.
 
@@ -106,14 +119,16 @@ image3
 
 - Flexible image management.
 - Better database normalization.
+- Cleaner Product model.
 - Easier maintenance.
-- Supports future business requirements without schema changes.
-- Follows Django best practices for one-to-many relationships.
+- Supports future business requirements without changing Product schema.
+- Aligns with Django's one-to-many relationship patterns.
 
 ### Negative
 
 - Slightly more complex queries.
 - Additional relationship management in the application layer.
+- Additional model administration.
 
 ---
 
@@ -127,3 +142,11 @@ The dedicated image model allows future enhancements without modifying the Produ
 - Multiple image resolutions
 - CDN integration
 - Soft deletion of images
+
+---
+
+## Related Documentation
+
+- `Database/product-model.md`
+- `ADR/ADR-003-product-images.md`
+- `Architecture/product-management.md`
