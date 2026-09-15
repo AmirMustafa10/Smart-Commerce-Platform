@@ -5,28 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 from .models import Category, Product
 from .forms import CategoryForm, ProductForm
-
-
-class TenantQuerySetMixin:
-    """
-    Mixin to filter queryset based on the current user's store and exclude soft-deleted records.
-    Must be used with LoginRequiredMixin to ensure user is authenticated.
-    """
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(store=self.request.user.store, is_deleted=False)
-
-
-class StoreManagerRequiredMixin(UserPassesTestMixin):
-    """
-    Mixin to restrict access to Store Owners and Managers only.
-    Shippers or other roles will get a 403 Forbidden error.
-    """
-
-    def test_func(self):
-        user = self.request.user
-        return user.is_authenticated and user.role in ["OWNER", "MANAGER"]
+from core.models import StoreManagerRequiredMixin, TenantQuerySetMixin
 
 
 # ----------------------------------------------------------------------
