@@ -43,7 +43,7 @@ class TenantQuerySetMixin:
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(store=self.request.user.store, is_deleted=False)
+        return qs.filter(store=self.request.user.store)
 
 
 class ActiveManager(models.Manager):
