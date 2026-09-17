@@ -58,9 +58,7 @@ class Category(TenantAwareModel):
         constraints = [
             models.UniqueConstraint(
                 fields=["store", "name"],
-                condition=models.Q(
-                    is_deleted=False
-                ),
+                condition=models.Q(is_deleted=False),
                 name="unique_active_category_name_per_store",
             )
         ]
@@ -142,11 +140,6 @@ class Product(TenantAwareModel):
     )
     is_active = models.BooleanField(
         _("active"), default=True, help_text=_("Visibility flag for customers.")
-    )
-    is_out_of_stock = models.BooleanField(
-        _("out of stock"),
-        default=False,
-        help_text=_("If True, show 'Out of Stock' in UI."),
     )
     stock_quantity = models.PositiveIntegerField(
         _("stock quantity"),
@@ -232,13 +225,18 @@ class Product(TenantAwareModel):
                     {"category": _("Selected category does not belong to this store.")}
                 )
 
-    def save(self, *args, **kwargs):
-        if self.stock_quantity <= 0:
-            self.is_out_of_stock = True
-        else:
-            self.is_out_of_stock = False
+    @property
+    def final_price(self):
+        if self.discount_price and self.discount_price > 0:
+            return self.price - self.discount_price
+        return self.price
 
-        super().save(*args, **kwargs)
+    @property
+    def is_out_of_stock(self):
+        """
+        It automatically calculates the inventory status whenever we query it.
+        """
+        return self.stock_quantity <= 0
 
 
 class ProductImage(TenantAwareModel):

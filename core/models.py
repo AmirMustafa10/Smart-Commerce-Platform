@@ -21,6 +21,45 @@ class OwnerRequiredMixin(UserPassesTestMixin):
         )
 
 
+class StoreManagerRequiredMixin(UserPassesTestMixin):
+    """
+    Restrict access to OWNER or MANAGER users that belong to a store.
+    """
+
+    def test_func(self):
+        user = self.request.user
+        return (
+            user.is_authenticated
+            and user.store_id is not None
+            and user.role in (CustomUser.Role.OWNER, CustomUser.Role.MANAGER)
+        )
+
+
+class ShipperRequiredMixin(UserPassesTestMixin):
+    """
+    Restrict access to SHIPPER users that belong to a store.
+    """
+
+    def test_func(self):
+        user = self.request.user
+        return (
+            user.is_authenticated
+            and user.store_id is not None
+            and user.role == CustomUser.Role.SHIPPER
+        )
+
+
+class TenantQuerySetMixin:
+    """
+    Mixin to filter queryset based on the current user's store and exclude soft-deleted records.
+    Must be used with LoginRequiredMixin to ensure user is authenticated.
+    """
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(store=self.request.user.store)
+
+
 class ActiveManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)

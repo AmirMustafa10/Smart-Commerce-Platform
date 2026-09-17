@@ -1,0 +1,1331 @@
+/* =========================================================
+   Shipper Order Form
+   ========================================================= */
+
+.shipper-order-page {
+    position: relative;
+    min-height: calc(100vh - 76px);
+
+    padding: 46px 0 70px;
+
+    background: #f8faf9;
+
+    overflow: hidden;
+}
+
+.shipper-order-bg {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 8% 8%,
+            rgba(37, 211, 102, 0.07),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 15%,
+            rgba(37, 211, 102, 0.05),
+            transparent 25%
+        );
+}
+
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.shipper-order-header {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+}
+
+.shipper-order-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 9px;
+
+    color: #25d366;
+
+    font-size: 0.76rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+}
+
+.shipper-order-title {
+    margin: 0;
+
+    color: #16352a;
+
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 800;
+
+    letter-spacing: -0.03em;
+}
+
+.shipper-order-subtitle {
+    margin: 10px 0 0;
+
+    color: #718079;
+
+    font-size: 0.93rem;
+}
+
+.shipper-order-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 11px 15px;
+
+    color: #315047;
+    background: #ffffff;
+
+    border: 1px solid #e2ebe6;
+    border-radius: 11px;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    box-shadow:
+        0 6px 18px rgba(22, 53, 42, 0.04);
+
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.shipper-order-back-btn:hover {
+    color: #25d366;
+
+    border-color: rgba(37, 211, 102, 0.35);
+
+    transform: translateX(-2px);
+}
+
+
+/* =========================================================
+   Cards
+   ========================================================= */
+
+.shipper-order-card {
+    position: relative;
+    z-index: 2;
+
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4ece8;
+    border-radius: 19px;
+
+    box-shadow:
+        0 10px 30px rgba(22, 53, 42, 0.045),
+        0 2px 8px rgba(22, 53, 42, 0.025);
+}
+
+.order-summary-card {
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   Summary Header
+   ========================================================= */
+
+.shipper-order-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 19px;
+
+    border-bottom: 1px solid #edf2ef;
+}
+
+.shipper-order-card-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.shipper-order-card-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 46px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.10);
+
+    border-radius: 13px;
+}
+
+.shipper-order-card-label {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #96a39d;
+
+    font-size: 0.67rem;
+    font-weight: 800;
+
+    letter-spacing: 0.08em;
+}
+
+.shipper-order-card-title h2 {
+    margin: 0;
+
+    color: #18392c;
+
+    font-size: 1.08rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   Current Status Badge
+   ========================================================= */
+
+.shipper-order-current-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 12px;
+
+    color: #178044;
+
+    background: rgba(37, 211, 102, 0.10);
+
+    border: 1px solid rgba(37, 211, 102, 0.16);
+
+    border-radius: 999px;
+
+    font-size: 0.73rem;
+    font-weight: 700;
+
+    transition:
+        color 0.25s ease,
+        background-color 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.shipper-order-current-status .status-dot {
+    display: inline-block;
+
+    width: 7px;
+    height: 7px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+.shipper-order-current-status.status-shipped {
+    color: #2563eb;
+
+    background: rgba(37, 99, 235, 0.08);
+
+    border-color: rgba(37, 99, 235, 0.16);
+}
+
+.shipper-order-current-status.status-delivered {
+    color: #178044;
+
+    background: rgba(37, 211, 102, 0.10);
+
+    border-color: rgba(37, 211, 102, 0.17);
+}
+
+.shipper-order-current-status.status-returned {
+    color: #b45309;
+
+    background: rgba(245, 158, 11, 0.10);
+
+    border-color: rgba(245, 158, 11, 0.18);
+}
+
+
+/* =========================================================
+   Meta
+   ========================================================= */
+
+.shipper-order-meta {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 15px;
+
+    padding-top: 19px;
+}
+
+.shipper-order-meta-item {
+    padding: 10px 12px;
+
+    background: #f8faf9;
+
+    border-radius: 11px;
+}
+
+.shipper-order-meta-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #95a29c;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.shipper-order-meta-item strong {
+    color: #28483c;
+
+    font-size: 0.83rem;
+}
+
+.shipper-order-total {
+    color: #178044 !important;
+}
+
+
+/* =========================================================
+   Two Column Layout
+   ========================================================= */
+
+.shipper-order-layout {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   Section Heading
+   ========================================================= */
+
+.shipper-order-section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    margin-bottom: 21px;
+}
+
+.shipper-order-section-icon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 40px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.09);
+
+    border-radius: 11px;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.shipper-order-section-heading h2 {
+    margin: 0;
+
+    color: #1c3d30;
+
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.shipper-order-section-heading p {
+    margin: 3px 0 0;
+
+    color: #87948e;
+
+    font-size: 0.73rem;
+}
+
+
+/* =========================================================
+   Info Rows
+   ========================================================= */
+
+.shipper-order-info-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.shipper-order-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 12px 10px;
+
+    border-radius: 9px;
+}
+
+.shipper-order-info-row:nth-child(odd) {
+    background: #fafcfb;
+}
+
+.shipper-order-info-row > span {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #7e8d86;
+
+    font-size: 0.77rem;
+}
+
+.shipper-order-info-row > span i {
+    width: 15px;
+
+    color: #25d366;
+
+    text-align: center;
+}
+
+.shipper-order-info-row > strong {
+    max-width: 60%;
+
+    color: #2b4a3f;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    text-align: right;
+}
+
+.text-muted-custom {
+    color: #9ba6a1 !important;
+
+    font-weight: 500 !important;
+}
+
+.payment-paid {
+    color: #178044 !important;
+}
+
+.payment-unpaid {
+    color: #a87508 !important;
+}
+
+
+/* =========================================================
+   Order Items
+   ========================================================= */
+
+.order-items-card {
+    margin-bottom: 20px;
+}
+
+.shipper-items-list {
+    border-top: 1px solid #edf2ef;
+}
+
+.shipper-item {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid #edf2ef;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.shipper-item:hover {
+    transform: translateX(3px);
+}
+
+.shipper-item:last-child {
+    border-bottom: 0;
+}
+
+.shipper-item-number {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 31px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.08);
+
+    border-radius: 9px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.shipper-item-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.shipper-item-content strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #29493d;
+
+    font-size: 0.82rem;
+}
+
+.shipper-item-content span {
+    color: #8b9892;
+
+    font-size: 0.71rem;
+}
+
+.shipper-item-price {
+    color: #183d2f;
+
+    font-size: 0.82rem;
+    font-weight: 800;
+}
+
+.shipper-empty-items {
+    padding: 25px 0;
+
+    color: #8c9993;
+
+    text-align: center;
+
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   Editable Section
+   ========================================================= */
+
+.shipper-edit-card {
+    margin-bottom: 20px;
+}
+
+.shipper-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+    padding-bottom: 19px;
+
+    border-bottom: 1px solid #edf2ef;
+}
+
+.shipper-edit-header .shipper-order-section-heading {
+    margin-bottom: 0;
+}
+
+.shipper-edit-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    color: #177d43;
+
+    background: rgba(37, 211, 102, 0.08);
+
+    border: 1px solid rgba(37, 211, 102, 0.14);
+
+    border-radius: 999px;
+
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   Form
+   ========================================================= */
+
+.shipper-order-form {
+    max-width: 850px;
+}
+
+.shipper-form-group {
+    margin-bottom: 22px;
+}
+
+.shipper-form-label {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 8px;
+
+    color: #28483c;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.shipper-form-label i {
+    color: #25d366;
+}
+
+
+/* =========================================================
+   Select
+   ========================================================= */
+
+.shipper-select-wrapper {
+    position: relative;
+}
+
+.shipper-select-wrapper .form-select {
+    min-height: 48px;
+
+    padding-right: 42px;
+
+    color: #28483c;
+
+    background-color: #ffffff;
+
+    border: 1px solid #dce7e1;
+    border-radius: 11px;
+
+    font-size: 0.84rem;
+    font-weight: 600;
+
+    box-shadow: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shipper-select-wrapper .form-select:hover {
+    border-color: #bfd2c8;
+}
+
+.shipper-select-wrapper .form-select:focus {
+    border-color: #25d366;
+
+    box-shadow:
+        0 0 0 4px rgba(37, 211, 102, 0.10);
+}
+
+.shipper-select-icon {
+    position: absolute;
+
+    top: 50%;
+    right: 15px;
+
+    color: #82918a;
+
+    pointer-events: none;
+
+    transform: translateY(-50%);
+}
+
+
+/* =========================================================
+   Status Feedback
+   ========================================================= */
+
+.status-feedback {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    margin-top: 11px;
+    padding: 12px 13px;
+
+    background: #f7faf8;
+
+    border: 1px solid #e5eee9;
+
+    border-radius: 11px;
+
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.status-feedback.status-changed {
+    background: rgba(37, 211, 102, 0.06);
+
+    border-color: rgba(37, 211, 102, 0.20);
+
+    animation: feedbackSlide 0.25s ease;
+}
+
+.status-feedback-icon {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 31px;
+
+    color: #25d366;
+
+    background: #ffffff;
+
+    border-radius: 8px;
+
+    font-size: 0.75rem;
+}
+
+.status-feedback strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #294a3e;
+
+    font-size: 0.75rem;
+}
+
+.status-feedback span {
+    display: block;
+
+    color: #7f9088;
+
+    font-size: 0.7rem;
+
+    line-height: 1.5;
+}
+
+@keyframes feedbackSlide {
+
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================================================
+   Notes
+   ========================================================= */
+
+.shipper-order-form textarea.form-control {
+    min-height: 115px;
+
+    padding: 13px 14px 32px;
+
+    color: #28483c;
+
+    border: 1px solid #dce7e1;
+    border-radius: 11px;
+
+    font-size: 0.84rem;
+
+    resize: vertical;
+
+    box-shadow: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shipper-order-form textarea.form-control:hover {
+    border-color: #bfd2c8;
+}
+
+.shipper-order-form textarea.form-control:focus {
+    border-color: #25d366;
+
+    box-shadow:
+        0 0 0 4px rgba(37, 211, 102, 0.10);
+}
+
+.notes-wrapper {
+    position: relative;
+}
+
+.notes-counter {
+    position: absolute;
+
+    right: 12px;
+    bottom: 9px;
+
+    color: #9aa7a1;
+
+    font-size: 0.66rem;
+
+    pointer-events: none;
+
+    transition:
+        color 0.2s ease;
+}
+
+.notes-counter.near-limit {
+    color: #b7791f;
+}
+
+.notes-counter.at-limit {
+    color: #c0392b;
+}
+
+
+/* =========================================================
+   Form Help / Error
+   ========================================================= */
+
+.shipper-form-help {
+    margin-top: 7px;
+
+    color: #92a099;
+
+    font-size: 0.7rem;
+
+    line-height: 1.5;
+}
+
+.shipper-form-error {
+    margin-top: 7px;
+
+    color: #c0392b;
+
+    font-size: 0.72rem;
+}
+
+.shipper-form-error div {
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+/* =========================================================
+   Permission Notice
+   ========================================================= */
+
+.shipper-permission-note {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    margin: 8px 0 24px;
+    padding: 14px 15px;
+
+    background: #f5faf7;
+
+    border: 1px solid #dceee4;
+
+    border-radius: 12px;
+}
+
+.shipper-permission-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 34px;
+
+    color: #25d366;
+
+    background: #ffffff;
+
+    border-radius: 9px;
+}
+
+.shipper-permission-note strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #25473a;
+
+    font-size: 0.77rem;
+}
+
+.shipper-permission-note p {
+    margin: 0;
+
+    color: #7f9088;
+
+    font-size: 0.71rem;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   Unsaved Changes
+   ========================================================= */
+
+.unsaved-changes {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    max-height: 0;
+
+    overflow: hidden;
+
+    margin-bottom: 0;
+
+    color: #9a7116;
+
+    font-size: 0.7rem;
+
+    opacity: 0;
+
+    transition:
+        max-height 0.3s ease,
+        margin-bottom 0.3s ease,
+        opacity 0.3s ease;
+}
+
+.unsaved-changes.visible {
+    max-height: 35px;
+
+    margin-bottom: 14px;
+
+    opacity: 1;
+}
+
+.unsaved-changes i {
+    color: #d49a16;
+}
+
+
+/* =========================================================
+   Actions
+   ========================================================= */
+
+.shipper-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding-top: 6px;
+}
+
+.shipper-cancel-btn,
+.shipper-save-btn {
+    min-height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px 17px;
+
+    border-radius: 10px;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.shipper-cancel-btn {
+    color: #607169;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6e1;
+}
+
+.shipper-cancel-btn:hover {
+    color: #29493c;
+
+    border-color: #c8d6cf;
+}
+
+.shipper-save-btn {
+    min-width: 155px;
+
+    color: #ffffff;
+
+    background: #163d2e;
+
+    border: 1px solid #163d2e;
+
+    cursor: pointer;
+}
+
+.shipper-save-btn:hover {
+    background: #25d366;
+
+    border-color: #25d366;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 9px 20px rgba(37, 211, 102, 0.20);
+}
+
+.shipper-save-btn:disabled {
+    cursor: wait;
+
+    opacity: 0.75;
+
+    transform: none !important;
+
+    box-shadow: none !important;
+}
+
+.shipper-save-btn.is-loading {
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   Confirmation Modal
+   ========================================================= */
+
+.shipper-confirm-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(16, 37, 29, 0.44);
+
+    backdrop-filter: blur(6px);
+
+    visibility: hidden;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+.shipper-confirm-overlay.active {
+    visibility: visible;
+
+    opacity: 1;
+}
+
+.shipper-confirm-modal {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 28px;
+
+    text-align: center;
+
+    background: #ffffff;
+
+    border: 1px solid #e4ece8;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 25px 70px rgba(22, 53, 42, 0.18);
+
+    transform:
+        translateY(15px)
+        scale(0.97);
+
+    transition:
+        transform 0.25s ease;
+}
+
+.shipper-confirm-overlay.active .shipper-confirm-modal {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.shipper-confirm-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 16px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.10);
+
+    border-radius: 17px;
+
+    font-size: 1.2rem;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.shipper-confirm-modal h3 {
+    margin: 0 0 9px;
+
+    color: #19392d;
+
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.shipper-confirm-modal p {
+    margin: 0 auto 22px;
+
+    color: #7e8c85;
+
+    font-size: 0.8rem;
+
+    line-height: 1.65;
+}
+
+.shipper-confirm-actions {
+    display: flex;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.confirm-cancel-btn,
+.confirm-submit-btn {
+    min-height: 42px;
+
+    padding: 9px 15px;
+
+    border-radius: 10px;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.confirm-cancel-btn {
+    color: #607169;
+
+    background: #ffffff;
+
+    border: 1px solid #dce6e1;
+}
+
+.confirm-cancel-btn:hover {
+    background: #f7faf8;
+}
+
+.confirm-submit-btn {
+    color: #ffffff;
+
+    background: #163d2e;
+
+    border: 1px solid #163d2e;
+}
+
+.confirm-submit-btn:hover {
+    color: #ffffff;
+
+    background: #25d366;
+
+    border-color: #25d366;
+
+    transform: translateY(-1px);
+}
+
+.confirm-submit-btn.status-returned {
+    background: #b45309;
+
+    border-color: #b45309;
+}
+
+.confirm-submit-btn.status-returned:hover {
+    background: #d97706;
+
+    border-color: #d97706;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .shipper-order-page {
+        padding: 35px 0 55px;
+    }
+
+    .shipper-order-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shipper-order-back-btn {
+        width: 100%;
+    }
+
+    .shipper-order-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .shipper-order-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .shipper-edit-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+
+@media (max-width: 575.98px) {
+
+    .shipper-order-card {
+        padding: 19px;
+    }
+
+    .shipper-order-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shipper-order-current-status {
+        align-self: flex-start;
+    }
+
+    .shipper-order-info-row {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+    .shipper-order-info-row > strong {
+        max-width: 100%;
+
+        text-align: left;
+    }
+
+    .shipper-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .shipper-cancel-btn,
+    .shipper-save-btn {
+        width: 100%;
+    }
+
+    .shipper-confirm-modal {
+        padding: 23px 20px;
+    }
+
+    .shipper-confirm-actions {
+        flex-direction: column-reverse;
+    }
+
+    .confirm-cancel-btn,
+    .confirm-submit-btn {
+        width: 100%;
+    }
+
+}

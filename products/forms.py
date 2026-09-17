@@ -43,4 +43,4 @@ class ProductForm(forms.ModelForm):
             "stock_quantity",
             "is_active",
         ]
-        # store, is_out_of_stock, is_deleted are excluded
+        # store, is_deleted are excluded

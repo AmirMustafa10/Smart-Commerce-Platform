@@ -1,98 +1,206 @@
 # Project Structure
 
-## Applications
+## Purpose
 
-### Accounts
+This document describes the high-level organization of the Smart Commerce Platform and explains the responsibility of each Django application.
 
-The `accounts` application manages authentication and merchant identity across the platform.
+The project follows a modular architecture where each application represents a distinct business domain. This approach improves maintainability, scalability, and separation of concerns while allowing the platform to evolve as new business domains are introduced.
 
-Current responsibilities include:
+---
+
+## Scope
+
+This document covers:
+
+- Project organization
+- Application responsibilities
+- Shared architectural components
+- Design principles
+
+This document does **not** cover:
+
+- Database schema
+- Authentication workflow
+- Authorization rules
+- API implementation details
+- Deployment configuration
+
+---
+
+## Overview
+
+The Smart Commerce Platform is organized into independent Django applications.
+
+Each application owns a specific business domain and is responsible for a well-defined set of functionality.
+
+Current business domains include user management, store management, product catalog management, and order processing.
+
+This architecture minimizes coupling between applications, simplifies maintenance, and allows the platform to grow without requiring major structural changes.
+
+As new business domains emerge, additional applications can be introduced while preserving the existing architecture.
+
+---
+
+# Applications
+
+## Core
+
+The `core` application contains project-wide functionality shared across the platform that does not belong to a specific business domain.
+
+### Current Responsibilities
+
+- Public landing page
+- Dashboard entry point
+- Shared templates
+- Custom error pages
+- Common views and shared functionality
+
+The `core` application acts as the central layer that connects the platform without containing business-specific logic.
+
+---
+
+## Accounts
+
+The `accounts` application manages user identity, authentication, and account-related operations.
+
+### Current Responsibilities
 
 - Custom User model
 - Custom User Manager
 - Merchant registration
-- User authentication (login/logout)
-- User management
+- Internal staff account management
+- User authentication
+- User profile management
+- Password management
 - Authentication forms
 - Custom Django Admin integration
 
-The application is registered using its AppConfig:
+Testing follows a layered strategy by separating model, form, and view tests, making the application easier to maintain as it grows.
 
-```python
-accounts.apps.AccountsConfig
-```
-
-Using AppConfig improves project extensibility and provides a centralized place for application initialization, such as registering Django signals through the `ready()` method when needed.
-
-Testing is organized separately by application layer to keep tests maintainable as the application grows.
-
-Current responsibilities also include internal staff account management for store owners.
-
-Additional responsibilities include:
-
-- User profile management
-- Password management
-
-### Stores
-
-The `stores` application manages tenant-related information.
-
-Current responsibilities include:
-
-- Store model
-- Store settings
-- Store activation
-- Store deactivation
-- Tenant configuration
-
-This keeps business logic separated from authentication and improves maintainability.
-
-Testing follows the same layered organization used across the project, separating model, form, and view tests.
-
-## Authentication
-
-The project uses a custom User Manager to centralize user creation and enforce business rules consistently across the application.
-
-## Shared Models
-
-The project introduces an abstract `TenantAwareModel` to centralize store ownership across business entities.
-
-Models that belong to a merchant inherit from this base model to ensure consistency and reduce code duplication.
+---
 
 ## Stores
 
-The `stores` application manages merchant businesses.
+The `stores` application manages tenant-related business information.
 
-Its main entity is the `Store` model, which represents a merchant's business and serves as the ownership root for tenant-aware resources.
+Each merchant owns a single store, which acts as the root business entity for tenant-owned resources across the platform.
 
-Current responsibilities include:
+### Current Responsibilities
 
+- Store model
+- Tenant configuration
 - Business information
-- WhatsApp contact details
-- Store configuration
+- WhatsApp contact information
+- Store settings
+- Store activation
+- Store deactivation
 
-### Core
+Testing follows the same layered testing strategy adopted throughout the project.
 
-The `core` application contains project-wide pages and shared functionality that do not belong to a specific business domain.
+---
 
-Current responsibilities include:
+## Products
 
-- Landing page
-- Dashboard entry point
+The `products` application manages each store's product catalog.
+
+It is designed as an independent business domain responsible for organizing products while preserving tenant isolation.
+
+### Current Responsibilities
+
+- Product categories
+- Products
+- Product images
+- Product pricing
+- Inventory-related information
+- Product validation
+- Django Admin integration
+
+Testing follows the same layered organization used across the project.
+
+---
+
+## Orders
+
+The `orders` application manages the complete order lifecycle within each merchant store.
+
+It is responsible for customer management, order processing, inventory synchronization, and order state transitions while preserving tenant isolation.
+
+### Current Responsibilities
+
+- Customer management
+- Order management
+- Order item management
+- Order status lifecycle
+- Inventory synchronization
+- Business rule enforcement
+- Django Signals integration
+- Soft deletion for orders
+
+Testing follows the same layered organization used across the project.
+
+---
+
+## Shared Components
+
+Some architectural components are intentionally shared across multiple applications to encourage consistency and code reuse.
+
+### Current Shared Components
+
+- Shared BaseModel
+- Tenant-aware base models
+- Django Signals
 - Shared templates
-- Error pages
-- Common views
+- Common validation utilities
+- Shared authentication infrastructure
 
-### Products
+These shared components reduce duplication while preserving clear architectural boundaries between business domains.
 
-The `products` application is responsible for product catalog management.
+---
 
-It is introduced as a dedicated business domain to isolate product-related functionality from authentication and store management.
+# Design Principles
 
-The application is registered using:
+The project structure follows several architectural principles:
 
-```python
-products.apps.ProductsConfig
-```
+- Separation of Concerns (SoC)
+- Single Responsibility Principle (SRP)
+- Domain-Oriented Organization
+- High Cohesion
+- Low Coupling
+- Scalability
+- Maintainability
 
-Using AppConfig provides a centralized initialization point and supports future extensibility.
+Each Django application owns a specific business domain and should avoid containing functionality outside its primary responsibility.
+
+---
+
+# Future Evolution
+
+The modular architecture allows new business domains to be introduced with minimal impact on the existing codebase.
+
+Planned and potential future applications include:
+
+- WhatsApp Integration
+- Inventory Synchronization
+- Webhooks
+- Notifications
+- Payments
+- Analytics
+- Public APIs
+- Background Tasks
+
+The architecture is intentionally designed to support long-term growth without significant refactoring.
+
+---
+
+# Related Documentation
+
+- `Architecture/authentication-flow.md`
+- `Architecture/application-routing.md`
+- `Architecture/authorization.md`
+- `Architecture/store-management.md`
+- `Architecture/product-management.md`
+- `Architecture/user-management.md`
+- `Database/tenant-isolation.md`
+- `Architecture/order-management.md`
+- `Database/order-model.md`
+- `Database/customer-model.md`

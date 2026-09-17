@@ -1,0 +1,1085 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Orders | WhatsFlow{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/order.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="order-page">
+
+    <div class="order-page-bg">
+        <div class="order-glow order-glow-one"></div>
+        <div class="order-glow order-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
+
+        <div class="order-page-header">
+
+            <div>
+
+                <span class="order-eyebrow">
+                    <i class="fas fa-cart-shopping"></i>
+                    ORDER MANAGEMENT
+                </span>
+
+                <h1 class="order-page-title">
+                    Orders
+                </h1>
+
+                <p class="order-page-subtitle">
+                    Track customer orders, payments and fulfillment
+                    from one place.
+                </p>
+
+            </div>
+
+
+            <div class="order-header-actions">
+
+                <a
+                    href="{% url 'orders:order_create' %}"
+                    class="order-btn order-btn-primary"
+                >
+                    <i class="fas fa-plus"></i>
+                    New Order
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ALERTS
+        ====================================================== -->
+
+        {% if messages %}
+
+            <div class="order-alerts">
+
+                {% for message in messages %}
+
+                    <div class="order-alert">
+
+                        <div class="order-alert-icon">
+                            <i class="fas fa-circle-check"></i>
+                        </div>
+
+                        <div class="order-alert-content">
+                            {{ message }}
+                        </div>
+
+                        <button
+                            type="button"
+                            class="order-alert-close"
+                        >
+                            <i class="fas fa-xmark"></i>
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             STATS
+        ====================================================== -->
+
+        <div class="order-stats-grid">
+
+            <div class="order-stat-card">
+
+                <div class="order-stat-icon">
+                    <i class="fas fa-cart-shopping"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Orders
+                    </span>
+
+                    <strong>
+                        {{ total_orders }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-stat-card">
+
+                <div class="order-stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Pending
+                    </span>
+
+                    <strong>
+                        {{ pending_orders_count }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-stat-card">
+
+                <div class="order-stat-icon completed">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Completed
+                    </span>
+
+                    <strong>
+                        {{ completed_orders_count }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-stat-card">
+
+                <div class="order-stat-icon cancelled">
+                    <i class="fas fa-ban"></i>
+                </div>
+
+                <div>
+
+                    <span>
+                        Cancelled
+                    </span>
+
+                    <strong>
+                        {{ cancelled_orders_count }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             ORDERS CARD
+        ====================================================== -->
+
+        <section class="order-list-card">
+
+            <!-- =================================================
+                 TOOLBAR
+            ================================================== -->
+
+            <div class="order-list-toolbar">
+
+                <div>
+
+                    <h2>
+                        All Orders
+                    </h2>
+
+                    <p>
+
+                        {% if request.GET.search or request.GET.status %}
+
+                            Showing filtered orders
+
+                        {% else %}
+
+                            Browse and manage your recent orders.
+
+                        {% endif %}
+
+                    </p>
+
+                </div>
+
+
+                <!--
+                    Server-side filtering.
+                    URLs are intentionally untouched.
+                -->
+
+                <form
+                    method="get"
+                    class="order-toolbar-controls"
+                    id="orderFilterForm"
+                >
+
+                    <div class="order-search-wrapper">
+
+                        <i class="fas fa-magnifying-glass"></i>
+
+                        <input
+                            type="search"
+                            id="orderSearch"
+                            name="search"
+                            class="order-search-input"
+                            placeholder="Search orders..."
+                            value="{{ request.GET.search|default:'' }}"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <select
+                        id="orderStatusFilter"
+                        name="status"
+                        class="order-status-filter"
+                        onchange="this.form.submit()"
+                    >
+
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        <option
+                            value="PENDING"
+                            {% if request.GET.status == "PENDING" %}
+                                selected
+                            {% endif %}
+                        >
+                            Pending
+                        </option>
+
+                        <option
+                            value="CONFIRMED"
+                            {% if request.GET.status == "CONFIRMED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Confirmed
+                        </option>
+
+                        <option
+                            value="PREPARING"
+                            {% if request.GET.status == "PREPARING" %}
+                                selected
+                            {% endif %}
+                        >
+                            Processing
+                        </option>
+
+                        <option
+                            value="SHIPPED"
+                            {% if request.GET.status == "SHIPPED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Shipped
+                        </option>
+
+                        <option
+                            value="DELIVERED"
+                            {% if request.GET.status == "DELIVERED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Delivered
+                        </option>
+
+                        <option
+                            value="CANCELLED"
+                            {% if request.GET.status == "CANCELLED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Cancelled
+                        </option>
+                        
+                        <option
+                            value="RETURNED"
+                            {% if request.GET.status == "RETURNED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Returned
+                        </option>
+                        
+                        <option
+                            value="DELETED"
+                            {% if request.GET.status == "DELETED" %}
+                                selected
+                            {% endif %}
+                        >
+                            Deleted
+                        </option>
+                        
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="order-filter-submit"
+                    >
+                        <i class="fas fa-filter"></i>
+                        Filter
+                    </button>
+
+
+                    {% if request.GET.search or request.GET.status %}
+
+                        <a
+                            href="?page=1"
+                            class="order-filter-reset"
+                            title="Clear filters"
+                        >
+                            <i class="fas fa-xmark"></i>
+                        </a>
+
+                    {% endif %}
+
+                </form>
+
+            </div>
+
+
+            <!-- =================================================
+                 ORDERS
+            ================================================== -->
+
+            {% if orders %}
+
+                <!-- =================================================
+                     DESKTOP / TABLET
+                ================================================== -->
+
+                <div class="orders-package-list">
+
+                    {% for order in orders %}
+
+                        <article class="order-package-card">
+
+                            <!-- Status accent -->
+
+                            <div
+                                class="
+                                    order-package-accent
+                                    status-accent-{{ order.status|lower }}
+                                "
+                            ></div>
+
+
+                            <!-- Header -->
+
+                            <div class="order-package-header">
+
+                                <div class="order-package-identity">
+
+                                    <div class="order-package-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+
+
+                                    <div class="order-package-id">
+
+                                        <span>
+                                            ORDER
+                                        </span>
+
+                                        <h3 title="{{ order.pk }}">
+                                            #{{ order.pk|truncatechars:18 }}
+                                        </h3>
+
+                                        <small>
+                                            {{ order.created_at|date:"M d, Y • h:i A" }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-package-statuses">
+
+                                    {% if order.is_frozen %}
+
+                                        <span class="order-frozen-badge">
+
+                                            <i class="fas fa-lock"></i>
+
+                                            Frozen
+
+                                        </span>
+
+                                    {% endif %}
+
+
+                                    <span
+                                        class="
+                                            order-status-badge
+                                            status-{{ order.status|lower }}
+                                        "
+                                    >
+
+                                        <span></span>
+
+                                        {% if order.is_deleted %}
+                                        deleted
+                                        {% else %}
+                                        {{ order.get_status_display }}
+                                        {% endif %}
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Quick Information -->
+
+                            <div class="order-package-info">
+
+                                <div class="order-package-info-item">
+
+                                    <span>
+                                        <i class="fas fa-user"></i>
+                                        Customer
+                                    </span>
+
+                                    <strong>
+                                        {{ order.customer.name }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="order-package-info-item">
+
+                                    <span>
+                                        <i class="fas fa-credit-card"></i>
+                                        Payment
+                                    </span>
+
+                                    <strong>
+                                        {{ order.get_payment_method_display }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="order-package-info-item">
+
+                                    <span>
+                                        <i class="fas fa-truck"></i>
+                                        Shipper
+                                    </span>
+
+                                    <strong>
+
+                                        {% if order.shipper %}
+                                            {{ order.shipper.full_name }}
+                                        {% else %}
+                                            Unassigned
+                                        {% endif %}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        order-package-info-item
+                                        order-package-total
+                                    "
+                                >
+
+                                    <span>
+                                        <i class="fas fa-coins"></i>
+                                        Total
+                                    </span>
+
+                                    <strong>
+                                        {{ order.total_amount|default:"0.00" }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Footer -->
+
+                            <div class="order-package-footer">
+
+                                <div class="order-package-items">
+
+                                    <div class="order-package-items-icon">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ order.items.all|length }}
+                                            item{{ order.items.all|length|pluralize }}
+                                        </strong>
+
+                                        <span>
+                                            In this order
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-package-actions">
+
+                                    
+                                <a
+                                    href="{% url 'orders:order_detail' order.pk %}"
+                                    class="order-view-details-btn"
+                                >
+                                    View Order Details
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+
+
+                                    {% if not order.is_frozen %}
+
+                                        
+                                        <a
+                                            href="{% url 'orders:order_update' order.pk %}"
+                                            class="order-icon-action edit"
+                                            title="Edit order"
+                                        >
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+
+
+                                        
+                                        <button
+                                            type="button"
+                                            class="order-icon-action delete delete-order-btn"
+                                            data-order-name="#{{ order.pk }}"
+                                            data-delete-url="{% url 'orders:order_delete' order.pk %}"
+                                            title="Delete order"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =================================================
+                     MOBILE
+                ================================================== -->
+
+                <div class="order-mobile-list">
+
+                    {% for order in orders %}
+
+                        <article class="order-mobile-package">
+
+                            <div
+                                class="
+                                    order-mobile-accent
+                                    status-accent-{{ order.status|lower }}
+                                "
+                            ></div>
+
+
+                            <div class="order-mobile-package-header">
+
+                                <div class="order-mobile-identity">
+
+                                    <div class="order-package-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            ORDER
+                                        </span>
+
+                                        <strong>
+                                            #{{ order.pk|truncatechars:18 }}
+                                        </strong>
+
+                                        <small>
+                                            {{ order.created_at|date:"M d, Y • h:i A" }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span
+                                    class="
+                                        order-status-badge
+                                        status-{{ order.status|lower }}
+                                    "
+                                >
+
+                                    <span></span>
+
+                                    {% if order.is_deleted %}
+                                    deleted
+                                    {% else %}
+                                    {{ order.get_status_display }}
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="order-mobile-info">
+
+                                <div>
+
+                                    <span>
+                                        Customer
+                                    </span>
+
+                                    <strong>
+                                        {{ order.customer.name }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Total
+                                    </span>
+
+                                    <strong>
+                                        {{ order.total_amount|default:"0.00" }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="order-mobile-meta">
+
+                                <span>
+                                    <i class="fas fa-box"></i>
+
+                                    {{ order.items.all|length }}
+                                    item{{ order.items.all|length|pluralize }}
+
+                                </span>
+
+
+                                <span>
+                                    <i class="fas fa-credit-card"></i>
+
+                                    {{ order.get_payment_method_display }}
+
+                                </span>
+
+                            </div>
+
+
+                            <div class="order-mobile-actions">
+
+                                <a
+                                    href="{% url 'orders:order_detail' order.pk %}"
+                                    class="order-view-details-btn"
+                                >
+                                    View Order Details
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+
+
+                                {% if not order.is_frozen %}
+
+                                    <a
+                                        href="{% url 'orders:order_update' order.pk %}"
+                                        class="order-icon-action edit"
+                                        title="Edit order"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+
+
+                                    
+                                    <button
+                                        type="button"
+                                        class="order-icon-action delete delete-order-btn"
+                                        data-order-name="#{{ order.pk }}"
+                                        data-delete-url="{% url 'orders:order_delete' order.pk %}"
+                                        title="Delete order"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+
+                                {% endif %}
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
+                {% if is_paginated %}
+
+                    <div class="order-pagination-wrapper">
+
+                        <div class="order-pagination-info">
+
+                            Showing
+
+                            <strong>
+                                {{ page_obj.start_index }}
+                            </strong>
+
+                            –
+                            
+                            <strong>
+                                {{ page_obj.end_index }}
+                            </strong>
+
+                            of
+
+                            <strong>
+                                {{ paginator.count }}
+                            </strong>
+
+                            orders
+
+                        </div>
+
+
+                        <nav
+                            class="order-pagination"
+                            aria-label="Orders pagination"
+                        >
+
+                            {% if page_obj.has_previous %}
+
+                                <a
+                                    class="order-pagination-btn"
+                                    href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status|urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}"
+                                    aria-label="Previous page"
+                                >
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span
+                                    class="order-pagination-btn disabled"
+                                >
+                                    <i class="fas fa-chevron-left"></i>
+                                </span>
+
+                            {% endif %}
+
+
+                            {% for num in paginator.page_range %}
+
+                                {% if page_obj.number == num %}
+
+                                    <span
+                                        class="order-pagination-page active"
+                                    >
+                                        {{ num }}
+                                    </span>
+
+                                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+
+                                    <a
+                                        class="order-pagination-page"
+                                        href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status|urlencode }}&{% endif %}page={{ num }}"
+                                    >
+                                        {{ num }}
+                                    </a>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+
+                            {% if page_obj.has_next %}
+
+                                <a
+                                    class="order-pagination-btn"
+                                    href="?{% if request.GET.search %}search={{ request.GET.search|urlencode }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status|urlencode }}&{% endif %}page={{ page_obj.next_page_number }}"
+                                    aria-label="Next page"
+                                >
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <span
+                                    class="order-pagination-btn disabled"
+                                >
+                                    <i class="fas fa-chevron-right"></i>
+                                </span>
+
+                            {% endif %}
+
+                        </nav>
+
+                    </div>
+
+                {% endif %}
+
+
+            {% else %}
+
+                <!-- =================================================
+                     NO RESULTS FROM FILTER
+                ================================================== -->
+
+                {% if request.GET.search or request.GET.status %}
+
+                    <div class="order-empty-state">
+
+                        <div class="order-empty-icon large">
+                            <i class="fas fa-magnifying-glass"></i>
+                        </div>
+
+                        <span class="order-empty-eyebrow">
+                            SEARCH RESULTS
+                        </span>
+
+                        <h2>
+                            No orders found
+                        </h2>
+
+                        <p>
+                            We couldn't find any orders matching
+                            your current search or status filter.
+                        </p>
+
+                        <a
+                            href="?page=1"
+                            class="order-btn order-btn-light"
+                        >
+                            <i class="fas fa-xmark"></i>
+                            Clear filters
+                        </a>
+
+                    </div>
+
+                {% else %}
+
+                    <!-- =================================================
+                         NO ORDERS AT ALL
+                    ================================================== -->
+
+                    <div class="order-empty-state">
+
+                        <div class="order-empty-icon large">
+                            <i class="fas fa-cart-shopping"></i>
+                        </div>
+
+                        <span class="order-empty-eyebrow">
+                            YOUR ORDERS
+                        </span>
+
+                        <h2>
+                            No orders yet
+                        </h2>
+
+                        <p>
+                            Create your first order to start managing
+                            customer purchases from WhatsFlow.
+                        </p>
+
+
+                        
+                        <a
+                            href="{% url 'orders:order_create' %}"
+                            class="order-btn order-btn-primary"
+                        >
+                            <i class="fas fa-plus"></i>
+                            Create First Order
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =====================================================
+             INFO
+        ====================================================== -->
+
+        <div class="order-info-banner">
+
+            <div class="order-info-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+
+            <div>
+
+                <strong>
+                    Orders stay protected
+                </strong>
+
+                <p>
+                    Each order belongs to your store, while frozen orders
+                    keep their products locked after fulfillment.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     DELETE MODAL
+========================================================= -->
+
+<div
+    id="orderDeleteModal"
+    class="order-delete-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="order-delete-overlay"
+        data-close-order-delete
+    ></div>
+
+
+    <div class="order-delete-dialog">
+
+        <button
+            type="button"
+            class="order-delete-close"
+            data-close-order-delete
+        >
+            <i class="fas fa-xmark"></i>
+        </button>
+
+
+        <div class="order-delete-icon">
+            <i class="fas fa-trash"></i>
+        </div>
+
+
+        <span class="order-delete-eyebrow">
+            DELETE ORDER
+        </span>
+
+
+        <h2>
+            Delete
+            <strong id="deleteOrderName"></strong>?
+        </h2>
+
+
+        <p>
+            This order will be removed from your active order list.
+            This action cannot be undone from the interface.
+        </p>
+
+
+        <form
+            method="post"
+            id="orderDeleteForm"
+        >
+
+            {% csrf_token %}
+
+            <div class="order-delete-actions">
+
+                <button
+                    type="button"
+                    class="order-btn order-btn-light"
+                    data-close-order-delete
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="confirmOrderDeleteBtn"
+                    class="order-btn order-btn-danger"
+                >
+
+                    <span class="order-delete-content">
+                        <i class="fas fa-trash"></i>
+                        Delete Order
+                    </span>
+
+                    <span class="order-delete-loading">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Deleting...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/order.js' %}"></script>
+{% endblock %}

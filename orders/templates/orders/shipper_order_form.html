@@ -1,0 +1,689 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/shipper_order_form.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="shipper-order-page">
+
+    <div class="shipper-order-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             Page Header
+        ====================================================== -->
+        <div class="shipper-order-header">
+
+            <div>
+                <span class="shipper-order-eyebrow">
+                    <i class="fas fa-truck"></i>
+                    Delivery Management
+                </span>
+
+                <h1 class="shipper-order-title">
+                    Update Order
+                </h1>
+
+                <p class="shipper-order-subtitle">
+                    Update the delivery status and add delivery-related notes.
+                </p>
+            </div>
+
+            <a
+                href="{% url 'orders:order_detail' object.pk %}"
+                class="shipper-order-back-btn"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to Order
+            </a>
+
+        </div>
+
+
+        <!-- =====================================================
+             Order Summary
+        ====================================================== -->
+        <section class="shipper-order-card order-summary-card">
+
+            <div class="shipper-order-card-header">
+
+                <div class="shipper-order-card-title">
+
+                    <div class="shipper-order-card-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+
+                    <div>
+                        <span class="shipper-order-card-label">
+                            ORDER
+                        </span>
+
+                        <h2>
+                            #{{ object.pk }}
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <!-- Live Status Badge -->
+                <span
+                    class="shipper-order-current-status"
+                    id="currentStatusBadge"
+                    data-status="{{ object.status }}"
+                >
+                    <span class="status-dot"></span>
+
+                    <span id="currentStatusText">
+                        {{ object.get_status_display }}
+                    </span>
+                </span>
+
+            </div>
+
+
+            <div class="shipper-order-meta">
+
+                <div class="shipper-order-meta-item">
+
+                    <span class="shipper-order-meta-label">
+                        Created
+                    </span>
+
+                    <strong>
+                        {{ object.created_at|date:"M d, Y • h:i A" }}
+                    </strong>
+
+                </div>
+
+
+                <div class="shipper-order-meta-item">
+
+                    <span class="shipper-order-meta-label">
+                        Payment
+                    </span>
+
+                    <strong>
+                        {{ object.get_payment_method_display }}
+                    </strong>
+
+                </div>
+
+
+                <div class="shipper-order-meta-item">
+
+                    <span class="shipper-order-meta-label">
+                        Total
+                    </span>
+
+                    <strong class="shipper-order-total">
+                        {{ object.total_amount }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             Customer + Order Details
+        ====================================================== -->
+        <div class="shipper-order-layout">
+
+            <!-- Customer -->
+            <section class="shipper-order-card">
+
+                <div class="shipper-order-section-heading">
+
+                    <div class="shipper-order-section-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+
+                    <div>
+                        <h2>Customer Information</h2>
+
+                        <p>
+                            Customer details for this delivery.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="shipper-order-info-list">
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-user"></i>
+                            Name
+                        </span>
+
+                        <strong>
+                            {{ object.customer.name }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-phone"></i>
+                            Phone
+                        </span>
+
+                        <strong>
+                            {{ object.customer.phone_number }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-location-dot"></i>
+                            Address
+                        </span>
+
+                        <strong>
+
+                            {% if object.customer.address %}
+
+                                {{ object.customer.address }}
+
+                            {% else %}
+
+                                <span class="text-muted-custom">
+                                    No address provided
+                                </span>
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Order Details -->
+            <section class="shipper-order-card">
+
+                <div class="shipper-order-section-heading">
+
+                    <div class="shipper-order-section-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+
+                    <div>
+                        <h2>Order Details</h2>
+
+                        <p>
+                            Products and payment information.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="shipper-order-info-list">
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-boxes-stacked"></i>
+                            Items
+                        </span>
+
+                        <strong>
+                            {{ object.items.all|length }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-credit-card"></i>
+                            Payment Method
+                        </span>
+
+                        <strong>
+                            {{ object.get_payment_method_display }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="shipper-order-info-row">
+
+                        <span>
+                            <i class="fas fa-circle-check"></i>
+                            Payment Status
+                        </span>
+
+                        <strong>
+
+                            {% if object.is_paid %}
+
+                                <span class="payment-paid">
+                                    <i class="fas fa-check"></i>
+                                    Paid
+                                </span>
+
+                            {% else %}
+
+                                <span class="payment-unpaid">
+                                    <i class="fas fa-clock"></i>
+                                    Unpaid
+                                </span>
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- =====================================================
+             Order Items
+        ====================================================== -->
+        <section class="shipper-order-card order-items-card">
+
+            <div class="shipper-order-section-heading">
+
+                <div class="shipper-order-section-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+
+                <div>
+                    <h2>Order Items</h2>
+
+                    <p>
+                        Products included in this order.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="shipper-items-list">
+
+                {% for item in object.items.all %}
+
+                    <div class="shipper-item">
+
+                        <div class="shipper-item-number">
+                            {{ forloop.counter }}
+                        </div>
+
+
+                        <div class="shipper-item-content">
+
+                            <strong>
+                                {{ item.product.name }}
+                            </strong>
+
+                            <span>
+                                Quantity: {{ item.quantity }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="shipper-item-price">
+                            {{ item.subtotal }}
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="shipper-empty-items">
+                        No items found for this order.
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             Editable Delivery Section
+        ====================================================== -->
+        <section class="shipper-order-card shipper-edit-card">
+
+            <div class="shipper-edit-header">
+
+                <div class="shipper-order-section-heading mb-0">
+
+                    <div
+                        class="shipper-order-section-icon editable-icon"
+                        id="editIcon"
+                    >
+                        <i class="fas fa-pen"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Delivery Update
+                        </h2>
+
+                        <p id="statusDescription">
+                            Update the delivery status and add notes.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <span class="shipper-edit-badge">
+                    <i class="fas fa-lock-open"></i>
+                    Editable
+                </span>
+
+            </div>
+
+
+            <form
+                method="post"
+                class="shipper-order-form"
+                id="shipperOrderForm"
+                novalidate
+            >
+
+                {% csrf_token %}
+
+
+                <!-- =================================================
+                     Status
+                ================================================== -->
+                <div class="shipper-form-group">
+
+                    <label
+                        for="{{ form.status.id_for_label }}"
+                        class="shipper-form-label"
+                    >
+                        <i class="fas fa-truck-fast"></i>
+                        Delivery Status
+                    </label>
+
+
+                    <div class="shipper-select-wrapper">
+
+                        {{ form.status }}
+
+                        <i class="fas fa-chevron-down shipper-select-icon"></i>
+
+                    </div>
+
+
+                    <!-- Live Status Feedback -->
+                    <div
+                        class="status-feedback"
+                        id="statusFeedback"
+                    >
+
+                        <div class="status-feedback-icon">
+                            <i class="fas fa-circle-info"></i>
+                        </div>
+
+
+                        <div>
+
+                            <strong id="statusFeedbackTitle">
+                                Update delivery status
+                            </strong>
+
+                            <span id="statusFeedbackText">
+                                Select the latest delivery status.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if form.status.errors %}
+
+                        <div class="shipper-form-error">
+
+                            {% for error in form.status.errors %}
+
+                                <div>
+                                    <i class="fas fa-circle-exclamation"></i>
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- =================================================
+                     Notes
+                ================================================== -->
+                <div class="shipper-form-group">
+
+                    <label
+                        for="{{ form.notes.id_for_label }}"
+                        class="shipper-form-label"
+                    >
+                        <i class="fas fa-note-sticky"></i>
+                        Delivery Notes
+                    </label>
+
+
+                    <div class="notes-wrapper">
+
+                        {{ form.notes }}
+
+                        <div
+                            class="notes-counter"
+                            id="notesCounter"
+                        >
+                            <span id="notesCount">0</span>
+                            characters
+                        </div>
+
+                    </div>
+
+
+                    <div class="shipper-form-help">
+                        Add any useful delivery-related comments.
+                    </div>
+
+
+                    {% if form.notes.errors %}
+
+                        <div class="shipper-form-error">
+
+                            {% for error in form.notes.errors %}
+
+                                <div>
+                                    <i class="fas fa-circle-exclamation"></i>
+                                    {{ error }}
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- =================================================
+                     Permission Notice
+                ================================================== -->
+                <div class="shipper-permission-note">
+
+                    <div class="shipper-permission-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Shipper permissions
+                        </strong>
+
+                        <p>
+                            You can only update the delivery status and
+                            delivery notes. Customer, products, payment,
+                            and assignment information cannot be changed.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     Unsaved Changes
+                ================================================== -->
+                <div
+                    class="unsaved-changes"
+                    id="unsavedChanges"
+                    aria-live="polite"
+                >
+                    <i class="fas fa-circle-exclamation"></i>
+
+                    <span>
+                        You have unsaved changes.
+                    </span>
+                </div>
+
+
+                <!-- =================================================
+                     Actions
+                ================================================== -->
+                <div class="shipper-form-actions">
+
+                    <a
+                        href="{% url 'orders:order_detail' object.pk %}"
+                        class="shipper-cancel-btn"
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        class="shipper-save-btn"
+                        id="saveOrderButton"
+                    >
+
+                        <span class="save-button-content">
+
+                            <i class="fas fa-check"></i>
+
+                            Update Delivery
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================================================
+         Confirmation Modal
+    ========================================================== -->
+    <div
+        class="shipper-confirm-overlay"
+        id="shipperConfirmModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="shipper-confirm-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirmModalTitle"
+        >
+
+            <div
+                class="shipper-confirm-icon"
+                id="confirmModalIcon"
+            >
+                <i class="fas fa-truck-fast"></i>
+            </div>
+
+
+            <h3 id="confirmModalTitle">
+                Confirm Status Update
+            </h3>
+
+
+            <p id="confirmModalText">
+                Are you sure you want to update this order?
+            </p>
+
+
+            <div class="shipper-confirm-actions">
+
+                <button
+                    type="button"
+                    class="confirm-cancel-btn"
+                    id="confirmCancelBtn"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="confirm-submit-btn"
+                    id="confirmSubmitBtn"
+                >
+                    Confirm Update
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/shipper_order_form.js' %}"></script>
+{% endblock %}
