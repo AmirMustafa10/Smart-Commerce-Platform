@@ -1,0 +1,958 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+    {% if object %}
+        Edit Order | WhatsFlow
+    {% else %}
+        Create Order | WhatsFlow
+    {% endif %}
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/order.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="order-page order-form-page">
+
+    <div class="order-page-bg">
+        <div class="order-glow order-glow-one"></div>
+        <div class="order-glow order-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             TOPBAR
+        ====================================================== -->
+
+        <div class="order-form-topbar">
+
+            <a
+                href="{% url 'orders:order_list' %}"
+                class="order-back-link"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to orders
+            </a>
+
+
+            <span class="order-form-top-label">
+                ORDER MANAGEMENT
+            </span>
+
+        </div>
+
+
+        <!-- =====================================================
+             INTRO
+        ====================================================== -->
+
+        <header class="order-form-intro">
+
+            <span class="order-eyebrow">
+
+                <i class="fas fa-receipt"></i>
+
+                {% if object %}
+                    EDIT ORDER
+                {% else %}
+                    NEW ORDER
+                {% endif %}
+
+            </span>
+
+
+            <h1>
+
+                {% if object %}
+                    Edit order #{{ object.pk }}
+                {% else %}
+                    Create order
+                {% endif %}
+
+            </h1>
+
+
+            <p>
+
+                {% if object %}
+
+                    Update the customer, fulfillment and payment
+                    details for this order.
+
+                {% else %}
+
+                    Create an order and add the products purchased
+                    by the customer.
+
+                {% endif %}
+
+            </p>
+
+        </header>
+
+
+        <!-- =====================================================
+             FROZEN NOTICE
+        ====================================================== -->
+
+        {% if object and object.is_frozen %}
+
+            <div class="order-frozen-notice">
+
+                <div class="order-frozen-notice-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        This order is frozen
+                    </strong>
+
+                    <p>
+                        Products and quantities can no longer be changed.
+                        Only the order status can be updated.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             FORM
+        ====================================================== -->
+
+        <form
+            method="post"
+            id="orderForm"
+            novalidate
+        >
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="order-form-error">
+
+                    <i class="fas fa-circle-exclamation"></i>
+
+                    <div>
+                        {{ form.non_field_errors }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            {% if object and object.is_frozen %}
+
+                <!-- =================================================
+                     FROZEN ORDER
+                     Only order status remains editable.
+                ================================================== -->
+
+                <div class="order-frozen-layout">
+
+                    <section class="order-form-card">
+
+                        <div class="order-form-card-header">
+
+                            <span class="order-form-card-icon">
+                                <i class="fas fa-lock"></i>
+                            </span>
+
+                            <div>
+
+                                <span>
+                                    ORDER STATUS
+                                </span>
+
+                                <h2>
+                                    Update order status
+                                </h2>
+
+                                <p>
+                                    The items are locked because this order is frozen.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-form-body">
+
+                            <div class="order-field frozen-status-field">
+
+                                <label for="{{ form.status.id_for_label }}">
+                                    Order status
+                                </label>
+
+                                {{ form.status }}
+
+                                {% if form.status.errors %}
+                                    <small class="order-field-error">
+                                        {{ form.status.errors.0 }}
+                                    </small>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-form-footer">
+
+                            <a
+                                href="{% url 'orders:order_list' %}"
+                                class="order-form-cancel"
+                            >
+                                Cancel
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="order-form-submit"
+                                id="orderSubmitBtn"
+                            >
+
+                                <span class="order-submit-content">
+                                    <i class="fas fa-check"></i>
+                                    Save status
+                                </span>
+
+                                <span class="order-submit-loading">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    Saving...
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- Read-only summary -->
+
+                    <aside class="order-readonly-card">
+
+                        <div class="order-readonly-header">
+
+                            <span>
+                                <i class="fas fa-lock"></i>
+                                FROZEN ORDER
+                            </span>
+
+                        </div>
+
+
+                        <div class="order-readonly-order">
+
+                            <span class="order-readonly-icon">
+                                <i class="fas fa-receipt"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    Order #{{ object.pk }}
+                                </strong>
+
+                                <small>
+                                    {{ object.customer.name }}
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-readonly-divider"></div>
+
+
+                        <div class="order-readonly-items">
+
+                            <span class="order-readonly-label">
+                                ORDER ITEMS
+                            </span>
+
+
+                            {% for item in object.items.all %}
+
+                                <div class="order-readonly-item">
+
+                                    <div>
+
+                                        <strong>
+                                            {{ item.product.name }}
+                                        </strong>
+
+                                        {% if item.product.sku %}
+                                            <small>
+                                                SKU: {{ item.product.sku }}
+                                            </small>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <span>
+                                        ×{{ item.quantity }}
+                                    </span>
+
+                                </div>
+
+                            {% empty %}
+
+                                <p>
+                                    No items in this order.
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+
+            {% else %}
+
+                <!-- =================================================
+                     NORMAL ORDER FORM
+                ================================================== -->
+
+                <div class="order-form-layout">
+
+                    <!-- =================================================
+                         LEFT / MAIN
+                    ================================================== -->
+
+                    <section class="order-form-card">
+
+                        <div class="order-form-card-header">
+
+                            <span class="order-form-card-icon">
+                                <i class="fas fa-receipt"></i>
+                            </span>
+
+                            <div>
+
+                                <span>
+                                    ORDER DETAILS
+                                </span>
+
+                                <h2>
+
+                                    {% if object %}
+                                        Update order
+                                    {% else %}
+                                        Order information
+                                    {% endif %}
+
+                                </h2>
+
+                                <p>
+                                    Fill in the order details below.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-form-body">
+
+                            <!-- =================================================
+                                 CUSTOMER
+                            ================================================== -->
+
+                            <section class="order-form-section">
+
+                                <div class="order-section-heading">
+
+                                    <span>
+                                        01
+                                    </span>
+
+                                    <div>
+
+                                        <strong>
+                                            Customer
+                                        </strong>
+
+                                        <small>
+                                            Select an existing customer or create one.
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-customer-choice">
+
+                                    <div class="order-customer-choice-card active">
+
+                                        <div class="order-customer-choice-icon">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                Existing customer
+                                            </strong>
+
+                                            <small>
+                                                Select a customer from your store.
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="order-customer-choice-card">
+
+                                        <div class="order-customer-choice-icon">
+                                            <i class="fas fa-user-plus"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                New customer
+                                            </strong>
+
+                                            <small>
+                                                Enter customer details below.
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-customer-existing">
+
+                                    <div class="order-field">
+
+                                        <label for="{{ form.customer.id_for_label }}">
+                                            Customer
+                                        </label>
+
+                                        {{ form.customer }}
+
+                                        {% if form.customer.errors %}
+                                            <small class="order-field-error">
+                                                {{ form.customer.errors.0 }}
+                                            </small>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-new-customer-box">
+
+                                    <div class="order-new-customer-header">
+
+                                        <i class="fas fa-user-plus"></i>
+
+                                        <div>
+
+                                            <strong>
+                                                New customer details
+                                            </strong>
+
+                                            <small>
+                                                A customer will be created automatically.
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="order-form-grid">
+
+                                        <div class="order-field">
+
+                                            <label for="{{ form.new_customer_name.id_for_label }}">
+                                                Customer name
+                                            </label>
+
+                                            {{ form.new_customer_name }}
+
+                                            {% if form.new_customer_name.errors %}
+                                                <small class="order-field-error">
+                                                    {{ form.new_customer_name.errors.0 }}
+                                                </small>
+                                            {% endif %}
+
+                                        </div>
+
+
+                                        <div class="order-field">
+
+                                            <label for="{{ form.new_customer_phone.id_for_label }}">
+                                                Phone number
+                                            </label>
+
+                                            {{ form.new_customer_phone }}
+
+                                            {% if form.new_customer_phone.errors %}
+                                                <small class="order-field-error">
+                                                    {{ form.new_customer_phone.errors.0 }}
+                                                </small>
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- =================================================
+                                 ORDER SETTINGS
+                            ================================================== -->
+
+                            <section class="order-form-section">
+
+                                <div class="order-section-heading">
+
+                                    <span>
+                                        02
+                                    </span>
+
+                                    <div>
+
+                                        <strong>
+                                            Order settings
+                                        </strong>
+
+                                        <small>
+                                            Configure payment and fulfillment.
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="order-form-grid">
+
+                                    <div class="order-field">
+
+                                        <label for="{{ form.status.id_for_label }}">
+                                            Status
+                                        </label>
+
+                                        {{ form.status }}
+
+                                        {% if form.status.errors %}
+                                            <small class="order-field-error">
+                                                {{ form.status.errors.0 }}
+                                            </small>
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="order-field">
+
+                                        <label for="{{ form.payment_method.id_for_label }}">
+                                            Payment method
+                                        </label>
+
+                                        {{ form.payment_method }}
+
+                                        {% if form.payment_method.errors %}
+                                            <small class="order-field-error">
+                                                {{ form.payment_method.errors.0 }}
+                                            </small>
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="order-field order-field-full">
+
+                                        <label for="{{ form.shipper.id_for_label }}">
+                                            Shipper
+                                        </label>
+
+                                        {{ form.shipper }}
+
+                                        {% if form.shipper.errors %}
+                                            <small class="order-field-error">
+                                                {{ form.shipper.errors.0 }}
+                                            </small>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- =================================================
+                                 ORDER ITEMS
+                            ================================================== -->
+
+                            <section class="order-form-section">
+
+                                <div class="order-section-heading order-items-heading">
+
+                                    <div class="order-section-number">
+                                        03
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            Order items
+                                        </strong>
+
+                                        <small>
+                                            Add the products included in this order.
+                                        </small>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        id="addOrderItem"
+                                        class="order-add-item-btn"
+                                    >
+                                        <i class="fas fa-plus"></i>
+                                        Add item
+                                    </button>
+
+                                </div>
+
+
+                                <div class="order-items-formset">
+
+                                    {{ formset.management_form }}
+
+
+                                    <div id="orderItemsContainer">
+
+                                        {% for item_form in formset %}
+
+                                            <div class="order-item-form-row">
+
+                                                <div class="order-item-form-index">
+                                                    {{ forloop.counter|stringformat:"02d" }}
+                                                </div>
+
+
+                                                <div class="order-item-form-product order-field">
+
+                                                    <label>
+                                                        Product
+                                                    </label>
+
+                                                    {{ item_form.product }}
+
+                                                    {% if item_form.product.errors %}
+                                                        <small class="order-field-error">
+                                                            {{ item_form.product.errors.0 }}
+                                                        </small>
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                                <div class="order-item-form-quantity order-field">
+
+                                                    <label>
+                                                        Quantity
+                                                    </label>
+
+                                                    {{ item_form.quantity }}
+
+                                                    {% if item_form.quantity.errors %}
+                                                        <small class="order-field-error">
+                                                            {{ item_form.quantity.errors.0 }}
+                                                        </small>
+                                                    {% endif %}
+
+                                                </div>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="order-remove-item"
+                                                    title="Remove item"
+                                                >
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+
+
+                                                {% if item_form.id %}
+                                                    {{ item_form.id }}
+                                                {% endif %}
+
+                                                {% if item_form.DELETE %}
+                                                    <div class="d-none">
+                                                        {{ item_form.DELETE }}
+                                                    </div>
+                                                {% endif %}
+
+                                            </div>
+
+                                        {% empty %}
+
+                                            <div class="order-items-empty-form">
+
+                                                <div class="order-items-empty-icon">
+                                                    <i class="fas fa-box-open"></i>
+                                                </div>
+
+                                                <strong>
+                                                    No products added yet
+                                                </strong>
+
+                                                <span>
+                                                    Click "Add item" to add products.
+                                                </span>
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+
+                                    <!-- Empty template for JS -->
+
+                                    <template id="emptyOrderItemTemplate">
+
+                                        <div class="order-item-form-row">
+
+                                            <div class="order-item-form-index">
+                                                01
+                                            </div>
+
+
+                                            <div class="order-item-form-product order-field">
+
+                                                <label>
+                                                    Product
+                                                </label>
+
+                                                {{ formset.empty_form.product }}
+
+                                            </div>
+
+
+                                            <div class="order-item-form-quantity order-field">
+
+                                                <label>
+                                                    Quantity
+                                                </label>
+
+                                                {{ formset.empty_form.quantity }}
+
+                                            </div>
+
+
+                                            <button
+                                                type="button"
+                                                class="order-remove-item"
+                                                title="Remove item"
+                                            >
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+
+                                        </div>
+
+                                    </template>
+
+                                </div>
+
+                            </section>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             FOOTER
+                        ================================================== -->
+
+                        <div class="order-form-footer">
+
+                            <a
+                                href="{% url 'orders:order_list' %}"
+                                class="order-form-cancel"
+                            >
+                                Cancel
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="order-form-submit"
+                                id="orderSubmitBtn"
+                            >
+
+                                <span class="order-submit-content">
+
+                                    {% if object %}
+
+                                        <i class="fas fa-check"></i>
+                                        Save changes
+
+                                    {% else %}
+
+                                        <i class="fas fa-plus"></i>
+                                        Create order
+
+                                    {% endif %}
+
+                                </span>
+
+
+                                <span class="order-submit-loading">
+
+                                    <i class="fas fa-spinner fa-spin"></i>
+
+                                    {% if object %}
+                                        Saving...
+                                    {% else %}
+                                        Creating...
+                                    {% endif %}
+
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =================================================
+                         RIGHT SUMMARY
+                    ================================================== -->
+
+                    <aside class="order-summary-card">
+
+                        <div class="order-summary-card-header">
+
+                            <span>
+                                <i class="fas fa-eye"></i>
+                                ORDER SUMMARY
+                            </span>
+
+                        </div>
+
+
+                        <div class="order-summary-main">
+
+                            <div class="order-summary-preview-icon">
+                                <i class="fas fa-receipt"></i>
+                            </div>
+
+
+                            <h3>
+                                {% if object %}
+                                    Order #{{ object.pk }}
+                                {% else %}
+                                    New Order
+                                {% endif %}
+                            </h3>
+
+
+                            <p id="orderSummaryCustomer">
+                                Customer not selected
+                            </p>
+
+                        </div>
+
+
+                        <div class="order-summary-divider"></div>
+
+
+                        <div class="order-summary-stats">
+
+                            <div>
+
+                                <span>
+                                    Products
+                                </span>
+
+                                <strong id="summaryItemsCount">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Quantity
+                                </span>
+
+                                <strong id="summaryQuantity">
+                                    0
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-summary-tip">
+
+                            <i class="fas fa-lightbulb"></i>
+
+                            <span>
+                                Add all products and quantities before
+                                submitting the order.
+                            </span>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            {% endif %}
+
+        </form>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/order.js' %}"></script>
+{% endblock %}

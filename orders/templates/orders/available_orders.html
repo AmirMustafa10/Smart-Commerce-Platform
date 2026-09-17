@@ -1,0 +1,293 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/available_orders.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="available-orders-page">
+
+    <div class="available-orders-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- Page Header -->
+        <div class="available-orders-header">
+
+            <div>
+                <span class="available-orders-eyebrow">
+                    <i class="fas fa-box-open"></i>
+                    Shipment Queue
+                </span>
+
+                <h1 class="available-orders-title">
+                    Available Orders
+                </h1>
+
+                <p class="available-orders-subtitle">
+                    Browse available orders and take the ones you want to deliver.
+                </p>
+            </div>
+
+            <div class="available-orders-count">
+                <div class="available-orders-count-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+
+                <div>
+                    <span class="available-orders-count-label">
+                        Available
+                    </span>
+
+                    <strong>
+                        {{ orders|length }}
+                    </strong>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Orders -->
+        {% if orders %}
+
+        <div class="available-orders-list">
+
+            {% for order in orders %}
+
+            <article
+                class="available-order-package"
+                data-order-detail-url="{% url 'orders:order_detail' order.pk %}"
+                tabindex="0"
+                role="link"
+                aria-label="View Order #{{ order.pk }}"
+            >
+
+                <!-- Accent -->
+                <div class="available-order-package-accent"></div>
+
+
+                <!-- Card Header -->
+                <div class="available-order-package-header">
+
+                    <div class="available-order-identity">
+
+                        <div class="available-order-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+
+                        <div>
+
+                            <span class="available-order-label">
+                                ORDER
+                            </span>
+
+                            <h2>
+                                #{{ order.pk }}
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="available-order-status">
+                        <span class="available-order-status-dot"></span>
+                        Preparing
+                    </span>
+
+                </div>
+
+
+                <!-- Date -->
+                <div class="available-order-date">
+
+                    <i class="far fa-clock"></i>
+
+                    <span>
+                        {{ order.created_at|date:"M d, Y • h:i A" }}
+                    </span>
+
+                </div>
+
+
+                <!-- Order Information -->
+                <div class="available-order-package-info">
+
+                    <!-- Customer -->
+                    <div class="available-order-info-item">
+
+                        <div class="available-order-info-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+
+                        <div class="available-order-info-content">
+
+                            <span class="available-order-info-label">
+                                Customer
+                            </span>
+
+                            <strong>
+                                {{ order.customer.name }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div class="available-order-info-item">
+
+                        <div class="available-order-info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+
+                        <div class="available-order-info-content">
+
+                            <span class="available-order-info-label">
+                                Phone
+                            </span>
+
+                            <strong>
+                                {{ order.customer.phone_number }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Items -->
+                    <div class="available-order-info-item">
+
+                        <div class="available-order-info-icon">
+                            <i class="fas fa-boxes-stacked"></i>
+                        </div>
+
+                        <div class="available-order-info-content">
+
+                            <span class="available-order-info-label">
+                                Items
+                            </span>
+
+                            <strong>
+                                {{ order.items.all|length }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Payment -->
+                    <div class="available-order-info-item">
+
+                        <div class="available-order-info-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+
+                        <div class="available-order-info-content">
+
+                            <span class="available-order-info-label">
+                                Payment
+                            </span>
+
+                            <strong>
+                                {{ order.get_payment_method_display }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Price -->
+                <div class="available-order-total">
+
+                    <div class="available-order-total-label">
+                        <i class="fas fa-coins"></i>
+                        Order Total
+                    </div>
+
+                    <strong>
+                        {{ order.total_amount }}
+                    </strong>
+
+                </div>
+
+
+                <!-- Footer -->
+                <div class="available-order-package-footer">
+
+                    <span class="available-order-details-hint">
+                        <i class="fas fa-arrow-up-right-from-square"></i>
+                        Click card to view order details
+                    </span>
+
+
+                    <form
+                        method="post"
+                        action="{% url 'orders:take_order' order.pk %}"
+                        class="take-order-form"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="take-order-btn"
+                        >
+                            <span>
+                                Take Order
+                            </span>
+
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <!-- Empty State -->
+        <div class="available-orders-empty">
+
+            <div class="available-orders-empty-icon">
+                <i class="fas fa-box-open"></i>
+            </div>
+
+            <h2>
+                No Orders Available
+            </h2>
+
+            <p>
+                There are currently no orders waiting to be taken.
+                New orders will appear here when they become available.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/available_orders.js' %}"></script>
+{% endblock %}

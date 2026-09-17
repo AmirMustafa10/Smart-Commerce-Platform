@@ -1,0 +1,662 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+    Order #{{ object.pk }} | WhatsFlow
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/order.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="order-page order-detail-page">
+
+    <div class="order-page-bg">
+        <div class="order-glow order-glow-one"></div>
+        <div class="order-glow order-glow-two"></div>
+    </div>
+
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             TOPBAR
+        ====================================================== -->
+
+        <div class="order-detail-topbar">
+
+            <a
+                href="{% url 'orders:order_list' %}"
+                class="order-back-link"
+            >
+                <i class="fas fa-arrow-left"></i>
+                Back to orders
+            </a>
+
+
+            <span class="order-form-top-label">
+                ORDER DETAILS
+            </span>
+
+        </div>
+
+
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
+
+        <section class="order-detail-hero">
+
+            <div class="order-detail-hero-main">
+
+                <div class="order-detail-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+
+
+                <div>
+
+                    <span class="order-eyebrow">
+                        ORDER
+                    </span>
+
+                    <h1>
+                        #{{ object.pk }}
+                    </h1>
+
+                    <p>
+                        Created {{ object.created_at|date:"M d, Y • h:i A" }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-detail-hero-actions">
+
+                {% if object.is_frozen %}
+
+                    <span class="order-frozen-badge large">
+                        <i class="fas fa-lock"></i>
+                        Frozen
+                    </span>
+
+                {% endif %}
+
+
+                <span class="order-status-badge status-{{ object.status|lower }}">
+                    <span></span>
+                    {% if order.is_deleted %}
+                    deleted
+                    {% else %}
+                    {{ order.get_status_display }}
+                    {% endif %}
+                </span>
+
+
+                {% if not object.is_frozen and request.user.role != 'SHIPPER' %}
+
+                    <a
+                        href="{% url 'orders:order_update' object.pk %}"
+                        class="order-btn order-btn-light"
+                    >
+                        <i class="fas fa-pen"></i>
+                        Edit
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             FROZEN NOTICE
+        ====================================================== -->
+
+        {% if object.is_frozen %}
+
+            <div class="order-frozen-notice">
+
+                <div class="order-frozen-notice-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+
+                <div>
+
+                    <strong>
+                        This order is frozen
+                    </strong>
+
+                    <p>
+                        Products and quantities can no longer be modified.
+                        Only the order status can be updated.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             MAIN GRID
+        ====================================================== -->
+
+        <div class="order-detail-layout">
+
+
+            <!-- =================================================
+                 MAIN CONTENT
+            ================================================== -->
+
+            <div class="order-detail-main">
+
+
+                <!-- Order overview -->
+
+                <section class="order-detail-card">
+
+                    <div class="order-detail-card-header">
+
+                        <div>
+
+                            <span>
+                                ORDER INFORMATION
+                            </span>
+
+                            <h2>
+                                Overview
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="order-detail-info-grid">
+
+                        <div class="order-detail-info-item">
+
+                            <span>
+                                <i class="fas fa-user"></i>
+                                Customer
+                            </span>
+
+                            <strong>
+                                {{ object.customer.name }}
+                            </strong>
+
+                            {% if object.customer.phone %}
+
+                                <small>
+                                    {{ object.customer.phone }}
+                                </small>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="order-detail-info-item">
+
+                            <span>
+                                <i class="fas fa-credit-card"></i>
+                                Payment method
+                            </span>
+
+                            <strong>
+                                {{ object.get_payment_method_display }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="order-detail-info-item">
+
+                            <span>
+                                <i class="fas fa-truck"></i>
+                                Shipper
+                            </span>
+
+                            <strong>
+
+                                {% if object.shipper %}
+                                    {{ object.shipper.full_name }}
+                                {% else %}
+                                    Unassigned
+                                {% endif %}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="order-detail-info-item">
+
+                            <span>
+                                <i class="fas fa-calendar"></i>
+                                Created
+                            </span>
+
+                            <strong>
+                                {{ object.created_at|date:"M d, Y" }}
+                            </strong>
+
+                            <small>
+                                {{ object.created_at|date:"h:i A" }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- Order items -->
+
+                <section class="order-detail-card">
+
+                    <div class="order-detail-card-header">
+
+                        <div>
+
+                            <span>
+                                ORDER ITEMS
+                            </span>
+
+                            <h2>
+                                Products
+                            </h2>
+
+                        </div>
+
+
+                        <span class="order-detail-item-count">
+                            {{ object.items.all|length }}
+                            item{{ object.items.all|length|pluralize }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-detail-items">
+
+                        {% for item in object.items.all %}
+
+                            <div class="order-detail-item">
+
+                                <div class="order-detail-item-number">
+                                    {{ forloop.counter|stringformat:"02d" }}
+                                </div>
+
+
+                                <div class="order-detail-item-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+
+
+                                <div class="order-detail-item-product">
+
+                                    <strong>
+                                        {{ item.product.name }}
+                                    </strong>
+
+                                    {% if item.product.sku %}
+
+                                        <small>
+                                            SKU: {{ item.product.sku }}
+                                        </small>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="order-detail-item-quantity">
+
+                                    <span>
+                                        Quantity
+                                    </span>
+
+                                    <strong>
+                                        ×{{ item.quantity }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        {% empty %}
+
+                            <div class="order-detail-items-empty">
+
+                                <div class="order-empty-icon">
+                                    <i class="fas fa-box-open"></i>
+                                </div>
+
+                                <strong>
+                                    No items
+                                </strong>
+
+                                <p>
+                                    This order does not contain any products.
+                                </p>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 SIDEBAR
+            ================================================== -->
+
+            <aside class="order-detail-sidebar">
+
+
+                <!-- Total -->
+
+                <section class="order-total-card">
+
+                    <span>
+                        ORDER TOTAL
+                    </span>
+
+                    <strong>
+                        {{ object.total_amount|default:"0.00" }}
+                    </strong>
+
+                    <small>
+                        Final order amount
+                    </small>
+
+                </section>
+
+
+                <!-- Status -->
+
+                <section class="order-sidebar-card">
+
+                    <div class="order-sidebar-card-header">
+
+                        <span>
+                            ORDER STATUS
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-sidebar-status">
+
+                        <span class="order-status-badge status-{{ object.status|lower }}">
+                            <span></span>
+                            {% if order.is_deleted %}
+                            deleted
+                            {% else %}
+                            {{ order.get_status_display }}
+                            {% endif %}
+                        </span>
+
+
+                        {% if object.is_frozen %}
+
+                            <div class="order-sidebar-frozen">
+
+                                <i class="fas fa-lock"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Order locked
+                                    </strong>
+
+                                    <small>
+                                        Items can no longer be changed.
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+
+                <!-- Actions -->
+
+                <section class="order-sidebar-card">
+
+                    <div class="order-sidebar-card-header">
+
+                        <span>
+                            ACTIONS
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-sidebar-actions">
+
+                        {% if not object.is_frozen and request.user.role != 'SHIPPER' %}
+
+                            <a
+                                href="{% url 'orders:order_update' object.pk %}"
+                                class="order-sidebar-action primary"
+                            >
+                                <i class="fas fa-pen"></i>
+                                Edit Order
+                            </a>
+
+                            <button
+                                type="button"
+                                class="order-sidebar-action danger delete-order-btn"
+                                data-order-name="#{{ object.pk }}"
+                                data-delete-url="{% url 'orders:order_delete' object.pk %}"
+                            >
+                                <i class="fas fa-trash"></i>
+                                Delete Order
+                            </button>
+
+                        
+                        {% elif request.user.role == 'SHIPPER' %}
+                            {% if not order.shipper and order.status == 'PREPARING' %}
+                                <form
+                                    method="post"
+                                    action="{% url 'orders:take_order' order.pk %}"
+                                    class="take-order-form"
+                                >
+                                    
+                                    {% csrf_token %}
+                                    
+                                    <button
+                                        type="submit"
+                                        class="take-order-btn"
+                                    >
+                                        <span>
+                                            Take Order
+                                        </span>
+                                    
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                
+                                </form>
+                            
+                            {% elif order.shipper == request.user and order.status == 'SHIPPED' %}
+                                <a
+                                    href="{% url 'orders:shipper_order_update' object.pk %}"
+                                    class="order-sidebar-action primary"
+                                >
+                                    <i class="fas fa-rotate"></i>
+                                    Update Status
+                                </a>
+                            {% endif %}
+                            
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+
+                <!-- Customer -->
+
+                <section class="order-sidebar-card">
+
+                    <div class="order-sidebar-card-header">
+
+                        <span>
+                            CUSTOMER
+                        </span>
+
+                    </div>
+
+
+                    <div class="order-sidebar-customer">
+
+                        <div class="order-sidebar-customer-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ object.customer.name }}
+                            </strong>
+
+                            {% if object.customer.phone %}
+
+                                <span>
+                                    {{ object.customer.phone }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     DELETE MODAL
+========================================================= -->
+
+<div
+    id="orderDeleteModal"
+    class="order-delete-modal"
+    aria-hidden="true"
+>
+
+    <div
+        class="order-delete-overlay"
+        data-close-order-delete
+    ></div>
+
+
+    <div class="order-delete-dialog">
+
+        <button
+            type="button"
+            class="order-delete-close"
+            data-close-order-delete
+        >
+            <i class="fas fa-xmark"></i>
+        </button>
+
+
+        <div class="order-delete-icon">
+            <i class="fas fa-trash"></i>
+        </div>
+
+
+        <span class="order-delete-eyebrow">
+            DELETE ORDER
+        </span>
+
+
+        <h2>
+            Delete
+            <strong id="deleteOrderName"></strong>?
+        </h2>
+
+
+        <p>
+            This order will be removed from your active order list.
+        </p>
+
+
+        <form
+            method="post"
+            id="orderDeleteForm"
+        >
+
+            {% csrf_token %}
+
+            <div class="order-delete-actions">
+
+                <button
+                    type="button"
+                    class="order-btn order-btn-light"
+                    data-close-order-delete
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    id="confirmOrderDeleteBtn"
+                    class="order-btn order-btn-danger"
+                >
+
+                    <span class="order-delete-content">
+                        <i class="fas fa-trash"></i>
+                        Delete Order
+                    </span>
+
+                    <span class="order-delete-loading">
+                        <span class="spinner-border spinner-border-sm"></span>
+                        Deleting...
+                    </span>
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/order.js' %}"></script>
+{% endblock %}
