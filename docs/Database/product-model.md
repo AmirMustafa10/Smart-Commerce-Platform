@@ -69,6 +69,10 @@ Business validation ensures that the selected category belongs to the same store
 
 This prevents invalid cross-tenant relationships and preserves database consistency.
 
+Products may be referenced by multiple order items during order processing.
+
+This relationship allows products to participate in sales operations while remaining independent from the order management domain.
+
 ---
 
 # Pricing Strategy
@@ -97,6 +101,7 @@ Each product maintains inventory-related information.
 Current fields include:
 
 - SKU (Stock Keeping Unit)
+- Quantity
 - Out-of-stock status
 
 The SKU provides a stable business identifier suitable for:
@@ -107,6 +112,10 @@ The SKU provides a stable business identifier suitable for:
 - External systems
 
 The `is_out_of_stock` field allows the application to distinguish product availability without removing products from the catalog.
+
+Product quantities participate in inventory synchronization during the order lifecycle.
+
+The synchronization process is implemented through business rules outside the Product model to keep inventory updates separate from the product database structure.
 
 ---
 
@@ -194,5 +203,6 @@ Possible future improvements include:
 - `Database/base-models.md`
 - `Database/tenant-isolation.md`
 - `Architecture/product-management.md`
-- `ADR/ADR-003-product-images.md`
+- `ADR/ADR-005-product-images.md`
 - `Architecture/administration.md`
+- `Database/order-model.md`

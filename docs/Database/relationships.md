@@ -25,19 +25,18 @@ The current database structure can be summarized as:
 ```text id="d1v7ma"
                     User
                      |
-                     |
-                  belongs to
-                     |
                      ▼
                   Store
-                 /     \
-                /       \
-               ▼         ▼
-        Category       Product
-                           |
-                           |
-                           ▼
-                    ProductImage
+      ┌────────────┼─────────────┐
+      ▼            ▼             ▼
+ Category      Product      Customer
+      │            │             │
+      │            ▼             ▼
+      │      ProductImage      Order
+      │                          │
+      └──────────────────────────┤
+                                 ▼
+                            OrderItem
 ```
 
 ---
@@ -53,11 +52,11 @@ Current relationships include:
 | User          | One Store → Many Users      |
 | Category      | One Store → Many Categories |
 | Product       | One Store → Many Products   |
+| Customer      | One Store → Many Customers  |
+| Order         | One Store → Many Orders     |
 
 Future modules may extend this structure with:
 
-- Orders
-- Customers
 - Inventory
 - Suppliers
 - Payments
@@ -144,6 +143,51 @@ The ProductImage model depends on the Product model and cannot exist independent
 
 ---
 
+## Customer Relationships
+
+Each customer belongs to exactly one Store.
+
+Customers may place multiple orders within their owning store.
+
+Relationship:
+
+```text
+Store
+   |
+   └── Customers
+          |
+          └── Orders
+```
+
+Customers cannot be shared across different stores.
+
+---
+
+## Order Relationships
+
+Each order belongs to:
+
+- One Store
+- One Customer
+
+Each order contains one or more order items.
+
+Relationship:
+
+```text
+Store
+   |
+   ├── Customers
+   |
+   └── Orders
+          |
+          └── Order Items
+```
+
+Business validation ensures that all referenced entities belong to the same tenant.
+
+---
+
 # Ownership Flow
 
 Ownership flows from the Store down to all tenant-owned resources.
@@ -153,9 +197,13 @@ Store
    |
    ├── Users
    ├── Categories
-   └── Products
-           |
-           └── Product Images
+   ├── Products
+   │      |
+   │      └── Product Images
+   ├── Customers
+   └── Orders
+          |
+          └── Order Items
 ```
 
 This structure guarantees that every business resource belongs to a single tenant.
@@ -171,6 +219,8 @@ The database relationships follow these principles:
 - Parent-child relationships preserve data integrity.
 - Business validation enforces ownership consistency.
 - Related entities remain normalized.
+- Orders may only reference customers belonging to the same store.
+- Order items may only reference products owned by the same store.
 
 ---
 
@@ -183,12 +233,11 @@ Possible future relationships include:
 ```text id="p2rj0l"
 Store
  |
- ├── Customers
- ├── Orders
  ├── Inventory
  ├── Suppliers
  ├── Payments
- └── Notifications
+ ├── Notifications
+ └── Analytics
 ```
 
 These modules should follow the existing tenant ownership architecture to maintain consistency.

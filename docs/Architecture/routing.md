@@ -72,6 +72,7 @@ Protected routes require authentication and provide access to tenant-specific bu
 | `/dashboard/`  | Main application workspace |
 | `/categories/` | Category management        |
 | `/products/`   | Product management         |
+| `/orders/`     | Order management           |
 | `/team/`       | Internal team management   |
 | `/profile/`    | User profile management    |
 | `/settings/`   | Store configuration        |
@@ -99,6 +100,7 @@ Authenticated
 ├── /dashboard/
 ├── /categories/
 ├── /products/
+├── /orders/
 ├── /team/
 ├── /profile/
 ├── /settings/

@@ -26,37 +26,19 @@ The platform follows the following ownership hierarchy:
 
 ```text
 User
-
  |
-
  ▼
-
 Store
-
  |
-
- ├──────────────┐
-
- ▼              ▼
-
-Categories    Products
-
-                  |
-
-                  ▼
-
-            Product Images
-
-                 
-
-
-Store
-
- |
-
- ▼
-
-Team Members
+ ├────────────┬────────────┬────────────┐
+ ▼            ▼            ▼            ▼
+Category   Product     Customer      Team Member
+                |            |
+                ▼            ▼
+         ProductImage     Order
+                               |
+                               ▼
+                          OrderItem
 ```
 
 The `Store` entity represents the tenant boundary for all merchant-owned resources.
@@ -76,6 +58,16 @@ Category → Store
 
 Product → Store
 
+Customer → Store
+
+Order → Store
+
+Order → Customer
+
+OrderItem → Order
+
+OrderItem → Product
+
 Product → Category
 ```
 
@@ -83,9 +75,11 @@ Business rules ensure that related entities cannot reference resources belonging
 
 Examples:
 
-* A product from Store A cannot use a category from Store B.
-* A user from one store cannot access another store's resources.
-* Team members belong only to their assigned store.
+- A product from Store A cannot use a category from Store B.
+- A user from one store cannot access another store's resources.
+- Team members belong only to their assigned store.
+- A customer from Store A cannot be assigned to an order belonging to Store B.
+- An order item cannot reference a product owned by another store.
 
 ---
 
@@ -97,20 +91,13 @@ The inheritance structure is:
 
 ```text
 BaseModel
-
     |
-
     ▼
-
 TenantAwareModel
-
     |
-
-    ├───────────────┐
-
-    ▼               ▼
-
-Product          Category
+    ├──────────┬──────────┬──────────┐
+    ▼          ▼          ▼          ▼
+Product    Category   Customer    Order
 ```
 
 ---
@@ -121,16 +108,16 @@ Product          Category
 
 Current responsibilities include:
 
-* Creation timestamp
-* Update timestamp
-* Soft deletion support
+- Creation timestamp
+- Update timestamp
+- Soft deletion support
 
 Common fields include:
 
-* `created_at`
-* `updated_at`
-* `is_deleted`
-* `deleted_at`
+- `created_at`
+- `updated_at`
+- `is_deleted`
+- `deleted_at`
 
 This approach prevents repeating common fields across multiple models and keeps the database design consistent.
 
@@ -144,10 +131,10 @@ Models that belong to a merchant inherit from this abstract model.
 
 Benefits include:
 
-* Centralized store ownership
-* Reduced duplicated code
-* Consistent tenant relationships
-* Easier future modifications
+- Centralized store ownership
+- Reduced duplicated code
+- Consistent tenant relationships
+- Easier future modifications
 
 ---
 
@@ -161,9 +148,13 @@ Database relationships maintain ownership boundaries.
 
 Examples:
 
-* Products belong to a specific store.
-* Categories belong to a specific store.
-* Product categories must belong to the same store as the product.
+- Products belong to a specific store.
+- Categories belong to a specific store.
+- Customers belong to a specific store.
+- Orders belong to a specific store.
+- Product categories must belong to the same store as the product.
+- Orders may only reference customers belonging to the same store.
+- Order items may only reference products owned by the same store.
 
 ---
 
@@ -181,9 +172,9 @@ Authorization rules prevent users from performing actions outside their responsi
 
 Examples:
 
-* Store owners manage their own business.
-* Managers operate within their assigned store.
-* Users cannot access another tenant's resources.
+- Store owners manage their own business.
+- Managers operate within their assigned store.
+- Users cannot access another tenant's resources.
 
 ---
 
@@ -195,8 +186,12 @@ Instead of removing records from the database, the system marks them as deleted 
 
 Each soft-deleted record contains:
 
-* `is_deleted` to indicate deletion status.
-* `deleted_at` to record when deletion occurred.
+- `is_deleted` to indicate deletion status.
+- `deleted_at` to record when deletion occurred.
+
+Current implementation applies soft deletion to business entities that require historical preservation, such as orders.
+
+Supporting entities that do not require historical retention, such as order items, may be permanently deleted when appropriate.
 
 ---
 
@@ -230,10 +225,10 @@ all_objects
 
 This is intended for:
 
-* Administrative operations
-* Data recovery
-* Auditing
-* Internal maintenance
+- Administrative operations
+- Data recovery
+- Auditing
+- Internal maintenance
 
 ---
 
@@ -241,12 +236,12 @@ This is intended for:
 
 The tenant isolation strategy follows these principles:
 
-* Explicit data ownership
-* Strong tenant boundaries
-* Default protection against deleted records
-* Historical data preservation
-* Reusable database abstractions
-* Future scalability
+- Explicit data ownership
+- Strong tenant boundaries
+- Default protection against deleted records
+- Historical data preservation
+- Reusable database abstractions
+- Future scalability
 
 ---
 
@@ -254,20 +249,20 @@ The tenant isolation strategy follows these principles:
 
 Future improvements may include:
 
-* Automated tenant filtering middleware
-* Database-level row security
-* Audit history tracking
-* Restore workflows
-* Data retention policies
-* Advanced tenant management tools
+- Automated tenant filtering middleware
+- Database-level row security
+- Audit history tracking
+- Restore workflows
+- Data retention policies
+- Advanced tenant management tools
 
 ---
 
 # Related Documentation
 
-* `Database/database-overview.md`
-* `Database/base-models.md`
-* `Database/custom-user-model.md`
-* `Database/store-model.md`
-* `Database/product-model.md`
-* `Architecture/authorization.md`
+- `Database/database-overview.md`
+- `Database/base-models.md`
+- `Database/custom-user-model.md`
+- `Database/store-model.md`
+- `Database/product-model.md`
+- `Architecture/authorization.md`

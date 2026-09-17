@@ -24,7 +24,8 @@ This document does **not** cover:
 - Database schema
 - Django model implementation
 - API endpoints
-- Inventory movement logic
+- Order processing
+- Inventory synchronization implementation
 
 ---
 
@@ -45,6 +46,18 @@ Products are organized into categories.
 Each category belongs to a single store, and products may only reference categories owned by the same store.
 
 This design prevents cross-tenant relationships and preserves data isolation between merchants.
+
+---
+
+## Product Usage
+
+Products serve as the primary items sold through the platform.
+
+They are referenced by customer orders while remaining independent of the order management domain.
+
+Inventory quantities are automatically synchronized during order lifecycle events through business rules implemented outside the product domain.
+
+This separation allows the product catalog to remain focused on product management while order processing handles inventory updates.
 
 ---
 
@@ -97,8 +110,6 @@ These validation layers help prevent invalid relationships and reduce the risk o
 
 # Current Capabilities
 
-The current product module supports:
-
 - Creating products
 - Updating products
 - Deleting products
@@ -106,6 +117,7 @@ The current product module supports:
 - Uploading multiple product images
 - Product image validation
 - Product pricing management
+- Integration with the order management workflow
 - Django Admin management
 
 ---
@@ -147,3 +159,5 @@ Future enhancements may include:
 - `Database/product-model.md`
 - `Database/tenant-isolation.md`
 - `ADR/ADR-003-product-images.md`
+- `Architecture/order-management.md`
+- `Database/order-model.md`

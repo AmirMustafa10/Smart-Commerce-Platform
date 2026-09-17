@@ -12,17 +12,17 @@ It explains the general database design principles, entity organization, and rel
 
 This document covers:
 
-* Database architecture overview
-* Entity organization
-* Domain relationships
-* Data ownership principles
+- Database architecture overview
+- Entity organization
+- Domain relationships
+- Data ownership principles
 
 This document does **not** cover:
 
-* Detailed model fields
-* Migration history
-* Query optimization
-* Database deployment configuration
+- Detailed model fields
+- Migration history
+- Query optimization
+- Database deployment configuration
 
 ---
 
@@ -34,11 +34,13 @@ The database structure is organized around business domains, where each Django a
 
 The main domains currently include:
 
-* Accounts
-* Stores
-* Products
+- Accounts
+- Stores
+- Products
+- Orders
+- Customers
 
-Additional domains such as Orders and Payments can be introduced as the platform grows.
+The modular database architecture allows additional domains such as Inventory, Payments, Notifications, and Analytics to be introduced as the platform grows.
 
 ---
 
@@ -48,29 +50,23 @@ The database is organized around the following core entities:
 
 ```text
 User
-
  |
-
  ▼
-
 Store
-
  |
-
- ├──────────────┐
-
- ▼              ▼
-
-Categories    Products
-
-                  |
-
-                  ▼
-
-              Product Images
+ ├──────────────┬───────────────┐
+ ▼              ▼               ▼
+Categories    Products      Customers
+                 |               |
+                 ▼               ▼
+          Product Images      Orders
+                                  |
+                                  ▼
+                             Order Items
 ```
 
 The Store entity represents the ownership boundary for merchant-related data.
+Current merchant-owned entities include categories, products, customers, and orders. Together, they represent the platform's primary business domains.
 
 ---
 
@@ -82,10 +78,10 @@ Each merchant operates within an isolated business space represented by a Store.
 
 Business entities that belong to merchants reference their owning Store to ensure:
 
-* Data ownership clarity
-* Tenant isolation
-* Secure filtering
-* Future scalability
+- Data ownership clarity
+- Tenant isolation
+- Secure filtering
+- Future scalability
 
 ---
 
@@ -99,9 +95,9 @@ Each application owns its business entities and related logic.
 
 Examples:
 
-* Accounts manages user identity.
-* Stores manages merchant businesses.
-* Products manages product catalog data.
+- Accounts manages user identity.
+- Stores manages merchant businesses.
+- Products manages product catalog data.
 
 ---
 
@@ -111,9 +107,11 @@ Relationships between entities are designed to prevent invalid data connections.
 
 Examples:
 
-* Products must belong to a valid store.
-* Categories must belong to the same store as their products.
-* Tenant resources cannot cross business boundaries.
+- Products must belong to a valid store.
+- Categories must belong to the same store as their products.
+- Orders must reference customers belonging to the same store.
+- Order items must reference products owned by the same store.
+- Tenant resources cannot cross business boundaries.
 
 ---
 
@@ -123,11 +121,10 @@ The current database structure allows future modules to be introduced without ma
 
 Possible future domains:
 
-* Orders
-* Inventory
-* Payments
-* Notifications
-* Analytics
+- Inventory
+- Payments
+- Notifications
+- Analytics
 
 ---
 
@@ -135,19 +132,22 @@ Possible future domains:
 
 Future database improvements may include:
 
-* Advanced indexing strategies
-* Database performance optimization
-* Audit history tables
-* Event tracking
-* Data warehousing for analytics
+- Advanced indexing strategies
+- Database performance optimization
+- Audit history tables
+- Event tracking
+- Data warehousing for analytics
 
 ---
 
 # Related Documentation
 
-* `Database/tenant-isolation.md`
-* `Database/custom-user-model.md`
-* `Database/store-model.md`
-* `Database/product-model.md`
-* `Database/relationships.md`
-* `Architecture/project-structure.md`
+- `Database/tenant-isolation.md`
+- `Database/custom-user-model.md`
+- `Database/store-model.md`
+- `Database/product-model.md`
+- `Database/relationships.md`
+- `Architecture/project-structure.md`
+- `Database/customer-model.md`
+- `Database/order-model.md`
+- `Architecture/order-management.md`

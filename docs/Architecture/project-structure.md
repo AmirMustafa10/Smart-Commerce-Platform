@@ -31,7 +31,11 @@ This document does **not** cover:
 
 The Smart Commerce Platform is organized into independent Django applications.
 
-Each application owns a specific business domain and is responsible for a well-defined set of functionality. This architecture minimizes coupling between applications, simplifies maintenance, and allows the platform to grow without requiring major structural changes.
+Each application owns a specific business domain and is responsible for a well-defined set of functionality.
+
+Current business domains include user management, store management, product catalog management, and order processing.
+
+This architecture minimizes coupling between applications, simplifies maintenance, and allows the platform to grow without requiring major structural changes.
 
 As new business domains emerge, additional applications can be introduced while preserving the existing architecture.
 
@@ -115,13 +119,36 @@ Testing follows the same layered organization used across the project.
 
 ---
 
+## Orders
+
+The `orders` application manages the complete order lifecycle within each merchant store.
+
+It is responsible for customer management, order processing, inventory synchronization, and order state transitions while preserving tenant isolation.
+
+### Current Responsibilities
+
+- Customer management
+- Order management
+- Order item management
+- Order status lifecycle
+- Inventory synchronization
+- Business rule enforcement
+- Django Signals integration
+- Soft deletion for orders
+
+Testing follows the same layered organization used across the project.
+
+---
+
 ## Shared Components
 
 Some architectural components are intentionally shared across multiple applications to encourage consistency and code reuse.
 
 ### Current Shared Components
 
+- Shared BaseModel
 - Tenant-aware base models
+- Django Signals
 - Shared templates
 - Common validation utilities
 - Shared authentication infrastructure
@@ -152,8 +179,8 @@ The modular architecture allows new business domains to be introduced with minim
 
 Planned and potential future applications include:
 
-- Orders
 - WhatsApp Integration
+- Inventory Synchronization
 - Webhooks
 - Notifications
 - Payments
@@ -174,3 +201,6 @@ The architecture is intentionally designed to support long-term growth without s
 - `Architecture/product-management.md`
 - `Architecture/user-management.md`
 - `Database/tenant-isolation.md`
+- `Architecture/order-management.md`
+- `Database/order-model.md`
+- `Database/customer-model.md`
