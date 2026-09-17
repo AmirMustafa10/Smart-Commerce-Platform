@@ -31,7 +31,7 @@ class StoreManagerRequiredMixin(UserPassesTestMixin):
         return (
             user.is_authenticated
             and user.store_id is not None
-            and user.role in ("OWNER", "MANAGER")
+            and user.role in (CustomUser.Role.OWNER, CustomUser.Role.MANAGER)
         )
 
 
