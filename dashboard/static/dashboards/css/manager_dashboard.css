@@ -1,0 +1,980 @@
+/* =========================================================
+   Manager Dashboard
+   ========================================================= */
+
+.manager-dashboard-page {
+    position: relative;
+    min-height: calc(100vh - 76px);
+
+    padding: 42px 0 70px;
+
+    background: #f8faf9;
+
+    overflow: hidden;
+}
+
+.manager-dashboard-bg {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 8% 8%,
+            rgba(37, 211, 102, 0.07),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 92% 15%,
+            rgba(37, 211, 102, 0.05),
+            transparent 25%
+        );
+}
+
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.manager-dashboard-header {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+}
+
+.manager-dashboard-eyebrow {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 9px;
+
+    color: #25d366;
+
+    font-size: 0.76rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+}
+
+.manager-dashboard-title {
+    margin: 0;
+
+    color: #16352a;
+
+    font-size: clamp(2rem, 3vw, 2.7rem);
+    font-weight: 800;
+
+    letter-spacing: -0.03em;
+}
+
+.manager-dashboard-subtitle {
+    max-width: 650px;
+
+    margin: 10px 0 0;
+
+    color: #718079;
+
+    font-size: 0.92rem;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   KPI Cards
+   ========================================================= */
+
+.manager-kpi-card {
+    position: relative;
+
+    height: 100%;
+
+    padding: 21px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4ece8;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 28px rgba(22, 53, 42, 0.045),
+        0 2px 8px rgba(22, 53, 42, 0.025);
+
+    overflow: hidden;
+
+    cursor: default;
+
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.manager-kpi-card:hover {
+    transform: translateY(-5px);
+
+    border-color: rgba(37, 211, 102, 0.30);
+
+    box-shadow:
+        0 18px 38px rgba(22, 53, 42, 0.09),
+        0 5px 14px rgba(37, 211, 102, 0.05);
+}
+
+.manager-kpi-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 100px;
+    height: 100px;
+
+    right: -40px;
+    bottom: -42px;
+
+    border-radius: 50%;
+
+    background: rgba(37, 211, 102, 0.055);
+
+    pointer-events: none;
+}
+
+.manager-kpi-warning {
+    border-color: rgba(255, 193, 7, 0.24);
+}
+
+.manager-kpi-warning:hover {
+    border-color: rgba(255, 193, 7, 0.45);
+}
+
+.manager-kpi-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 16px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.10);
+
+    border-radius: 13px;
+
+    font-size: 1rem;
+}
+
+.manager-kpi-icon-warning {
+    color: #b77900;
+
+    background: rgba(255, 193, 7, 0.13);
+}
+
+.manager-kpi-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #89968f;
+
+    font-size: 0.69rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.manager-kpi-value {
+    margin: 0;
+
+    color: #18392c;
+
+    font-size: 1.55rem;
+    font-weight: 800;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.025em;
+}
+
+.manager-kpi-description {
+    margin-top: 6px;
+
+    color: #98a49e;
+
+    font-size: 0.70rem;
+}
+
+.manager-kpi-note,
+.manager-kpi-alert-note {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: 9px;
+
+    font-size: 0.63rem;
+
+    line-height: 1.4;
+}
+
+.manager-kpi-note {
+    color: #9aa59f;
+}
+
+.manager-kpi-note i {
+    color: #8d9993;
+}
+
+.manager-kpi-alert-note {
+    color: #9b741c;
+}
+
+.manager-kpi-alert-note i {
+    color: #d39b1c;
+}
+
+
+/* =========================================================
+   Shared Dashboard Card
+   ========================================================= */
+
+.manager-dashboard-card {
+    position: relative;
+    z-index: 2;
+
+    height: 100%;
+
+    background: #ffffff;
+
+    border: 1px solid #e4ece8;
+
+    border-radius: 19px;
+
+    box-shadow:
+        0 10px 30px rgba(22, 53, 42, 0.045),
+        0 2px 8px rgba(22, 53, 42, 0.025);
+
+    overflow: hidden;
+}
+
+.manager-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 19px 21px 17px;
+
+    border-bottom: 1px solid #edf2ef;
+}
+
+.manager-card-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+}
+
+.manager-card-heading-icon {
+    width: 39px;
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 39px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.09);
+
+    border-radius: 10px;
+}
+
+.manager-card-heading-icon-warning {
+    color: #b77900;
+
+    background: rgba(255, 193, 7, 0.12);
+}
+
+.manager-card-heading h2 {
+    margin: 0;
+
+    color: #1c3d30;
+
+    font-size: 0.98rem;
+    font-weight: 800;
+}
+
+.manager-card-heading p {
+    margin: 3px 0 0;
+
+    color: #8b9791;
+
+    font-size: 0.68rem;
+}
+
+.manager-card-badge {
+    padding: 6px 9px;
+
+    color: #6c7b74;
+
+    background: #f4f7f5;
+
+    border-radius: 999px;
+
+    font-size: 0.66rem;
+    font-weight: 700;
+}
+
+.manager-card-alert-count {
+    padding: 6px 9px;
+
+    color: #b02a37;
+
+    background: #f8d7da;
+
+    border-radius: 999px;
+
+    font-size: 0.64rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   Chart Info
+   ========================================================= */
+
+.manager-chart-info-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 13px 21px;
+
+    background: #fafcfb;
+
+    border-bottom: 1px solid #edf2ef;
+
+    color: #77857f;
+
+    font-size: 0.69rem;
+}
+
+.manager-chart-info-strip > div {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.manager-chart-info-strip > div i {
+    color: #25d366;
+}
+
+.manager-chart-info-strip strong {
+    color: #4c6259;
+
+    font-size: 0.69rem;
+}
+
+.manager-chart-info-strip > span {
+    color: #98a49e;
+
+    font-size: 0.65rem;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   Chart
+   ========================================================= */
+
+.manager-chart-wrapper {
+    position: relative;
+
+    height: 355px;
+
+    padding: 20px;
+}
+
+#salesChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+
+/* =========================================================
+   Products Table
+   ========================================================= */
+
+.manager-table {
+    margin: 0;
+}
+
+.manager-table thead th {
+    padding: 13px 20px;
+
+    color: #8b9891;
+
+    background: #fafcfb;
+
+    border-bottom: 1px solid #edf2ef;
+
+    font-size: 0.67rem;
+    font-weight: 800;
+
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.manager-table tbody td {
+    padding: 14px 20px;
+
+    color: #496057;
+
+    border-color: #edf2ef;
+
+    font-size: 0.81rem;
+
+    vertical-align: middle;
+}
+
+.manager-table tbody tr {
+    transition:
+        background-color 0.2s ease;
+}
+
+.manager-table tbody tr:hover {
+    background: #fafcfb;
+}
+
+.manager-product-name {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    color: #29493d;
+
+    font-weight: 700;
+}
+
+.manager-product-index {
+    width: 30px;
+    height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 30px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.09);
+
+    border-radius: 8px;
+
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+.manager-quantity-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 38px;
+
+    padding: 5px 9px;
+
+    color: #315047;
+
+    background: #f1f5f3;
+
+    border-radius: 8px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   Status List
+   ========================================================= */
+
+.manager-status-list {
+    padding: 8px 0;
+}
+
+.manager-status-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 12px 18px;
+
+    transition:
+        background-color 0.2s ease,
+        padding-left 0.2s ease;
+}
+
+.manager-status-item:hover {
+    padding-left: 22px;
+
+    background: #fafcfb;
+}
+
+.manager-status-name {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #42574e;
+
+    font-size: 0.79rem;
+    font-weight: 700;
+}
+
+.manager-status-name i {
+    width: 8px;
+
+    color: #a2aea8;
+
+    font-size: 0.45rem;
+}
+
+.manager-status-badge {
+    min-width: 34px;
+
+    padding: 5px 8px;
+
+    text-align: center;
+
+    border-radius: 999px;
+
+    font-size: 0.67rem;
+    font-weight: 800;
+}
+
+.manager-status-pending {
+    color: #9a6700;
+    background: #fff3cd;
+}
+
+.manager-status-confirmed {
+    color: #055160;
+    background: #cff4fc;
+}
+
+.manager-status-preparing {
+    color: #084298;
+    background: #cfe2ff;
+}
+
+.manager-status-shipped {
+    color: #59359a;
+    background: #e2d9f3;
+}
+
+.manager-status-delivered {
+    color: #146c43;
+    background: #d1e7dd;
+}
+
+.manager-status-cancelled {
+    color: #842029;
+    background: #f8d7da;
+}
+
+.manager-status-returned {
+    color: #664d03;
+    background: #fff3cd;
+}
+
+
+/* =========================================================
+   Low Stock
+   ========================================================= */
+
+.manager-low-stock-list {
+    padding: 6px 0;
+}
+
+.manager-low-stock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 13px 18px;
+
+    border-bottom: 1px solid #edf2ef;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.manager-low-stock-item:last-child {
+    border-bottom: 0;
+}
+
+.manager-low-stock-item:hover {
+    background: #fcfdfc;
+
+    transform: translateX(2px);
+}
+
+.manager-low-stock-product {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.manager-low-stock-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 36px;
+
+    color: #8a6d00;
+
+    background: #fff8df;
+
+    border-radius: 10px;
+}
+
+.manager-low-stock-product strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #29493d;
+
+    font-size: 0.79rem;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.manager-low-stock-product span {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #97a39d;
+
+    font-size: 0.65rem;
+}
+
+.manager-stock-badge {
+    flex-shrink: 0;
+
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.64rem;
+    font-weight: 800;
+}
+
+.manager-stock-warning {
+    color: #8a6400;
+
+    background: #fff3cd;
+}
+
+.manager-stock-critical {
+    color: #b02a37;
+
+    background: #f8d7da;
+
+    animation: stockPulse 2s ease-in-out infinite;
+}
+
+@keyframes stockPulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 0 0 0 rgba(220, 53, 69, 0);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 4px rgba(220, 53, 69, 0.07);
+    }
+
+}
+
+.manager-empty-stock {
+    padding-top: 35px;
+    padding-bottom: 35px;
+}
+
+.manager-empty-success-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 10px;
+
+    color: #198754;
+
+    background: #d1e7dd;
+
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   Recent Activity
+   ========================================================= */
+
+.manager-activity-list {
+    padding: 6px 0;
+}
+
+.manager-activity-item {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    padding: 13px 18px;
+
+    border-bottom: 1px solid #edf2ef;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.manager-activity-item:last-child {
+    border-bottom: 0;
+}
+
+.manager-activity-item:hover {
+    background: #fcfdfc;
+
+    transform: translateX(2px);
+}
+
+.manager-activity-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 36px;
+
+    color: #25d366;
+
+    background: rgba(37, 211, 102, 0.09);
+
+    border-radius: 10px;
+}
+
+.manager-activity-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.manager-activity-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.manager-activity-top strong {
+    min-width: 0;
+
+    overflow: hidden;
+
+    color: #29493d;
+
+    font-size: 0.78rem;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.manager-activity-order {
+    flex-shrink: 0;
+
+    color: #a0aaa5;
+
+    font-size: 0.62rem;
+    font-weight: 700;
+}
+
+.manager-activity-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 6px;
+}
+
+.manager-activity-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 7px;
+
+    border-radius: 999px;
+
+    font-size: 0.59rem;
+    font-weight: 800;
+}
+
+.manager-activity-time {
+    color: #9aa6a0;
+
+    font-size: 0.62rem;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   Empty State
+   ========================================================= */
+
+.manager-empty-state {
+    padding: 38px 20px;
+
+    text-align: center;
+
+    color: #8d9993;
+}
+
+.manager-empty-state i {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: #bcc8c2;
+
+    font-size: 1.5rem;
+}
+
+.manager-empty-state span {
+    font-size: 0.76rem;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .manager-dashboard-page {
+        padding: 32px 0 55px;
+    }
+
+    .manager-dashboard-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        margin-bottom: 24px;
+    }
+
+    .manager-chart-info-strip {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+    .manager-chart-info-strip > span {
+        text-align: left;
+    }
+
+    .manager-chart-wrapper {
+        height: 285px;
+
+        padding: 14px;
+    }
+
+    .manager-activity-top {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 3px;
+    }
+
+}
+
+@media (max-width: 575.98px) {
+
+    .manager-kpi-card {
+        padding: 19px;
+    }
+
+    .manager-card-header {
+        padding: 17px;
+    }
+
+    .manager-table thead th,
+    .manager-table tbody td {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .manager-low-stock-item,
+    .manager-activity-item {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+}
