@@ -11,7 +11,7 @@ class MerchantSignUpViewTests(TestCase):
 
     def setUp(self):
         self.signup_url = reverse("accounts:signup")
-        self.dashboard_url = reverse("core:dashboard")
+        self.dashboard_url = reverse("dashboards:manager_dashboard")
         self.login_url = reverse("accounts:login")
 
     def test_get_signup_page_returns_200_and_uses_correct_template(self):

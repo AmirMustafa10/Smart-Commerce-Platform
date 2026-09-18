@@ -241,8 +241,16 @@ class OrderBusinessRulesTests(TestCase):
             full_name="manager test",
             email="manager@yahoo.com",
             password="password",
-            role="MANAGER",
+            role=User.Role.MANAGER,
             store=self.store,
+        )
+
+        self.shipper = User.objects.create_user(
+            email="shipper@example.com",
+            password="pass12345",
+            full_name="shipper",
+            store=self.store,
+            role=User.Role.SHIPPER,
         )
 
         # Creating the customer
@@ -308,6 +316,7 @@ class OrderBusinessRulesTests(TestCase):
         """Changing the status between active states (e.g., from PENDING to SHIPPED) does not affect inventory."""
 
         self.order.status = Order.Status.SHIPPED
+        self.order.shipper = self.shipper
         self.order.save()
 
         self.product.refresh_from_db()
@@ -322,6 +331,7 @@ class OrderBusinessRulesTests(TestCase):
         """A new product cannot be added to an order with a "Closed" (Delivered) status."""
 
         self.order.status = Order.Status.DELIVERED
+        self.order.shipper = self.shipper
         self.order.save()
 
         new_item = OrderItem(order=self.order, product=self.product, quantity=1)
@@ -351,6 +361,7 @@ class OrderBusinessRulesTests(TestCase):
 
         # Change the order status to "Closed" (e.g., "SHIPPED").
         self.order.status = Order.Status.SHIPPED
+        self.order.shipper = self.shipper
         self.order.save()
 
         # Attempting to actually delete the item (and verifying that the signal stops the process and raises an error).

@@ -188,7 +188,7 @@ class Order(TenantAwareModel):
             raise ValidationError(
                 {
                     "status": _(
-                        'The order cannot be changed to "Delivered" without assigning a SHIPPER.'
+                        'The order cannot be changed to "Delivered or SHIPPED" without assigning a SHIPPER.'
                     ),
                     "shipper": _("Please assign a Shipper first."),
                 }

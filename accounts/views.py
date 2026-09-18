@@ -29,7 +29,7 @@ class MerchantSignUpView(FormView):
 
     template_name = "accounts/signup.html"
     form_class = MerchantSignUpForm
-    success_url = reverse_lazy("core:dashboard")
+    success_url = reverse_lazy("dashboards:manager_dashboard")
 
     def dispatch(self, request, *args, **kwargs):
 
