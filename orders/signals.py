@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.db.models import Sum, F
 from .models import OrderItem, Order
+from django.utils import timezone
 from products.models import Product
 
 
@@ -98,3 +99,30 @@ def prevent_deleting_frozen_items(sender, instance, **kwargs):
         raise ValidationError(
             f"Products cannot be deleted from an order with the status '{instance.order.get_status_display()}'."
         )
+
+
+# automatically progress the status to SHIPPED
+@receiver(pre_save, sender=Order)
+def auto_update_status_on_shipper_assignment(sender, instance, **kwargs):
+    """
+    If a shipper is assigned to the order by a manager (or taken by a shipper),
+    automatically progress the status to SHIPPED.
+    """
+    if instance.shipper and instance.status in [
+        Order.Status.PENDING,
+        Order.Status.PREPARING,
+    ]:
+        instance.status = Order.Status.SHIPPED
+
+
+# automatically set delivered_at
+@receiver(pre_save, sender=Order)
+def set_delivered_at_timestamp(sender, instance, **kwargs):
+    """
+    Automatically set the `delivered_at` timestamp when the order status
+    is changed to DELIVERED for the first time.
+    """
+    if instance.status == Order.Status.DELIVERED and not instance.delivered_at:
+        instance.delivered_at = timezone.now()
+    elif instance.status != Order.Status.DELIVERED and instance.delivered_at:
+        instance.delivered_at = None
