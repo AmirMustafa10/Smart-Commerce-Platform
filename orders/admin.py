@@ -92,18 +92,18 @@ class OrderAdmin(admin.ModelAdmin):
     """Admin configuration for the Order model."""
 
     list_display = (
-        "id",
         "store",
         "customer",
-        "shipper",
+        "shipper__full_name",
         "status",
         "source",
         "total_amount",
+        "payment_method",
         "created_at",
     )
-    list_filter = ("status", "source", "store", "created_at")
+    list_filter = ("status", "source", "store", "created_at", "delivered_at", "payment_method")
     search_fields = ("customer__name", "customer__phone_number", "id")
-    readonly_fields = ("id", "total_amount", "created_at", "updated_at")
+    readonly_fields = ("id", "total_amount", "created_at", "updated_at", "delivered_at")
     inlines = [OrderItemInline]
     ordering = ("-created_at",)
 
@@ -111,11 +111,11 @@ class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ("customer", "shipper")
 
     fieldsets = (
-        (_("Basic Info"), {"fields": ("id", "store", "customer", "shipper")}),
-        (_("Order Details"), {"fields": ("status", "source", "total_amount")}),
+        (_("Basic Info"), {"fields": ("id", "store", "customer", "shipper", "payment_method")}),
+        (_("Order Details"), {"fields": ("status", "source", "total_amount", "is_settled")}),
         (_("Notes"), {"fields": ("notes",)}),
         (_("Status"), {"fields": ("is_deleted",)}),
-        (_("Timestamps"), {"fields": ("created_at", "updated_at")}),
+        (_("Timestamps"), {"fields": ("created_at", "updated_at", "delivered_at")}),
     )
 
     actions = [soft_delete_orders]
