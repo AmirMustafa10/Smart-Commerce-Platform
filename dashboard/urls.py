@@ -4,5 +4,8 @@ from .views import ManagerDashboardView, ShipperDashboardView
 app_name = "dashboards"
 
 urlpatterns = [
-    path("dashboard/", ManagerDashboardView.as_view(), name="manager_dashboard"),
+    path(
+        "manager-dashboard/", ManagerDashboardView.as_view(), name="manager_dashboard"
+    ),
+    path("shipper-dashboard/", ShipperDashboardView.as_view(), name="shipper_dashboard"),
 ]

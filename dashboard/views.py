@@ -176,8 +176,8 @@ class ManagerDashboardView(
                 store=self.request.user.store,
                 stock_quantity__lte=5,
             )
-            .values("name", "stock_quantity") 
-            .order_by("stock_quantity")[:10] 
+            .values("name", "stock_quantity")
+            .order_by("stock_quantity")[:10]
         )
 
         # ------------------------------------------------------------------
@@ -190,6 +190,82 @@ class ManagerDashboardView(
                 "status",
                 "updated_at",
             ).order_by("-updated_at")[:5]
+        )
+
+        return context
+
+
+class ShipperDashboardView(
+    LoginRequiredMixin, TenantQuerySetMixin, ShipperRequiredMixin, TemplateView
+):
+    """
+    Daily settlement dashboard for delivery workers (shippers).
+
+    Provides:
+    - cash_collected_today  : Decimal — total CASH the shipper has collected today
+    - Total Unsettled Cash  : Decimal — total CASH the shipper Unsettled
+    - Active Deliveries: QuerySet — Orders shipped by the shipper (for list display).
+    - delivered_orders_today: QuerySet — today's delivered orders (for the list view)
+    """
+
+    template_name = "dashboards/shipper_dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        shipper = self.request.user
+        store = shipper.store
+        today = timezone.localdate()
+
+        # ------------------------------------------------------------------
+        # Base queryset — scoped to this shipper's store, no soft-deleted
+        # ------------------------------------------------------------------
+        base = Order.objects.filter(
+            store=store,
+            shipper=shipper,
+        )
+
+        # ------------------------------------------------------------------
+        # 1. Cash collected today
+        # ------------------------------------------------------------------
+        cash = base.filter(
+            status=Order.Status.DELIVERED,
+            payment_method=Order.PaymentMethod.COD,
+            delivered_at__date=today,
+        ).aggregate(total=Sum("total_amount"))["total"]
+        context["cash_collected_today"] = cash or 0
+
+        # ------------------------------------------------------------------
+        # 2. Total Unsettled Cash
+        # ------------------------------------------------------------------
+        unsettled_cash_query = base.filter(
+            status=Order.Status.DELIVERED,
+            payment_method=Order.PaymentMethod.COD,
+            is_settled=False,
+        ).aggregate(total_cash=Sum("total_amount"))["total_cash"]
+        context["unsettled_cash"] = unsettled_cash_query or 0
+
+        # ------------------------------------------------------------------
+        # 3. Active Deliveries
+        # ------------------------------------------------------------------
+        context["active_orders"] = (
+            base.filter(
+                status=Order.Status.SHIPPED,
+            )
+            .select_related("customer")
+            .order_by("-updated_at")
+        )
+
+        # ------------------------------------------------------------------
+        # 4. Delivered orders today
+        # ------------------------------------------------------------------
+        context["delivered_orders_today"] = (
+            base.filter(
+                status=Order.Status.DELIVERED,
+                delivered_at__date=today,
+            )
+            .select_related("customer")
+            .order_by("-updated_at")
         )
 
         return context
