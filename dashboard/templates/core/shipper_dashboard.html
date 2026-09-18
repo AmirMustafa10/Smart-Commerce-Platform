@@ -1,0 +1,1084 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    /* =========================================================
+       Shipper Dashboard
+       ========================================================= */
+
+    .shipper-dashboard-page {
+        position: relative;
+        min-height: calc(100vh - 76px);
+
+        padding: 25px 0 55px;
+
+        background: #f8faf9;
+
+        overflow: hidden;
+    }
+
+    .shipper-dashboard-bg {
+        position: absolute;
+        inset: 0;
+
+        pointer-events: none;
+
+        background:
+            radial-gradient(
+                circle at 8% 5%,
+                rgba(37, 211, 102, 0.06),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 92% 20%,
+                rgba(37, 211, 102, 0.04),
+                transparent 24%
+            );
+    }
+
+
+    /* =========================================================
+       Header
+       ========================================================= */
+
+    .shipper-dashboard-header {
+        position: relative;
+        z-index: 2;
+
+        margin-bottom: 20px;
+    }
+
+    .shipper-dashboard-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 6px;
+
+        color: #25d366;
+
+        font-size: 0.72rem;
+        font-weight: 800;
+
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .shipper-dashboard-title {
+        margin: 0;
+
+        color: #16352a;
+
+        font-size: 1.75rem;
+        font-weight: 800;
+
+        letter-spacing: -0.025em;
+    }
+
+    .shipper-dashboard-subtitle {
+        max-width: 500px;
+
+        margin: 7px 0 0;
+
+        color: #7d8b84;
+
+        font-size: 0.81rem;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+       Cash Card
+       ========================================================= */
+
+    .shipper-cash-card {
+        position: relative;
+        z-index: 2;
+
+        margin-bottom: 15px;
+        padding: 23px;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #198754,
+                #146c43
+            );
+
+        border-radius: 21px;
+
+        box-shadow:
+            0 16px 34px rgba(25, 135, 84, 0.20);
+
+        overflow: hidden;
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .shipper-cash-card:hover {
+        transform: translateY(-3px);
+
+        box-shadow:
+            0 20px 40px rgba(25, 135, 84, 0.24);
+    }
+
+    .shipper-cash-card::before {
+        content: "";
+
+        position: absolute;
+
+        width: 180px;
+        height: 180px;
+
+        right: -75px;
+        top: -85px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .shipper-cash-card::after {
+        content: "";
+
+        position: absolute;
+
+        width: 120px;
+        height: 120px;
+
+        left: -55px;
+        bottom: -70px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .shipper-cash-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .shipper-cash-icon {
+        width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 18px;
+
+        background: rgba(255, 255, 255, 0.13);
+
+        border-radius: 13px;
+
+        font-size: 1rem;
+    }
+
+    .shipper-cash-label {
+        display: block;
+
+        max-width: 320px;
+
+        margin-bottom: 6px;
+
+        font-size: 0.70rem;
+        font-weight: 700;
+
+        opacity: 0.84;
+
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .shipper-cash-value {
+        margin: 0;
+
+        font-size: 2.05rem;
+        font-weight: 800;
+
+        line-height: 1.1;
+
+        letter-spacing: -0.035em;
+    }
+
+    .shipper-cash-description {
+        margin-top: 7px;
+
+        max-width: 450px;
+
+        color: rgba(255, 255, 255, 0.76);
+
+        font-size: 0.71rem;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       Pending Deliveries
+       ========================================================= */
+
+    .shipper-pending-card {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+
+        gap: 14px;
+
+        margin-bottom: 24px;
+        padding: 18px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5ece8;
+        border-radius: 17px;
+
+        box-shadow:
+            0 8px 24px rgba(22, 53, 42, 0.045);
+
+        transition:
+            transform 0.22s ease,
+            border-color 0.22s ease,
+            box-shadow 0.22s ease;
+    }
+
+    .shipper-pending-card:hover {
+        transform: translateY(-2px);
+
+        border-color:
+            rgba(37, 211, 102, 0.25);
+
+        box-shadow:
+            0 13px 28px rgba(22, 53, 42, 0.07);
+    }
+
+    .shipper-pending-icon {
+        width: 47px;
+        height: 47px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 47px;
+
+        color: #c08400;
+
+        background: #fff7da;
+
+        border-radius: 13px;
+    }
+
+    .shipper-pending-content {
+        min-width: 0;
+
+        flex: 1;
+    }
+
+    .shipper-pending-label {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #89968f;
+
+        font-size: 0.68rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .shipper-pending-value {
+        display: block;
+
+        color: #18392c;
+
+        font-size: 1.35rem;
+        font-weight: 800;
+    }
+
+    .shipper-pending-description {
+        display: block;
+
+        margin-top: 2px;
+
+        color: #97a39d;
+
+        font-size: 0.68rem;
+    }
+
+    .shipper-pending-chevron {
+        color: #adb8b2;
+
+        transition:
+            transform 0.2s ease;
+    }
+
+    .shipper-pending-card:hover
+    .shipper-pending-chevron {
+        transform: translateX(3px);
+    }
+
+
+    /* =========================================================
+       Delivered Section
+       ========================================================= */
+
+    .shipper-delivered-section {
+        position: relative;
+        z-index: 2;
+    }
+
+    .shipper-section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 10px;
+
+        margin-bottom: 12px;
+    }
+
+    .shipper-section-heading h2 {
+        margin: 0;
+
+        color: #1c3d30;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .shipper-section-count {
+        padding: 5px 8px;
+
+        color: #65756d;
+
+        background: #f0f4f2;
+
+        border-radius: 999px;
+
+        font-size: 0.64rem;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       Delivered Orders
+       ========================================================= */
+
+    .shipper-delivered-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 11px;
+    }
+
+    .shipper-delivered-order {
+        background: #ffffff;
+
+        border: 1px solid #e5ece8;
+        border-radius: 16px;
+
+        box-shadow:
+            0 7px 20px rgba(22, 53, 42, 0.04);
+
+        overflow: hidden;
+
+        transition:
+            transform 0.22s ease,
+            box-shadow 0.22s ease,
+            border-color 0.22s ease;
+    }
+
+    .shipper-delivered-order:hover {
+        transform: translateY(-2px);
+
+        border-color:
+            rgba(37, 211, 102, 0.25);
+
+        box-shadow:
+            0 12px 27px rgba(22, 53, 42, 0.07);
+    }
+
+
+    /* Clickable Header */
+
+    .shipper-order-toggle {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        padding: 16px;
+
+        color: inherit;
+
+        background: transparent;
+
+        border: 0;
+
+        text-align: left;
+
+        cursor: pointer;
+    }
+
+    .shipper-order-toggle:focus-visible {
+        outline: 3px solid
+            rgba(37, 211, 102, 0.16);
+
+        outline-offset: -3px;
+    }
+
+    .shipper-order-toggle-left {
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+
+        gap: 10px;
+    }
+
+    .shipper-order-receipt-icon {
+        width: 38px;
+        height: 38px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex: 0 0 38px;
+
+        color: #25d366;
+
+        background:
+            rgba(37, 211, 102, 0.09);
+
+        border-radius: 10px;
+    }
+
+    .shipper-order-identity {
+        min-width: 0;
+    }
+
+    .shipper-order-number {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #29493d;
+
+        font-size: 0.80rem;
+        font-weight: 800;
+    }
+
+    .shipper-customer-name {
+        display: block;
+
+        overflow: hidden;
+
+        color: #89968f;
+
+        font-size: 0.68rem;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .shipper-order-toggle-right {
+        display: flex;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+    .shipper-delivered-badge {
+        padding: 5px 8px;
+
+        color: #146c43;
+
+        background: #d1e7dd;
+
+        border-radius: 999px;
+
+        font-size: 0.61rem;
+        font-weight: 800;
+    }
+
+    .shipper-order-chevron {
+        color: #9aa6a0;
+
+        transition:
+            transform 0.25s ease;
+    }
+
+    .shipper-delivered-order.is-open
+    .shipper-order-chevron {
+        transform: rotate(180deg);
+    }
+
+
+    /* =========================================================
+       Collapsible Details
+       ========================================================= */
+
+    .shipper-order-details {
+        display: grid;
+
+        grid-template-rows: 0fr;
+
+        transition:
+            grid-template-rows 0.28s ease;
+    }
+
+    .shipper-delivered-order.is-open
+    .shipper-order-details {
+        grid-template-rows: 1fr;
+    }
+
+    .shipper-order-details-inner {
+        overflow: hidden;
+    }
+
+    .shipper-order-details-content {
+        padding: 0 16px 16px;
+
+        border-top: 1px solid #edf2ef;
+    }
+
+    .shipper-customer-detail {
+        display: flex;
+        align-items: flex-start;
+
+        gap: 8px;
+
+        padding-top: 11px;
+
+        color: #7e8c85;
+
+        font-size: 0.70rem;
+
+        line-height: 1.5;
+    }
+
+    .shipper-customer-detail i {
+        width: 13px;
+
+        margin-top: 2px;
+
+        flex: 0 0 13px;
+
+        color: #25d366;
+
+        text-align: center;
+    }
+
+    .shipper-customer-phone {
+        color: #497064;
+
+        text-decoration: none;
+    }
+
+    .shipper-customer-phone:hover {
+        color: #25d366;
+    }
+
+    .shipper-order-bottom {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        gap: 12px;
+
+        margin-top: 13px;
+        padding-top: 13px;
+
+        border-top: 1px solid #edf2ef;
+    }
+
+    .shipper-total-label {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #99a59f;
+
+        font-size: 0.61rem;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .shipper-order-total {
+        color: #178044;
+
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    .shipper-delivered-time {
+        color: #9aa6a0;
+
+        font-size: 0.63rem;
+
+        text-align: right;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+       Empty State
+       ========================================================= */
+
+    .shipper-empty-delivered {
+        padding: 35px 20px;
+
+        text-align: center;
+
+        background: #ffffff;
+
+        border: 1px solid #e5ece8;
+        border-radius: 16px;
+    }
+
+    .shipper-empty-icon {
+        width: 53px;
+        height: 53px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin: 0 auto 12px;
+
+        color: #25d366;
+
+        background:
+            rgba(37, 211, 102, 0.09);
+
+        border-radius: 14px;
+    }
+
+    .shipper-empty-delivered h3 {
+        margin: 0 0 6px;
+
+        color: #29493d;
+
+        font-size: 0.95rem;
+        font-weight: 800;
+    }
+
+    .shipper-empty-delivered p {
+        margin: 0;
+
+        color: #8b9891;
+
+        font-size: 0.72rem;
+
+        line-height: 1.6;
+    }
+
+
+    /* =========================================================
+       Desktop
+       ========================================================= */
+
+    @media (min-width: 768px) {
+
+        .shipper-dashboard-page {
+            padding-top: 35px;
+        }
+
+        .shipper-dashboard-title {
+            font-size: 2rem;
+        }
+
+        .shipper-cash-card {
+            padding: 28px;
+        }
+
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<main class="shipper-dashboard-page">
+
+    <div class="shipper-dashboard-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             Header
+        ====================================================== -->
+
+        <header class="shipper-dashboard-header">
+
+            <span class="shipper-dashboard-eyebrow">
+                <i class="fas fa-truck"></i>
+                Delivery Dashboard
+            </span>
+
+            <h1 class="shipper-dashboard-title">
+                Welcome, Shipper
+            </h1>
+
+            <p class="shipper-dashboard-subtitle">
+                Here is your delivery activity for today.
+            </p>
+
+        </header>
+
+
+        <!-- =====================================================
+             Today's Cash Collection
+        ====================================================== -->
+
+        <section class="shipper-cash-card">
+
+            <div class="shipper-cash-content">
+
+                <div class="shipper-cash-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+
+                <span class="shipper-cash-label">
+                    Today's Cash Collection (Cash on Delivery)
+                </span>
+
+                <h2 class="shipper-cash-value">
+                    {{ cash_collected_today|default:"0" }}
+                </h2>
+
+                <p class="shipper-cash-description">
+                    Cash collected from completed COD deliveries today.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             Pending Deliveries
+        ====================================================== -->
+
+        <section class="shipper-pending-card">
+
+            <div class="shipper-pending-icon">
+                <i class="fas fa-truck-fast"></i>
+            </div>
+
+            <div class="shipper-pending-content">
+
+                <span class="shipper-pending-label">
+                    Pending Deliveries
+                </span>
+
+                <span class="shipper-pending-value">
+                    {{ pending_deliveries|default:pending_orders_count|default:"0" }}
+                </span>
+
+                <span class="shipper-pending-description">
+                    Orders currently in transit
+                </span>
+
+            </div>
+
+            <i class="fas fa-chevron-right shipper-pending-chevron"></i>
+
+        </section>
+
+
+        <!-- =====================================================
+             Delivered Orders Today
+        ====================================================== -->
+
+        <section class="shipper-delivered-section">
+
+            <div class="shipper-section-heading">
+
+                <h2>
+                    Delivered Today
+                </h2>
+
+                <span class="shipper-section-count">
+                    {{ delivered_orders_today|length }} orders
+                </span>
+
+            </div>
+
+
+            {% if delivered_orders_today %}
+
+                <div class="shipper-delivered-list">
+
+                    {% for order in delivered_orders_today %}
+
+                        <article class="shipper-delivered-order">
+
+                            <!-- Clickable Order Header -->
+
+                            <button
+                                type="button"
+                                class="shipper-order-toggle"
+                                aria-expanded="false"
+                            >
+
+                                <span class="shipper-order-toggle-left">
+
+                                    <span class="shipper-order-receipt-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </span>
+
+                                    <span class="shipper-order-identity">
+
+                                        <span class="shipper-order-number">
+                                            Order #{{ order.pk }}
+                                        </span>
+
+                                        <span class="shipper-customer-name">
+                                            {{ order.customer.name }}
+                                        </span>
+
+                                    </span>
+
+                                </span>
+
+
+                                <span class="shipper-order-toggle-right">
+
+                                    <span class="shipper-delivered-badge">
+                                        Delivered
+                                    </span>
+
+                                    <i class="fas fa-chevron-down shipper-order-chevron"></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <!-- Collapsible Details -->
+
+                            <div class="shipper-order-details">
+
+                                <div class="shipper-order-details-inner">
+
+                                    <div class="shipper-order-details-content">
+
+
+                                        {% if order.customer.address %}
+
+                                            <div class="shipper-customer-detail">
+
+                                                <i class="fas fa-location-dot"></i>
+
+                                                <span>
+                                                    {{ order.customer.address }}
+                                                </span>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        {% if order.customer.phone_number %}
+
+                                            <div class="shipper-customer-detail">
+
+                                                <i class="fas fa-phone"></i>
+
+                                                <a
+                                                    href="tel:{{ order.customer.phone_number }}"
+                                                    class="shipper-customer-phone"
+                                                >
+                                                    {{ order.customer.phone_number }}
+                                                </a>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <div class="shipper-order-bottom">
+
+                                            <div>
+
+                                                <span class="shipper-total-label">
+                                                    Order Total
+                                                </span>
+
+                                                <strong class="shipper-order-total">
+                                                    {{ order.total_amount }}
+                                                </strong>
+
+                                            </div>
+
+
+                                            {% if order.updated_at %}
+
+                                                <span class="shipper-delivered-time">
+
+                                                    Delivered<br>
+
+                                                    {{ order.updated_at|date:"h:i A" }}
+
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="shipper-empty-delivered">
+
+                    <div class="shipper-empty-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+
+                    <h3>
+                        No Deliveries Yet
+                    </h3>
+
+                    <p>
+                        Your completed deliveries for today
+                        will appear here.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /*
+     * Delivered order accordion.
+     */
+
+    const orderCards =
+        document.querySelectorAll(
+            ".shipper-delivered-order"
+        );
+
+
+    orderCards.forEach(function (card) {
+
+        const toggle =
+            card.querySelector(
+                ".shipper-order-toggle"
+            );
+
+
+        if (!toggle) {
+            return;
+        }
+
+
+        toggle.addEventListener(
+            "click",
+            function () {
+
+                const isOpen =
+                    card.classList.contains(
+                        "is-open"
+                    );
+
+
+                /*
+                 * Close other cards first.
+                 * This keeps the mobile screen clean.
+                 */
+
+                orderCards.forEach(function (otherCard) {
+
+                    if (otherCard !== card) {
+
+                        otherCard.classList.remove(
+                            "is-open"
+                        );
+
+
+                        const otherToggle =
+                            otherCard.querySelector(
+                                ".shipper-order-toggle"
+                            );
+
+
+                        if (otherToggle) {
+
+                            otherToggle.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+
+                });
+
+
+                /*
+                 * Toggle current card.
+                 */
+
+                card.classList.toggle(
+                    "is-open",
+                    !isOpen
+                );
+
+
+                toggle.setAttribute(
+                    "aria-expanded",
+                    String(!isOpen)
+                );
+
+            }
+        );
+
+    });
+
+});
+</script>
+
+{% endblock %}
