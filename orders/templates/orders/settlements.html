@@ -1,0 +1,435 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'orders/css/cash_settlement.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="settlement-page">
+
+    <div class="settlement-page-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             Header
+        ====================================================== -->
+
+        <header class="settlement-header">
+
+            <div class="settlement-header-content">
+
+                <span class="settlement-eyebrow">
+                    <i class="fas fa-wallet"></i>
+                    Cash Management
+                </span>
+
+                <h1 class="settlement-title">
+                    Daily Cash Settlement
+                </h1>
+
+                <p class="settlement-subtitle">
+                    Review outstanding cash balances held by your shippers
+                    and settle each account securely.
+                </p>
+
+            </div>
+
+
+            <div class="settlement-summary">
+
+                <div class="settlement-summary-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+
+                <div>
+                    <span class="settlement-summary-label">
+                        Pending Settlements
+                    </span>
+
+                    <strong
+                        id="pendingSettlementCount"
+                    >
+                        {{ shippers_cash|length }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             Search / Toolbar
+        ====================================================== -->
+
+        {% if shippers_cash %}
+
+            <section class="settlement-toolbar">
+
+                <div class="settlement-search">
+
+                    <i class="fas fa-search"></i>
+
+                    <input
+                        type="search"
+                        id="shipperSearch"
+                        class="form-control"
+                        placeholder="Search by shipper name..."
+                        autocomplete="off"
+                    >
+
+                    <button
+                        type="button"
+                        class="settlement-search-clear"
+                        id="clearSearch"
+                        aria-label="Clear search"
+                        hidden
+                    >
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                </div>
+
+
+                <div class="settlement-toolbar-status">
+
+                    <span class="settlement-live-dot"></span>
+
+                    <span>
+                        Settlement queue
+                    </span>
+
+                </div>
+
+            </section>
+
+        {% endif %}
+
+
+        <!-- =====================================================
+             Settlement Cards
+        ====================================================== -->
+
+        {% if shippers_cash %}
+
+            <section
+                class="settlement-grid"
+                id="settlementGrid"
+            >
+
+                {% for shipper in shippers_cash %}
+
+                    <article
+                        class="settlement-card"
+                        data-shipper-name="{{ shipper.s_name|lower }}"
+                    >
+
+                        <div class="settlement-card-accent"></div>
+
+
+                        <!-- Card Header -->
+                        <div class="settlement-card-header">
+
+                            <div class="settlement-shipper">
+
+                                <div class="settlement-avatar">
+                                    {{ shipper.s_name|first|upper }}
+                                </div>
+
+                                <div class="settlement-shipper-info">
+
+                                    <span class="settlement-shipper-label">
+                                        SHIPPER
+                                    </span>
+
+                                    <h2>
+                                        {{ shipper.s_name }}
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <span class="settlement-pending-badge">
+                                <span></span>
+                                Pending
+                            </span>
+
+                        </div>
+
+
+                        <!-- Balance -->
+                        <div class="settlement-balance">
+
+                            <span class="settlement-balance-label">
+                                Outstanding Cash
+                            </span>
+
+                            <strong class="settlement-balance-value">
+                                {{ shipper.total_cash }}
+                                <small>EGP</small>
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Info -->
+                        <div class="settlement-card-info">
+
+                            <div class="settlement-info-item">
+
+                                <i class="fas fa-money-bill-transfer"></i>
+
+                                <div>
+                                    <span>
+                                        Settlement Type
+                                    </span>
+
+                                    <strong>
+                                        Cash Collection
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="settlement-info-item">
+
+                                <i class="fas fa-shield-halved"></i>
+
+                                <div>
+                                    <span>
+                                        Settlement Status
+                                    </span>
+
+                                    <strong>
+                                        Awaiting Collection
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Action -->
+                        <div class="settlement-card-footer">
+
+                            <button
+                                type="button"
+                                class="settlement-action-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#settlementConfirmModal"
+                                data-settlement-form="settlement-form-{{ shipper.s_id }}"
+                                data-shipper-name="{{ shipper.s_name }}"
+                                data-settlement-amount="{{ shipper.total_cash }}"
+                            >
+
+                                <i class="fas fa-check-circle"></i>
+
+                                <span>
+                                    Settle Cash
+                                </span>
+
+                                <i class="fas fa-arrow-right settlement-action-arrow"></i>
+
+                            </button>
+
+
+                            <form
+                                id="settlement-form-{{ shipper.s_id }}"
+                                method="POST"
+                                action="{% url 'orders:clear_settlement' shipper.s_id %}"
+                                class="d-none"
+                            >
+                                {% csrf_token %}
+                            </form>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </section>
+
+
+            <!-- =================================================
+                 No Search Results
+            ================================================== -->
+
+            <div
+                class="settlement-no-results"
+                id="noSearchResults"
+                hidden
+            >
+
+                <div class="settlement-empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <h2>
+                    No Shippers Found
+                </h2>
+
+                <p>
+                    No settlement matches your current search.
+                </p>
+
+                <button
+                    type="button"
+                    class="settlement-reset-btn"
+                    id="resetSearch"
+                >
+                    Clear Search
+                </button>
+
+            </div>
+
+        {% else %}
+
+            <!-- =================================================
+                 Empty State
+            ================================================== -->
+
+            <section class="settlement-empty-state">
+
+                <div class="settlement-empty-icon">
+                    <i class="fas fa-circle-check"></i>
+                </div>
+
+                <span class="settlement-empty-eyebrow">
+                    All Clear
+                </span>
+
+                <h2>
+                    No Outstanding Settlements
+                </h2>
+
+                <p>
+                    There are currently no pending cash balances
+                    assigned to any shipper.
+                </p>
+
+                <div class="settlement-empty-status">
+                    <i class="fas fa-shield-check"></i>
+                    Cash accounts are fully settled
+                </div>
+
+            </section>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================================================
+         Confirmation Modal
+    ========================================================== -->
+
+    <div
+        class="modal fade settlement-modal"
+        id="settlementConfirmModal"
+        tabindex="-1"
+        aria-labelledby="settlementConfirmModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="settlement-modal-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+
+                <div class="modal-body">
+
+                    <span class="settlement-modal-eyebrow">
+                        Confirm Settlement
+                    </span>
+
+                    <h2
+                        id="settlementConfirmModalLabel"
+                        class="settlement-modal-title"
+                    >
+                        Settle Cash Balance?
+                    </h2>
+
+                    <p class="settlement-modal-text">
+                        You are about to mark the outstanding cash balance
+                        for <strong id="confirmShipperName">this shipper</strong>
+                        as fully settled.
+                    </p>
+
+
+                    <div class="settlement-modal-amount">
+
+                        <span>
+                            Amount to settle
+                        </span>
+
+                        <strong>
+                            <span id="confirmSettlementAmount">0</span>
+                            <small>EGP</small>
+                        </strong>
+
+                    </div>
+
+
+                    <div class="settlement-modal-warning">
+
+                        <i class="fas fa-circle-info"></i>
+
+                        <span>
+                            This action records the cash as received
+                            and clears the current outstanding balance.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="settlement-modal-footer">
+
+                    <button
+                        type="button"
+                        class="settlement-modal-cancel"
+                        data-bs-dismiss="modal"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="button"
+                        class="settlement-modal-confirm"
+                        id="confirmSettlementButton"
+                    >
+                        <span class="settlement-confirm-content">
+                            <i class="fas fa-check"></i>
+                            Confirm Settlement
+                        </span>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'orders/js/cash_settlement.js' %}"></script>
+{% endblock %}

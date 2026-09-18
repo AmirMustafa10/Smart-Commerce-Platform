@@ -1,0 +1,585 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'dashboards/css/shipper_dashboard.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="shipper-dashboard-page">
+
+    <div class="shipper-dashboard-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             Header
+        ====================================================== -->
+
+        <header class="shipper-dashboard-header">
+
+            <div>
+
+                <span class="shipper-dashboard-eyebrow">
+                    <i class="fas fa-truck-fast"></i>
+                    Delivery Dashboard
+                </span>
+
+                <h1 class="shipper-dashboard-title">
+                    Delivery Overview
+                </h1>
+
+                <p class="shipper-dashboard-subtitle">
+                    Manage active deliveries, track your cash balance,
+                    and review completed orders.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             Cash Overview
+        ====================================================== -->
+
+        <section class="shipper-financial-section">
+
+            <div class="shipper-financial-heading">
+
+                <div>
+                    <span class="shipper-section-eyebrow">
+                        FINANCIAL SNAPSHOT
+                    </span>
+
+                    <h2>
+                        Cash Overview
+                    </h2>
+                </div>
+
+                <span class="shipper-financial-note">
+                    <i class="fas fa-wallet"></i>
+                    Cash on delivery
+                </span>
+
+            </div>
+
+
+            <div class="row g-3">
+
+
+                <!-- =================================================
+                     Today's Cash Collection
+                ================================================== -->
+
+                <div class="col-12 col-md-6">
+
+                    <section class="shipper-cash-card shipper-cash-card-collected">
+
+                        <div class="shipper-cash-content">
+
+                            <div class="shipper-cash-top">
+
+                                <div class="shipper-cash-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+
+                                <span class="shipper-cash-status collected">
+                                    <span></span>
+                                    Collected
+                                </span>
+
+                            </div>
+
+
+                            <span class="shipper-cash-label">
+                                Today's Cash Collection
+                            </span>
+
+                            <h2 class="shipper-cash-value">
+                                {{ cash_collected_today|default:"0" }}
+                                <small>EGP</small>
+                            </h2>
+
+                            <p class="shipper-cash-description">
+                                Cash collected from completed COD deliveries today.
+                            </p>
+
+
+                            <div class="shipper-cash-footer">
+
+                                <span>
+                                    <i class="fas fa-calendar-day"></i>
+                                    Today
+                                </span>
+
+                                <span>
+                                    COD
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <!-- =================================================
+                     Total Unsettled Cash
+                ================================================== -->
+
+                <div class="col-12 col-md-6">
+
+                    <section class="shipper-cash-card shipper-cash-card-unsettled">
+
+                        <div class="shipper-cash-content">
+
+                            <div class="shipper-cash-top">
+
+                                <div class="shipper-cash-icon">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+
+                                <span class="shipper-cash-status">
+                                    <span></span>
+                                    Unsettled
+                                </span>
+
+                            </div>
+
+
+                            <span class="shipper-cash-label">
+                                Total Unsettled Cash
+                            </span>
+
+                            <h2 class="shipper-cash-value">
+                                {{ unsettled_cash|default:"0.00" }}
+                                <small>EGP</small>
+                            </h2>
+
+                            <p class="shipper-cash-description">
+                                Cash currently held from cash-on-delivery orders.
+                            </p>
+
+
+                            <div class="shipper-cash-footer">
+
+                                <span>
+                                    <i class="fas fa-clock"></i>
+                                    Awaiting settlement
+                                </span>
+
+                                <span>
+                                    COD
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             Active Deliveries
+        ====================================================== -->
+
+        <section class="shipper-active-section">
+
+            <div class="shipper-section-heading">
+
+                <div>
+
+                    <span class="shipper-section-eyebrow">
+                        LIVE DELIVERIES
+                    </span>
+
+                    <h2>
+                        Active Orders
+                    </h2>
+
+                </div>
+
+
+                <span class="shipper-section-count">
+                    {{ active_orders|length }}
+                    active
+                </span>
+
+            </div>
+
+
+            {% if active_orders %}
+
+                <div class="shipper-active-list">
+
+                    {% for order in active_orders %}
+
+                        <article
+                            class="shipper-active-order"
+                            data-order-card
+                        >
+
+                            <!-- Accent -->
+                            <div class="shipper-active-accent"></div>
+
+
+                            <!-- =================================================
+                                 Card Header
+                            ================================================== -->
+
+                            <div class="shipper-active-header">
+
+                                <div class="shipper-active-customer">
+
+                                    <div class="shipper-active-avatar">
+                                        {{ order.customer.name }}
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ order.customer.name }}
+                                        </strong>
+
+                                        <span>
+                                            Order #{{ order.id|truncatechars:10 }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span class="shipper-active-status">
+                                    <span></span>
+                                    In Transit
+                                </span>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 Order Value
+                            ================================================== -->
+
+                            <div class="shipper-active-value">
+
+                                <span>
+                                    Order Total
+                                </span>
+
+                                <strong>
+                                    {{ order.total_amount|default:"0.00" }}
+                                    <small>EGP</small>
+                                </strong>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 Quick Actions
+                            ================================================== -->
+
+                            <div class="shipper-active-actions">
+
+                                <!-- Call -->
+                                <a
+                                    href="tel:{{ order.customer.phone_number }}"
+                                    class="shipper-quick-action call"
+                                    title="Call customer"
+                                    aria-label="Call customer"
+                                >
+                                    <i class="fas fa-phone"></i>
+                                </a>
+
+
+                                <!-- Map -->
+                                <a
+                                    href="https://www.google.com/maps/search/?api=1&query={{ order.customer.address }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="shipper-quick-action map"
+                                    title="Open customer location"
+                                    aria-label="Open customer location"
+                                >
+                                    <i class="fas fa-location-dot"></i>
+                                </a>
+
+
+                                <!-- Mark Delivered -->
+                                <form
+                                    method="post"
+                                    action="{% url 'orders:shipper_order_update' order.pk %}"
+                                    class="shipper-deliver-form"
+                                    data-deliver-form
+                                >
+
+                                    {% csrf_token %}
+
+                                    <input
+                                        type="hidden"
+                                        name="status"
+                                        value="DELIVERED"
+                                    >
+
+
+                                    <button
+                                        type="submit"
+                                        class="shipper-deliver-btn"
+                                    >
+
+                                        <span class="shipper-deliver-default">
+                                            <i class="fas fa-check"></i>
+                                            Mark as Delivered
+                                        </span>
+
+                                        <span class="shipper-deliver-loading">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            Updating...
+                                        </span>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <!-- =================================================
+                     No Active Orders
+                ================================================== -->
+
+                <div class="shipper-empty-state">
+
+                    <div class="shipper-empty-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+
+                    <span class="shipper-empty-eyebrow">
+                        ALL CLEAR
+                    </span>
+
+                    <h3>
+                        No Active Deliveries
+                    </h3>
+
+                    <p>
+                        You do not have any orders currently in transit.
+                        New delivery assignments will appear here.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- =====================================================
+             Delivered Today
+        ====================================================== -->
+
+        <section class="shipper-delivered-section">
+
+            <div class="shipper-section-heading">
+
+                <div>
+
+                    <span class="shipper-section-eyebrow">
+                        COMPLETED
+                    </span>
+
+                    <h2>
+                        Delivered Today
+                    </h2>
+
+                </div>
+
+
+                <span class="shipper-section-count">
+                    {{ delivered_orders_today|length }}
+                    orders
+                </span>
+
+            </div>
+
+
+            {% if delivered_orders_today %}
+
+                <div class="shipper-delivered-list">
+
+                    {% for order in delivered_orders_today %}
+
+                        <article
+                            class="shipper-delivered-order"
+                            data-delivered-card
+                        >
+
+                            <!-- Header -->
+                            <button
+                                type="button"
+                                class="shipper-delivered-toggle"
+                                aria-expanded="false"
+                            >
+
+                                <span class="shipper-delivered-main">
+
+                                    <span class="shipper-delivered-icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+
+                                    <span class="shipper-delivered-info">
+
+                                        <strong>
+                                            {{ order.customer.name }}
+                                        </strong>
+
+                                        <small>
+                                            #{{ order.id|stringformat:"s"|slice:":8" }}
+                                        </small>
+
+                                    </span>
+
+                                </span>
+
+
+                                <span class="shipper-delivered-right">
+
+                                    <span class="shipper-delivered-badge">
+                                        Delivered
+                                    </span>
+
+                                    <i class="fas fa-chevron-down shipper-delivered-chevron"></i>
+
+                                </span>
+
+                            </button>
+
+
+                            <!-- Details -->
+                            <div class="shipper-delivered-details">
+
+                                <div class="shipper-delivered-details-inner">
+
+                                    <div class="shipper-delivered-details-content">
+
+                                        {% if order.customer.phone_number %}
+
+                                            <div class="shipper-delivered-detail">
+
+                                                <i class="fas fa-phone"></i>
+
+                                                <a
+                                                    href="tel:{{ order.customer.phone_number }}"
+                                                >
+                                                    {{ order.customer.phone_number }}
+                                                </a>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        {% if order.customer.address %}
+
+                                            <div class="shipper-delivered-detail">
+
+                                                <i class="fas fa-location-dot"></i>
+
+                                                <span>
+                                                    {{ order.customer.address }}
+                                                </span>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <div class="shipper-delivered-footer">
+
+                                            <div>
+
+                                                <span>
+                                                    Order Total
+                                                </span>
+
+                                                <strong>
+                                                    {{ order.total_amount|default:"0.00" }}
+                                                    <small>EGP</small>
+                                                </strong>
+
+                                            </div>
+
+
+                                            {% if order.updated_at %}
+
+                                                <time>
+                                                    {{ order.updated_at|date:"h:i A" }}
+                                                </time>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="shipper-delivered-empty">
+
+                    <div class="shipper-delivered-empty-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+
+                    <h3>
+                        No Deliveries Completed Yet
+                    </h3>
+
+                    <p>
+                        Completed deliveries will appear here throughout the day.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'dashboards/js/shipper_dashboard.js' %}"></script>
+{% endblock %}

@@ -4,11 +4,17 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Sum, F
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import (
+    ListView,
+    CreateView,
+    UpdateView,
+    DetailView,
+    TemplateView,
+)
 from django.views.generic.edit import DeleteView
 from .forms import OrderForm, OrderStatusForm, OrderItemFormSet, ShipperOrderStatusForm
 from .models import Order
@@ -95,8 +101,13 @@ class OrderDetailView(LoginRequiredMixin, TenantQuerySetMixin, DetailView):
     def get_queryset(self):
         user = self.request.user
         if user.role == user.Role.SHIPPER:
-            qs = super().get_queryset().filter(
-                Q(shipper=user) | Q(shipper__isnull=True, status=Order.Status.PREPARING)
+            qs = (
+                super()
+                .get_queryset()
+                .filter(
+                    Q(shipper=user)
+                    | Q(shipper__isnull=True, status=Order.Status.PREPARING)
+                )
             )
         elif user.role in [user.Role.MANAGER, user.Role.OWNER]:
             qs = Order.all_objects.filter(store=user.store)
@@ -359,7 +370,9 @@ class TakeOrderView(LoginRequiredMixin, ShipperRequiredMixin, View):
 # ---------------------------------------------------------------------------
 # SHIPPER update Orders status only View
 # ---------------------------------------------------------------------------
-class ShipperOrderUpdateView(LoginRequiredMixin, TenantQuerySetMixin, ShipperRequiredMixin, UpdateView):
+class ShipperOrderUpdateView(
+    LoginRequiredMixin, TenantQuerySetMixin, ShipperRequiredMixin, UpdateView
+):
     """
     Dedicated UpdateView for Shippers.
     Separated from the Manager's view to keep code clean and maintain SRP.
@@ -376,3 +389,60 @@ class ShipperOrderUpdateView(LoginRequiredMixin, TenantQuerySetMixin, ShipperReq
     def form_valid(self, form):
         messages.success(self.request, _("Delivery status updated successfully."))
         return super().form_valid(form)
+
+
+# ---------------------------------------------------------------------------
+# Closing the daily journal / Finalizing daily entries Views
+# ---------------------------------------------------------------------------
+class SettlementListView(LoginRequiredMixin, StoreManagerRequiredMixin, TemplateView):
+    """Manager's Daily Closing Screen"""
+
+    template_name = "orders/settlements.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        shippers_cash = (
+            Order.objects.filter(
+                store=self.request.user.store,
+                status=Order.Status.DELIVERED,
+                payment_method=Order.PaymentMethod.COD,
+                is_settled=False,
+                shipper__isnull=False,
+            )
+            .values(
+                s_id=F("shipper__id"),
+                s_name=F("shipper__full_name"),
+            )
+            .annotate(total_cash=Sum("total_amount"))
+            .order_by("-total_cash")
+        )
+
+        context["shippers_cash"] = shippers_cash
+        return context
+
+
+class SettleCashView(LoginRequiredMixin, StoreManagerRequiredMixin, View):
+    """Action to clear the custody balance (uses POST only, for security purposes)."""
+
+    def post(self, request, shipper_id):
+        orders_to_settle = Order.objects.filter(
+            store=request.user.store,
+            shipper_id=shipper_id,
+            status=Order.Status.DELIVERED,
+            is_settled=False,
+        )
+
+        updated_count = orders_to_settle.update(is_settled=True)
+
+        if updated_count > 0:
+            messages.success(
+                request,
+                f"The custody item has been successfully received, and ({updated_count}) requests have been cleared.",
+            )
+        else:
+            messages.warning(
+                request, "No outstanding amounts were found for this representative."
+            )
+
+        return redirect("orders:settlements")

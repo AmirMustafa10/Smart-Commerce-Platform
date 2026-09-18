@@ -1,0 +1,799 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'dashboards/css/manager_dashboard.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<main class="manager-dashboard-page">
+
+    <div class="manager-dashboard-bg"></div>
+
+    <div class="container position-relative">
+
+        <!-- =====================================================
+             Header
+        ====================================================== -->
+
+        <header class="manager-dashboard-header">
+
+            <div>
+
+                <span class="manager-dashboard-eyebrow">
+                    <i class="fas fa-chart-line"></i>
+                    Manager Dashboard
+                </span>
+
+                <h1 class="manager-dashboard-title">
+                    Business Overview
+                </h1>
+
+                <p class="manager-dashboard-subtitle">
+                    Track orders, revenue, sales performance,
+                    inventory, cash flow, and recent activity.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =====================================================
+             KPI CARDS
+        ====================================================== -->
+
+        <div class="row g-3 mb-4">
+
+
+            <!-- Total Orders Today -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card">
+
+                    <div class="manager-kpi-icon">
+                        <i class="fas fa-box"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Total Orders Today
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ total_orders_today|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Orders created today
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Revenue This Month -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card">
+
+                    <div class="manager-kpi-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Revenue This Month
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ revenue_this_month|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Monthly revenue
+                    </div>
+
+                    <div class="manager-kpi-note">
+                        <i class="fas fa-circle-info"></i>
+
+                        <span>
+                            Based on successfully delivered orders.
+                        </span>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Pending Orders -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card">
+
+                    <div class="manager-kpi-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Pending Orders
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ pending_orders_count|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Orders waiting for processing
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Delivered Today -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card">
+
+                    <div class="manager-kpi-icon">
+                        <i class="fas fa-circle-check"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Delivered Today
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ delivered_orders_today_count|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Successfully completed
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Unsettled Cash -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card manager-kpi-warning">
+
+                    <div class="manager-kpi-icon manager-kpi-icon-warning">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Unsettled Cash
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ unsettled_cash|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Cash currently held by shippers
+                    </div>
+
+                    <div class="manager-kpi-alert-note">
+                        <i class="fas fa-triangle-exclamation"></i>
+
+                        <span>
+                            Awaiting settlement
+                        </span>
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- Average Order Value -->
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <article class="manager-kpi-card">
+
+                    <div class="manager-kpi-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+
+                    <span class="manager-kpi-label">
+                        Average Order Value
+                    </span>
+
+                    <h2 class="manager-kpi-value">
+                        {{ average_order_value|default:"0" }}
+                    </h2>
+
+                    <div class="manager-kpi-description">
+                        Average value of delivered orders
+                    </div>
+
+                    <div class="manager-kpi-note">
+                        <i class="fas fa-circle-info"></i>
+
+                        <span>
+                            Calculated from delivered orders.
+                        </span>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             Sales Chart
+        ====================================================== -->
+
+        <section class="manager-dashboard-card mb-4">
+
+            <div class="manager-chart-info-strip">
+
+                <div>
+                    <i class="fas fa-chart-column"></i>
+
+                    <strong>
+                        Daily Order Volume (Demand)
+                    </strong>
+                </div>
+
+                <span>
+                    Total value of all placed orders per day
+                </span>
+
+            </div>
+
+
+            <div class="manager-card-header">
+
+                <div class="manager-card-heading">
+
+                    <div class="manager-card-heading-icon">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Sales Performance
+                        </h2>
+
+                        <p>
+                            Last 7 days
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <span class="manager-card-badge">
+                    7 Days
+                </span>
+
+            </div>
+
+
+            <div class="manager-chart-wrapper">
+
+                <canvas id="salesChart"></canvas>
+
+            </div>
+
+
+            {{ sales_last_7_days|json_script:"manager-sales-data" }}
+
+        </section>
+
+
+        <!-- =====================================================
+             Top Products + Orders By Status
+        ====================================================== -->
+
+        <div class="row g-4 mb-4">
+
+
+            <!-- =================================================
+                 Top Products
+            ================================================== -->
+
+            <div class="col-12 col-xl-7">
+
+                <section class="manager-dashboard-card">
+
+                    <div class="manager-card-header">
+
+                        <div class="manager-card-heading">
+
+                            <div class="manager-card-heading-icon">
+                                <i class="fas fa-ranking-star"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Top Products
+                                </h2>
+
+                                <p>
+
+                                    Best selling products
+
+                                    <i
+                                        class="fas fa-question-circle text-muted fs-6"
+                                        data-bs-toggle="tooltip"
+                                        title="Calculated based on delivered orders only."
+                                    ></i>
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if top_products %}
+
+                        <div class="table-responsive">
+
+                            <table class="table manager-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Product
+                                        </th>
+
+                                        <th class="text-end">
+                                            Quantity Sold
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    {% for product in top_products %}
+
+                                        <tr>
+
+                                            <td>
+
+                                                <div class="manager-product-name">
+
+                                                    <span class="manager-product-index">
+                                                        {{ forloop.counter }}
+                                                    </span>
+
+                                                    <span>
+                                                        {{ product.name }}
+                                                    </span>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            <td class="text-end">
+
+                                                <span class="manager-quantity-badge">
+                                                    {{ product.total_qty }}
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="manager-empty-state">
+
+                            <i class="fas fa-box-open"></i>
+
+                            <span>
+                                No product sales data available yet.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 Orders By Status
+            ================================================== -->
+
+            <div class="col-12 col-xl-5">
+
+                <section class="manager-dashboard-card">
+
+                    <div class="manager-card-header">
+
+                        <div class="manager-card-heading">
+
+                            <div class="manager-card-heading-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Orders by Status
+                                </h2>
+
+                                <p>
+                                    Current order distribution
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if orders_by_status %}
+
+                        <div class="manager-status-list">
+
+                            {% for status, count in orders_by_status.items %}
+
+                                <div class="manager-status-item">
+
+                                    <div class="manager-status-name">
+
+                                        <i class="fas fa-circle"></i>
+
+                                        <span>
+                                            {{ status|title }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="
+                                            manager-status-badge
+
+                                            {% if status == 'PENDING' %}
+                                                manager-status-pending
+                                            {% elif status == 'CONFIRMED' %}
+                                                manager-status-confirmed
+                                            {% elif status == 'PREPARING' %}
+                                                manager-status-preparing
+                                            {% elif status == 'SHIPPED' %}
+                                                manager-status-shipped
+                                            {% elif status == 'DELIVERED' %}
+                                                manager-status-delivered
+                                            {% elif status == 'CANCELLED' %}
+                                                manager-status-cancelled
+                                            {% elif status == 'RETURNED' %}
+                                                manager-status-returned
+                                            {% endif %}
+                                        "
+                                    >
+                                        {{ count }}
+                                    </span>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="manager-empty-state">
+
+                            <i class="fas fa-chart-pie"></i>
+
+                            <span>
+                                No order status data available.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             Low Stock + Recent Activity
+        ====================================================== -->
+
+        <div class="row g-4">
+
+
+            <!-- =================================================
+                 Low Stock Alerts
+            ================================================== -->
+
+            <div class="col-12 col-xl-6">
+
+                <section class="manager-dashboard-card">
+
+                    <div class="manager-card-header">
+
+                        <div class="manager-card-heading">
+
+                            <div class="manager-card-heading-icon manager-card-heading-icon-warning">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Low Stock Alerts
+                                </h2>
+
+                                <p>
+                                    Products running out of stock
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        {% if low_stock_products %}
+
+                            <span class="manager-card-alert-count">
+
+                                {{ low_stock_products|length }}
+
+                                alert{{ low_stock_products|length|pluralize }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if low_stock_products %}
+
+                        <div class="manager-low-stock-list">
+
+                            {% for product in low_stock_products %}
+
+                                <div class="manager-low-stock-item">
+
+                                    <div class="manager-low-stock-product">
+
+                                        <div class="manager-low-stock-icon">
+                                            <i class="fas fa-box"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                {{ product.name }}
+                                            </strong>
+
+                                            <span>
+                                                Stock remaining
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <span
+                                        class="
+                                            manager-stock-badge
+
+                                            {% if product.stock < 5 %}
+                                                manager-stock-critical
+                                            {% else %}
+                                                manager-stock-warning
+                                            {% endif %}
+                                        "
+                                    >
+                                        {{ product.stock_quantity }}
+
+                                        {% if product.stock_quantity == 1 %}
+                                            item
+                                        {% else %}
+                                            items
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="manager-empty-state manager-empty-stock">
+
+                            <div class="manager-empty-success-icon">
+                                <i class="fas fa-circle-check"></i>
+                            </div>
+
+                            <span>
+                                Inventory levels look healthy.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 Recent Activity
+            ================================================== -->
+
+            <div class="col-12 col-xl-6">
+
+                <section class="manager-dashboard-card">
+
+                    <div class="manager-card-header">
+
+                        <div class="manager-card-heading">
+
+                            <div class="manager-card-heading-icon">
+                                <i class="fas fa-clock-rotate-left"></i>
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Recent Activity
+                                </h2>
+
+                                <p>
+                                    Latest order updates
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {% if recent_activities %}
+
+                        <div class="manager-activity-list">
+
+                            {% for activity in recent_activities %}
+
+                                <div class="manager-activity-item">
+
+                                    <div class="manager-activity-icon">
+                                        <i class="fas fa-receipt"></i>
+                                    </div>
+
+
+                                    <div class="manager-activity-content">
+
+                                        <div class="manager-activity-top">
+
+                                            <strong>
+                                                {{ activity.customer__name }}
+                                            </strong>
+
+                                            <span class="manager-activity-order">
+                                                #{{ activity.id }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="manager-activity-bottom">
+
+                                            <span
+                                                class="
+                                                    manager-activity-status
+
+                                                    {% if activity.status|upper == 'PENDING' %}
+                                                        manager-status-pending
+                                                    {% elif activity.status|upper == 'CONFIRMED' %}
+                                                        manager-status-confirmed
+                                                    {% elif activity.status|upper == 'PREPARING' %}
+                                                        manager-status-preparing
+                                                    {% elif activity.status|upper == 'SHIPPED' %}
+                                                        manager-status-shipped
+                                                    {% elif activity.status|upper == 'DELIVERED' %}
+                                                        manager-status-delivered
+                                                    {% elif activity.status|upper == 'CANCELLED' %}
+                                                        manager-status-cancelled
+                                                    {% elif activity.status|upper == 'RETURNED' %}
+                                                        manager-status-returned
+                                                    {% endif %}
+                                                "
+                                            >
+                                                {{ activity.status|title }}
+                                            </span>
+
+
+                                            <time
+                                                class="manager-activity-time"
+                                                datetime="{{ activity.updated_at|date:'c' }}"
+                                            >
+                                                {{ activity.updated_at|date:"M d, h:i A" }}
+                                            </time>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="manager-empty-state">
+
+                            <i class="fas fa-clock-rotate-left"></i>
+
+                            <span>
+                                No recent activity available.
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+
+
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{% static 'dashboards/js/manager_dashboard.js' %}"></script>
+
+{% endblock %}

@@ -10,7 +10,7 @@ class DashboardViewTests(TestCase):
     """Tests for the dashboard view."""
 
     def setUp(self):
-        self.dashboard_url = reverse("core:dashboard")
+        self.dashboard_url = reverse("dashboards:manager_dashboard")
         self.login_url = reverse("accounts:login")
         # Create a store and user for authenticated test
         self.store = Store.objects.create(
@@ -34,4 +34,4 @@ class DashboardViewTests(TestCase):
         self.client.login(email="user@example.com", password="password123")
         response = self.client.get(self.dashboard_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "core/manager_dashboard.html")
+        self.assertTemplateUsed(response, "dashboards/manager_dashboard.html")

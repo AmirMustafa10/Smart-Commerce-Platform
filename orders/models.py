@@ -153,6 +153,10 @@ class Order(TenantAwareModel):
         default=Decimal("0.00"),
     )
     notes = models.TextField(_("notes"), blank=True, default="")
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    is_settled = models.BooleanField(
+        default=False, verbose_name="The cash has been deposited."
+    )
 
     class Meta:
         verbose_name = _("order")
@@ -174,6 +178,20 @@ class Order(TenantAwareModel):
         if self.total_amount is not None and self.total_amount < Decimal("0.00"):
             raise ValidationError(
                 {"total_amount": _("Total amount cannot be negative.")}
+            )
+
+        # Condition: If the status is "Delivered" and there is no "SHIPPED"
+        if (
+            self.status in [self.Status.DELIVERED, self.Status.SHIPPED]
+            and not self.shipper
+        ):
+            raise ValidationError(
+                {
+                    "status": _(
+                        'The order cannot be changed to "Delivered or SHIPPED" without assigning a SHIPPER.'
+                    ),
+                    "shipper": _("Please assign a Shipper first."),
+                }
             )
 
         # Customer must belong to the same store
@@ -221,6 +239,10 @@ class Order(TenantAwareModel):
                     )
             except type(self).DoesNotExist:
                 pass
+
+        def save(self, *args, **kwargs):
+            self.full_clean()
+            super().save(*args, **kwargs)
 
     @property
     def is_frozen(self):
@@ -281,7 +303,7 @@ class OrderItem(TenantAwareModel):
                 self.price_at_order = self.product.final_price
 
             # Inheriting the store from the producer
-            self.store_id = self.product.store_id 
+            self.store_id = self.product.store_id
 
         super().clean_fields(exclude=exclude)
 
