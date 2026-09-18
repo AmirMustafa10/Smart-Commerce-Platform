@@ -39,4 +39,10 @@ urlpatterns = [
         views.ShipperOrderUpdateView.as_view(),
         name="shipper_order_update",
     ),
+    path("settlements/", views.SettlementListView.as_view(), name="settlements"),
+    path(
+        "settlements/<uuid:shipper_id>/clear/",
+        views.SettleCashView.as_view(),
+        name="clear_settlement",
+    ),
 ]
