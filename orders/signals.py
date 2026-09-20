@@ -131,8 +131,7 @@ def set_delivered_at_timestamp(sender, instance, **kwargs):
 @receiver(post_save, sender=Order)
 def update_customer_status(sender, instance, **kwargs):
     """
-    Automatically set the `is_buyer = True` when the order status
-    is changed to DELIVERED for the first time.
+    Automatically set `is_buyer = True` when the buyer actually purchases an order and it is marked as delivered.
     """
 
     if instance.status == Order.Status.DELIVERED and not instance.customer.is_buyer:
