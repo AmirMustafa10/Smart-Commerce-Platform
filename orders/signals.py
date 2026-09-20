@@ -126,3 +126,15 @@ def set_delivered_at_timestamp(sender, instance, **kwargs):
         instance.delivered_at = timezone.now()
     elif instance.status != Order.Status.DELIVERED and instance.delivered_at:
         instance.delivered_at = None
+
+
+@receiver(post_save, sender=Order)
+def update_customer_status(sender, instance, **kwargs):
+    """
+    Automatically set the `is_buyer = True` when the order status
+    is changed to DELIVERED for the first time.
+    """
+
+    if instance.status == Order.Status.DELIVERED and not instance.customer.is_buyer:
+        instance.customer.is_buyer = True
+        instance.customer.save(update_fields=["is_buyer"])
