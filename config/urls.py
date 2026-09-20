@@ -27,5 +27,6 @@ urlpatterns = [
     path("", include("products.urls")),
     path("", include("orders.urls")),
     path("", include("dashboard.urls")),
+    path("", include("model_conversation.urls")),
     path("api/", api.urls),
 ]
