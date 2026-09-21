@@ -168,3 +168,17 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 LOGIN_REDIRECT_URL = "core:home"
 LOGOUT_REDIRECT_URL = "accounts:login"
 LOGIN_URL = "accounts:login"
+
+
+CELERY_BROKER_URL = os.getenv(
+    "REDIS_URL",
+    "redis://127.0.0.1:6379/0",
+)
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}
