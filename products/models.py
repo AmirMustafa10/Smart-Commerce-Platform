@@ -5,6 +5,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 from core.models import TenantAwareModel
+from pgvector.django import VectorField
 
 
 def validate_image_size(image):
@@ -136,7 +137,9 @@ class Product(TenantAwareModel):
         decimal_places=2,
         null=True,
         blank=True,
-        help_text=_("Discounted price (optional, must be < price)."),
+        help_text=_(
+            "Discount price that will sub from price (optional, must be < price)."
+        ),
     )
     is_active = models.BooleanField(
         _("active"), default=True, help_text=_("Visibility flag for customers.")
@@ -337,3 +340,35 @@ class ProductImage(TenantAwareModel):
             ).exclude(pk=self.pk).update(is_primary=False)
 
         super().save(*args, **kwargs)
+
+
+class ProductEmbedding(models.Model):
+    product = models.OneToOneField(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="embedding_record",
+    )
+
+    content = models.TextField(
+        help_text=_("Text representation used to generate the embedding.")
+    )
+
+    embedding = VectorField(
+        dimensions=768,
+    )
+
+    model_name = models.CharField(
+        max_length=100,
+        default="gemini-embedding-2",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    def __str__(self):
+        return f"Embedding for {self.product}"
