@@ -33,6 +33,12 @@ class Customer(TenantAwareModel):
         help_text=_("Customer's contact phone number (unique per store)."),
     )
     address = models.TextField(_("address"), blank=True, default="")
+    is_buyer = models.BooleanField(
+        default=False,
+        help_text=_(
+            "if Customer is buy at lest one order(buyer => at lest order Delivered)"
+        ),
+    )
 
     class Meta:
         verbose_name = _("customer")
