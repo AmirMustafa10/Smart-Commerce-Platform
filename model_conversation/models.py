@@ -1,12 +1,13 @@
 from django.db import models
 from orders.models import Customer
 from stores.models import Store
+from django.utils.translation import gettext_lazy as _
+
 
 class Conversation(models.Model):
-    STATUS_CHOICES = (
-        ("idle", "Idle"),
-        ("processing", "Processing"),
-    )
+    class STATUS_CHOICES(models.TextChoices):
+        IDLE = "IDLE", _("Idle")
+        PROCESSING = "Processing", _("Processing")
 
     store = models.ForeignKey(
         Store,
@@ -16,7 +17,9 @@ class Conversation(models.Model):
     customer = models.ForeignKey(
         Customer, on_delete=models.CASCADE, related_name="conversations"
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="idle")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES.choices, default=STATUS_CHOICES.IDLE
+    )
     summary = models.TextField(
         blank=True,
         null=True,
@@ -39,15 +42,14 @@ class Conversation(models.Model):
 
 
 class ChatMessage(models.Model):
-    SENDER_CHOICES = (
-        ("user", "Customer"),
-        ("model", "AI"),
-    )
+    class SENDER_CHOICES(models.TextChoices):
+        USER = "USER", _("Customer")
+        MODEL = "MODEL", _("AI")
 
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name="messages"
     )
-    sender = models.CharField(max_length=10, choices=SENDER_CHOICES)
+    sender = models.CharField(max_length=10, choices=SENDER_CHOICES.choices)
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 

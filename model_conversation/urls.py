@@ -1,5 +1,5 @@
 from django.urls import path
 
-app_name = "dashboards"
+app_name = "model"
 
 urlpatterns = []
